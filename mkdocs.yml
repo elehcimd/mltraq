@@ -1,0 +1,96 @@
+site_name: MLTRAQ
+site_description: Open source experiment tracking API with ML performance analysis.
+site_url: https://mltraq.com
+docs_dir: mkdocs/
+site_dir: dist/docs
+theme: # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
+  features:
+    - navigation.expand
+    - search.highlight
+  logo: assets/img/favicon-white.svg
+  favicon: assets/img/favicon-black.svg
+  name: material
+  palette:
+  - scheme: default
+    primary: black
+    accent: deep orange
+    toggle:
+      icon: material/lightbulb
+      name: Switch to dark mode
+  - scheme: slate
+    primary: black
+    accent: deep orange
+    toggle:
+      icon: material/lightbulb-outline
+      name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github-alt
+repo_name: elehcimd/mltraq
+repo_url: https://github.com/elehcimd/mltraq
+edit_uri: ""
+
+
+# List of markdown extensions available by default:
+# https://python-markdown.github.io/extensions/
+markdown_extensions:
+- toc:
+    permalink: "#" # Create permalinks for headers inside each page
+- admonition # Render call-outs like WARNING: , ... https://squidfunk.github.io/mkdocs-material/reference/admonitions/
+- mdx_include # Let .md files include lines from .py files
+- extra # The "extra" extension, handling tables, footnotes, definitions, ...: https://python-markdown.github.io/extensions/extra/
+- pymdownx.superfences: # Adding support for Mermaid.js diagrams: https://squidfunk.github.io/mkdocs-material/reference/diagrams/#usage
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format ''
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.highlight: # Code highlighting inside code blocks
+    # linenums: true
+    line_anchors: "code-anchor"
+    anchor_linenums: true
+- pymdownx.inlinehilite # Inline code highlighting
+- pymdownx.snippets # Include external files as code blocks
+# Documentation on code blocks: https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
+- pymdownx.tasklist:
+    custom_checkbox: true
+
+nav:
+  - index.md
+  - Tutorial - User Guide:
+    - tutorial/index.md
+    - tutorial/create-session.md
+    - tutorial/basic-tracking.md
+    - tutorial/add-experiment.md
+    - tutorial/managed-experiments.md
+    - tutorial/reloading-experiments.md
+  - Become a sponsor ❤️: sponsor.md
+  - License: license.md
+  
+plugins:
+    - search # If you are creating the plugins entry in your config file, you should also insert a line for the search plugin.
+    - macros:
+        module_name: mkdocs/mymacros
+        #on_error_fail: true
+    - mkdocstrings
+
+extra_css:
+- assets/css/custom.css
+- https://s.pageclip.co/v1/pageclip.css          
+
+extra_javascript:
+- assets/js/custom.js
+- https://s.pageclip.co/v1/pageclip.js
+
+copyright: Copyright © 2022 - 2023 Michele Dallachiesa
+
+
+extra:
+  analytics:
+    provider: google
+    property: UA-133183413-1
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/elehcimd/mltraq
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/in/dallachiesa/

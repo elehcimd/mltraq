@@ -1,0 +1,25 @@
+import mltraq
+import numpy as np
+
+
+def toss_coins(run: mltraq.Run):
+    def estimate_p_head():
+        return np.mean([np.random.uniform() < run.kwargs.P for _ in range(run.params.N)])
+
+    run.fields.n = run.params.N
+    run.fields.errors = [np.abs(estimate_p_head() - run.kwargs.P) for _ in range(run.kwargs.K)]
+
+
+def metrics(run: mltraq.Run):
+    run.fields.error = np.mean(run.fields.errors)
+
+
+session = mltraq.create_session()
+experiment = session.add_experiment(name="test")
+experiment.add_runs(N=[1, 25, 50, 100])
+experiment.execute(kwargs={"P": 0.8, "K": 100}, steps=toss_coins)
+experiment.persist()
+
+experiment = session.load("test")
+experiment.execute(steps=metrics)
+print(experiment.runs.df()[["n", "error"]].sort_values(by="n"))
