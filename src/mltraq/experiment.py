@@ -457,7 +457,8 @@ class Experiment:
 
         if self.runs:
             # The experiment has runs, let's find out the columns definition and persist it with the experiment.
-            df_runs = self.runs.df(max_level=0)
+            # Work on a copy, to avoid modifications a slided copy of the dataframe.
+            df_runs = self.runs.df(max_level=0).copy()
             df_runs["id_experiment"] = self.id_experiment
             df_runs, run_columns = serialization.serialize_df(
                 df_runs, ignore_columns=["id_run", "id_experiment"], enable_compression=enable_compression
