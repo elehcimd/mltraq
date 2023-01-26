@@ -1,0 +1,64 @@
+from functools import partial
+
+import mltraq
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_iris
+from sklearn.dummy import DummyClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.utils import shuffle
+
+
+def load(run: mltraq.Run):
+    # Load the IRIS dataset, taking care of shuffling it
+    run.X, run.y = shuffle(
+        *load_iris(return_X_y=True), random_state=run.params.seed
+    )
+
+
+def train(run: mltraq.Run):
+    # Instantiate and train classifier
+    model = run.params.classifier(random_state=run.params.seed).fit(
+        run.X[:100], run.y[:100]
+    )
+    run.fields.model_name = model.__class__.__name__
+
+    # Use trained model to make predictions
+    run.y_pred = model.predict(run.X[100:])
+    run.y_true = run.y[100:]
+
+
+def evaluate(run: mltraq.Run):
+    # Track accuracy score from previously determined predictions,
+    run.fields.accuracy = accuracy_score(run.y_true, run.y_pred)
+
+
+# Connect to a MLTRAQ session and craete an experiment.
+session = mltraq.create_session()
+experiment = session.add_experiment()
+
+# Use a parameter grid to define the experiment's runs.
+experiment.add_runs(
+    classifier=[
+        partial(DummyClassifier, strategy="most_frequent"),
+        partial(LogisticRegression, max_iter=1000),
+        DecisionTreeClassifier,
+        RandomForestClassifier,
+        partial(KMeans, n_clusters=3, n_init="auto"),
+    ],
+    seed=range(10),
+)
+
+# Execute experiment, running in parallel the steps sequence on each run.
+experiment.execute(steps=[load, train, evaluate])
+
+# Query the results and report a ML models leaderboard
+df_leaderboard = (
+    experiment.runs.df()
+    .groupby("model_name")
+    .mean(numeric_only=True)
+    .sort_values(by="accuracy", ascending=False)
+)
+print(df_leaderboard)

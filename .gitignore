@@ -1,0 +1,12 @@
+.vscode
+.DS_Store
+.pytest_cache
+dist
+local
+TODO
+*.pyc
+*.pyo
+**/*.db
+**/*.ipynb_checkpoints
+__pycache__
+
