@@ -36,6 +36,11 @@ class Database:
         if url is None:
             url = options.get("db.url")
 
+        if url.startswith("postgres://"):
+            # Re-introduce support for the deprecated and then dropped "postgres://",
+            # still used in URL connect strings from render.com.
+            url = url.replace("postgres://", "postgresql://")
+
         if lazy:
             # We activate this flag in the __reduce__, called upon pickling.
             # This behaviour allows to use sqlite in memory, since only one sqlite instance
