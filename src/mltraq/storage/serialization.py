@@ -12,7 +12,7 @@ from mltraq.utils.dicts import ObjectDictionary
 from mltraq.utils.frames import json_normalize
 
 # Keyword used to identify serialized values and the version of the serialization format.
-TYPE_KEY = "mltraq-type-1.0"
+TYPE_KEY = "mltraq-type-0.0"
 
 # Introduced with Python 3.0, https://peps.python.org/pep-3154/
 # Unpickling might fail: on different architectures, different python version, in case of missing packages.
@@ -128,10 +128,10 @@ class JSONEncoder(json.JSONEncoder):
             # If it's a series, we just convert it to a dataframe, implicitly obtaining a copy of the data.
             if isinstance(obj, pd.Series):
                 obj = obj.to_frame()
-                obj_type = "pandas.Series"
+                obj_type = "pandas.Series-0.0"
             else:
                 obj = obj.copy()
-                obj_type = "pandas.DataFrame"
+                obj_type = "pandas.DataFrame-0.0"
 
             dtypes = {col: str(obj[col].dtype) for col in obj.columns}
             dtype_index = str(obj.index.dtype)
@@ -157,9 +157,9 @@ class JSONEncoder(json.JSONEncoder):
                 "index": obj.index.tolist(),
             }
         elif isinstance(obj, np.ndarray):
-            return {TYPE_KEY: "numpy.ndarray", "data": obj.tolist()}
+            return {TYPE_KEY: "numpy.ndarray-0.0", "data": obj.tolist()}
         elif isinstance(obj, uuid.UUID):
-            return {TYPE_KEY: "uuid.UUID", "data": str(obj)}
+            return {TYPE_KEY: "uuid.UUID-0.0", "data": str(obj)}
         else:
             return json.JSONEncoder.default(self, obj)
 
@@ -194,19 +194,19 @@ def deserialize(obj: bytes) -> object:
     def f(v):
         if isinstance(v, dict) and TYPE_KEY in v:
             # This ia a value to deserialize
-            if v[TYPE_KEY] in ["pandas.DataFrame", "pandas.Series"]:
+            if v[TYPE_KEY] in ["pandas.DataFrame-0.0", "pandas.Series-0.0"]:
                 df = pd.DataFrame.from_dict(v["data"], orient="columns")
                 df.index = pd.Index(v["index"]).astype(v["dtype_index"])
                 for col, dtype in v["dtypes"].items():
                     df[col] = df[col].astype(dtype)
-                if v[TYPE_KEY] == "pandas.DataFrame":
+                if v[TYPE_KEY] == "pandas.DataFrame-0.0":
                     return df
                 else:
                     # Return first column, a series
                     return df[df.columns[0]]
-            elif v[TYPE_KEY] == "numpy.ndarray":
+            elif v[TYPE_KEY] == "numpy.ndarray-0.0":
                 return np.asarray(v["data"])
-            elif v[TYPE_KEY] == "uuid.UUID":
+            elif v[TYPE_KEY] == "uuid.UUID-0.0":
                 return uuid.UUID(v["data"])
             else:
                 # We don't know how to deserialize it, return it as a dictionary.
