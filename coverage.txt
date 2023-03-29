@@ -9,7 +9,7 @@ src/mltraq/options.py                    42      1    98%
 src/mltraq/run.py                       112      8    93%
 src/mltraq/session.py                    39      1    97%
 src/mltraq/storage/__init__.py            0      0   100%
-src/mltraq/storage/database.py           97      7    93%
+src/mltraq/storage/database.py           99      8    92%
 src/mltraq/storage/models.py             15      0   100%
 src/mltraq/storage/serialization.py     116      9    92%
 src/mltraq/utils/__init__.py              0      0   100%
@@ -24,4 +24,4 @@ src/mltraq/utils/uuid.py                  7      0   100%
 src/mltraq/utils/wordlist.py              1      0   100%
 src/mltraq/version.py                     1      0   100%
 ---------------------------------------------------------
-TOTAL                                   864     45    95%
+TOTAL                                   866     46    95%

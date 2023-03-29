@@ -1,3 +1,3 @@
                                  id_run  accuracy     model_name
-0  01872c48-83c0-9bdf-2b25-9d575683adfd      0.65       baseline
-1  01872c48-83c0-9bdf-2b25-9d575683adfe      0.83  random-forest
+0  01872c66-38bc-721f-4118-cf223b348e9d      0.65       baseline
+1  01872c66-38bc-721f-4118-cf223b348e9e      0.83  random-forest
