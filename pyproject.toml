@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.47"
+version = "0.0.50"
 description = "Open source experiment tracking API with ML performance analysis."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -18,9 +18,9 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.8.0,<3.11"
-pandas = "^1.5.1"
-joblib = "^1.2.0"
-sqlalchemy = "^1.4.44" 
+pandas = "^1.4.4,<2.0"
+joblib = "^1.1.1"
+sqlalchemy = "^1.4.44,<2.0" 
 sqlalchemy-utils = "^0.38.3"
 ulid-py = "^1.1.0"
 cloudpickle = "^2.2.0"
