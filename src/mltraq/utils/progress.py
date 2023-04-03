@@ -1,7 +1,7 @@
 import warnings
 
 from mltraq import options
-from mltraq.extras.environment import is_pyodide
+from mltraq.extras.environment import is_notebook, is_pyodide
 
 with warnings.catch_warnings():
     # ignore warnings while setting up tqdm auto
@@ -20,4 +20,10 @@ def progress(*args, **kwargs):
     Returns:
         _type_: _description_
     """
-    return tqdm(*args, **kwargs, leave=False, delay=options.get("tqdm.delay"), disable=options.get("tqdm.disable"))
+    return tqdm(
+        *args,
+        **kwargs,
+        leave=False,
+        delay=options.get("tqdm.delay"),
+        disable=(not is_notebook()) or options.get("tqdm.disable"),
+    )

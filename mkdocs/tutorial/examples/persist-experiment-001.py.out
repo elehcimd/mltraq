@@ -1,11 +1,5 @@
-[INFO] MLTRAQ v0.0.56 (https://mltraq.com) initialized
-[INFO] Executing 4 tasks on 8 workers (backend:loky)
- 25%|██▌       | 1/4 [00:01<00:05,  1.96s/it] 50%|█████     | 2/4 [00:01<00:01,  1.01it/s] 75%|███████▌  | 3/4 [00:01<00:00,  1.52it/s]100%|██████████| 4/4 [00:01<00:00,  2.01it/s][INFO] Persisting experiment (table name: e_test)
-[INFO] Loading experiment 'test'
-[INFO] Loading runs
-[INFO] Executing 4 tasks on 8 workers (backend:loky)
- 25%|██▌       | 1/4 [00:00<00:00, 258.14it/s] 50%|█████     | 2/4 [00:00<00:00, 475.87it/s] 75%|███████▌  | 3/4 [00:00<00:00, 657.76it/s]100%|██████████| 4/4 [00:00<00:00, 10.56it/s]      n   error
-3    1  0.3140
-2   25  0.0584
-0   50  0.0472
-1  100  0.0286
+     n   error
+3    1  0.3440
+2   25  0.0592
+0   50  0.0532
+1  100  0.0302
