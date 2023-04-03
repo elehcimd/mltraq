@@ -5,6 +5,7 @@ import time
 from typing import Callable, Dict, Optional
 
 from colorama import Back, Fore, Style
+from mltraq.extras.environment import is_tty
 from mltraq.options import options
 
 logger = logging.getLogger("mltraq")
@@ -57,18 +58,21 @@ def init_logging():
         # default_logger = logging.getLogger()
         # default_logger.handlers.clear()
 
-        formatter = ColoredFormatter(
-            "{color}■{reset} {message}",
-            style="{",
-            datefmt="%Y-%m-%d %H:%M:%S",
-            colors={
-                "DEBUG": Fore.CYAN,
-                "INFO": Fore.GREEN,
-                "WARNING": Fore.YELLOW,
-                "ERROR": Fore.RED,
-                "CRITICAL": Fore.RED + Back.WHITE + Style.BRIGHT,
-            },
-        )
+        if is_tty():
+            formatter = ColoredFormatter(
+                "{color}■{reset} {message}",
+                style="{",
+                datefmt="%Y-%m-%d %H:%M:%S",
+                colors={
+                    "DEBUG": Fore.CYAN,
+                    "INFO": Fore.GREEN,
+                    "WARNING": Fore.YELLOW,
+                    "ERROR": Fore.RED,
+                    "CRITICAL": Fore.RED + Back.WHITE + Style.BRIGHT,
+                },
+            )
+        else:
+            formatter = logging.Formatter("[%(levelname)s] %(message)s")
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)

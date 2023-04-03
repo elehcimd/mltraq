@@ -1,4 +1,4 @@
-[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
+[INFO] MLTRAQ v0.0.56 (https://mltraq.com) initialized
                                  id_run  accuracy     model_name
-0  0187477d-c868-6b40-c5f0-51d24bdd27a7      0.65       baseline
-1  0187477d-c868-6b40-c5f0-51d24bdd27a8      0.83  random-forest
+0  0187479d-1b55-4bf7-31a6-56b0092f15e5      0.65       baseline
+1  0187479d-1b55-4bf7-31a6-56b0092f15e6      0.83  random-forest
