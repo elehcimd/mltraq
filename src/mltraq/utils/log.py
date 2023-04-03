@@ -45,19 +45,12 @@ class ColoredFormatter(logging.Formatter):
 def init_logging():
     """Logging intialization."""
 
-    if options.get("logging.clear_handlers_default_logger"):
-        logging.getLogger().handlers.clear()
-
     # Get logger for MLTRAQ and clear the handlers.
     logger = logging.getLogger("mltraq")
     logger.handlers.clear()
     logger.setLevel(getattr(logging, options.get("logging.level")))
 
     if options.get("logging.stdout"):
-        # we drop the default logger to stdout, to avoid duplicate output.
-        # default_logger = logging.getLogger()
-        # default_logger.handlers.clear()
-
         if is_tty():
             formatter = ColoredFormatter(
                 "{color}■{reset} {message}",
@@ -71,12 +64,18 @@ def init_logging():
                     "CRITICAL": Fore.RED + Back.WHITE + Style.BRIGHT,
                 },
             )
-        else:
-            formatter = logging.Formatter("[%(levelname)s] %(message)s")
 
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+            # We don't show logs if in batch mode without tty. You can add it with:
+            # formatter = logging.Formatter("[%(levelname)s] %(message)s")
+
+            if options.get("logging.clear_handlers_default_logger"):
+                # Drop other default handlers, otherwise we might end up with
+                # duplicate log entries to stdout.
+                logging.getLogger().handlers.clear()
+
+            handler = logging.StreamHandler(sys.stdout)
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
 
 
 def timeit(f: Callable) -> Callable:

@@ -30,7 +30,7 @@ default_options = {
         "store_pickle": False,
     },
     "logging": {
-        "stdout": True,
+        "stdout": False,
         "level": "INFO",
         "catch_exceptions": False,
         "clear_handlers_default_logger": True,
