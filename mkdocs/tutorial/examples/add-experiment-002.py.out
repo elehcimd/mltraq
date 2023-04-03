@@ -1,6 +1,6 @@
-[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
-[32m■[0m Persisting experiment (table name: e_test)
-[32m■[0m Loading experiment 'test'
+[INFO] MLTRAQ v0.0.56 (https://mltraq.com) initialized
+[INFO] Persisting experiment (table name: e_test)
+[INFO] Loading experiment 'test'
 [1] Python: experiment.fields.description = 'some text'
 [2] Python: experiment.fields.series = [1, 2, 3]
 [3] SQL: b'{"description": "some text", "series": {"mltraq-type-0.0":

@@ -16,7 +16,7 @@ src/mltraq/utils/__init__.py              0      0   100%
 src/mltraq/utils/dicts.py                34      0   100%
 src/mltraq/utils/enums.py                 8      0   100%
 src/mltraq/utils/frames.py                8      0   100%
-src/mltraq/utils/log.py                  71      4    94%
+src/mltraq/utils/log.py                  74     10    86%
 src/mltraq/utils/progress.py             10      1    90%
 src/mltraq/utils/sequence.py             10      0   100%
 src/mltraq/utils/text.py                 22      0   100%
@@ -24,4 +24,4 @@ src/mltraq/utils/uuid.py                  7      0   100%
 src/mltraq/utils/wordlist.py              1      0   100%
 src/mltraq/version.py                     1      0   100%
 ---------------------------------------------------------
-TOTAL                                   872     49    94%
+TOTAL                                   875     55    94%

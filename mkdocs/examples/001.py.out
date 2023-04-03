@@ -1,5 +1,5 @@
-[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
-[32m■[0m Persisting experiment (table name: e_honey)
+[INFO] MLTRAQ v0.0.56 (https://mltraq.com) initialized
+[INFO] Persisting experiment (table name: e_honey)
                                  id_run  accuracy
-0  0187477d-e1fe-7cc2-8215-fc1325995464      0.87
-1  0187477d-e1fe-7cc2-8215-fc1325995465      0.95
+0  0187479d-34d4-7b82-1300-3f7e75bca875      0.87
+1  0187479d-34d4-7b82-1300-3f7e75bca876      0.95
