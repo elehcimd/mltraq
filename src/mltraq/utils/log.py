@@ -6,6 +6,7 @@ from typing import Callable, Dict, Optional
 
 from colorama import Back, Fore, Style
 from mltraq.extras.environment import is_tty
+from mltraq.extras.environment import is_tty
 from mltraq.options import options
 
 logger = logging.getLogger("mltraq")
