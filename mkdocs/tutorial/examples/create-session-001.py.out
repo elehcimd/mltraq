@@ -1,1 +1,2 @@
-MLTRAQ(db="sqlite:///:memory:", experiments(0)=[])
+[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+MLTRAQ(db="sqlite:///:memory:", experiments(0)=[])

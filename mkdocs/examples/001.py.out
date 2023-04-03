@@ -1,3 +1,5 @@
-                                 id_run  accuracy
-0  01872d45-dd94-71e1-ae11-aab8a738b42c      0.87
-1  01872d45-dd94-71e1-ae11-aab8a738b42d      0.95
+[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+[32m■[0m Persisting experiment (table name: e_honey)
+                                 id_run  accuracy
+0  01874612-197a-09e1-9c34-644c32ff53e1      0.87
+1  01874612-197a-09e1-9c34-644c32ff53e2      0.95
