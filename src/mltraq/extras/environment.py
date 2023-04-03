@@ -4,6 +4,7 @@ from types import ModuleType
 from typing import Callable, Dict
 
 import pkg_resources
+from IPython.core.getipython import get_ipython
 
 catch_exceptions = (FileNotFoundError, AttributeError)
 
@@ -33,6 +34,23 @@ def is_pyodide() -> bool:
         bool: True if in Pyodide
     """
     return "pyodide" in sys.modules
+
+
+def is_notebook() -> bool:
+    """Returns True if executed from within a Notebook (IPython)
+
+    Returns:
+        bool: True if in Notebook
+    """
+
+    # Colab returns "Shell"
+    # Jupyter Lab returns "ZMQInteractiveShell"
+    # JypyterLite returns "Interpreter"
+    return get_ipython() is not None and get_ipython().__class__.__name__ in [
+        "ZMQInteractiveShell",
+        "Shell",
+        "Interpreter",
+    ]
 
 
 def get_version_packages() -> Dict:
@@ -108,5 +126,6 @@ def get_environment() -> Dict:
             "is_colab": is_colab(),
             "is_pyodide": is_pyodide(),
             "is_tty": is_tty(),
+            "is_notebook": is_notebook(),
         },
     }

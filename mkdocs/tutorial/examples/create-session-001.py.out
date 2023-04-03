@@ -1,2 +1,1 @@
-[INFO] MLTRAQ v0.0.56 (https://mltraq.com) initialized
-MLTRAQ(db="sqlite:///:memory:", experiments(0)=[])
+MLTRAQ(db="sqlite:///:memory:", experiments(0)=[])

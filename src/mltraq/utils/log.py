@@ -46,6 +46,8 @@ def init_logging():
     """Logging intialization."""
 
     if options.get("logging.clear_handlers_default_logger"):
+        # Drop other default handlers, otherwise we might end up with
+        # duplicate log entries to stdout.
         logging.getLogger().handlers.clear()
 
     # Get logger for MLTRAQ and clear the handlers.
@@ -54,10 +56,6 @@ def init_logging():
     logger.setLevel(getattr(logging, options.get("logging.level")))
 
     if options.get("logging.stdout"):
-        # we drop the default logger to stdout, to avoid duplicate output.
-        # default_logger = logging.getLogger()
-        # default_logger.handlers.clear()
-
         if is_tty():
             formatter = ColoredFormatter(
                 "{color}■{reset} {message}",
@@ -71,6 +69,7 @@ def init_logging():
                     "CRITICAL": Fore.RED + Back.WHITE + Style.BRIGHT,
                 },
             )
+
         else:
             formatter = logging.Formatter("[%(levelname)s] %(message)s")
 
