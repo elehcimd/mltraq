@@ -1,2 +1,3 @@
-                          id_experiment            name description
-0  01872d45-b2af-364e-d0f3-67835774babc  coir.bout.font  an example
+[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+                          id_experiment             name description
+0  01874612-030a-8217-732d-ee447fb16347  buff.latin.thai  an example

@@ -47,9 +47,9 @@ def init_logging():
     # Get logger for MLTRAQ and clear the handlers.
     logger = logging.getLogger("mltraq")
     logger.handlers.clear()
-    logger.setLevel(options.get("log.level"))
+    logger.setLevel(getattr(logging, options.get("logging.level")))
 
-    if options.get("log.stdout"):
+    if options.get("logging.stdout"):
         # we drop the default logger to stdout, to avoid duplicate output.
         # default_logger = logging.getLogger()
         # default_logger.handlers.clear()
@@ -70,8 +70,6 @@ def init_logging():
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-
-    # if options.get("log."):
 
 
 def timeit(f: Callable) -> Callable:
@@ -176,7 +174,7 @@ def default_exception_handler(func: Callable) -> Callable:
     """
 
     def inner_function(*args, **kwargs):
-        if not options.get("log.catch_exceptions"):
+        if not options.get("logging.catch_exceptions"):
             return func(*args, **kwargs)
         else:
             try:

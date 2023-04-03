@@ -53,7 +53,7 @@ def generate_words():
             continue
         words.append(name)
 
-    return words, dropped, ignored
+    return list(set(words)), list(set(dropped)), list(set(ignored))
 
 
 def main():

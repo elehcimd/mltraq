@@ -1,7 +1,7 @@
 import warnings
 
 from mltraq import options
-from mltraq.extras.environment import is_pyodide, is_tty
+from mltraq.extras.environment import is_pyodide
 
 with warnings.catch_warnings():
     # ignore warnings while setting up tqdm auto
@@ -14,14 +14,10 @@ with warnings.catch_warnings():
         tqdm.monitor_interval = 0
 
 
-# if not TTY or tqdm explicitly disabled, disable it.
-disable = not is_tty() or options.get("tqdm.disable")
-
-
 def progress(*args, **kwargs):
     """Rerutn a tqdm object with some default values.
 
     Returns:
         _type_: _description_
     """
-    return tqdm(*args, **kwargs, leave=False, delay=options.get("tqdm.delay"), disable=disable)
+    return tqdm(*args, **kwargs, leave=False, delay=options.get("tqdm.delay"), disable=options.get("tqdm.disable"))

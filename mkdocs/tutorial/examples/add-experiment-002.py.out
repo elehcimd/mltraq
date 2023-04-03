@@ -1,6 +1,9 @@
+[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+[32m■[0m Persisting experiment (table name: e_test)
+[32m■[0m Loading experiment 'test'
 [1] Python: experiment.fields.description = 'some text'
 [2] Python: experiment.fields.series = [1, 2, 3]
-[3] SQL: b'{"description": "some text", "series": {"mltraq-type-0.0":
+[3] SQL: b'{"description": "some text", "series": {"mltraq-type-0.0":
   "pandas.Series-0.0", "dtype_index": "int64", "dtypes": {"0": "int64"},
   "data": {"0": [1, 2, 3]}, "index": [0, 1, 2]}, "frame": {"mltraq-
   type-0.0": "pandas.DataFrame-0.0", "dtype_index": "object", "dtypes":

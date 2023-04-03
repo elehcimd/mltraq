@@ -1,5 +1,4 @@
 import copy
-import logging
 from contextlib import contextmanager
 
 from joblib.parallel import DEFAULT_BACKEND
@@ -30,9 +29,9 @@ default_options = {
         "enable_compression": False,
         "store_pickle": False,
     },
-    "log": {
-        "stdout": False,
-        "level": logging.INFO,
+    "logging": {
+        "stdout": True,
+        "level": "INFO",
         "catch_exceptions": False,
     },
     "dask": {
@@ -41,7 +40,7 @@ default_options = {
         "scheduler_port": 8786,
         "client_timeout": "5s",
     },
-    "doc": {"url": "https://mltraq.com/doc"},
+    "doc": {"url": "https://mltraq.com"},
 }
 
 
@@ -88,7 +87,11 @@ class Options:
             d = d.setdefault(step, {})
         d[last] = value
 
-    def reset(self, path):
+    def reset(self, path=None):
+        if path is None:
+            self.options = copy.deepcopy(default_options)
+            return
+
         steps = path.split(".")
         d = default_options
         for step in steps:

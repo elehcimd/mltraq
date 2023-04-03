@@ -29,7 +29,7 @@ class Session:
 
         init_logging()
         self.db = Database(url, ask_password=ask_password)
-        logger.info(f"MLTRAQ v{__version__} initialized")
+        logger.info(f"MLTRAQ v{__version__} initialized [{self.db.url.render_as_string(hide_password=True)}]")
 
     def _repr_html_(self):
         experiment_names = self.ls()["name"].tolist()
