@@ -1,5 +1,5 @@
-[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
 [32m■[0m Persisting experiment (table name: e_honey)
                                  id_run  accuracy
-0  01874612-197a-09e1-9c34-644c32ff53e1      0.87
-1  01874612-197a-09e1-9c34-644c32ff53e2      0.95
+0  0187477d-e1fe-7cc2-8215-fc1325995464      0.87
+1  0187477d-e1fe-7cc2-8215-fc1325995465      0.95

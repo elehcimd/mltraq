@@ -7,7 +7,7 @@ from mltraq.utils.log import IgnoredChainedCallLogger, default_exception_handler
 
 def test_log_enabled(caplog, capfd):
     with caplog.at_level(logging.INFO):
-        with mltraq.options.option_context({"logging.stdout": True}):
+        with mltraq.options.option_context({"logging.stdout": True, "logging.clear_handlers_default_logger": False}):
             mltraq.create_session()
     assert caplog.records[0].name == "mltraq"
     assert re.compile("^MLTRAQ .* initialized.*").match(caplog.records[0].msg)
@@ -20,7 +20,7 @@ def test_log_enabled(caplog, capfd):
 
 def test_log_disabled(caplog, capfd):
     with caplog.at_level(logging.INFO):
-        with mltraq.options.option_context({"logging.stdout": False}):
+        with mltraq.options.option_context({"logging.stdout": False, "logging.clear_handlers_default_logger": False}):
             mltraq.create_session()
 
     assert re.compile("^MLTRAQ .* initialized.*").match(caplog.records[0].msg)
@@ -33,7 +33,7 @@ def test_log_disabled(caplog, capfd):
 
 def test_timed(caplog):
     with caplog.at_level(logging.INFO):
-        with mltraq.options.option_context({"logging.stdout": True}):
+        with mltraq.options.option_context({"logging.stdout": True, "logging.clear_handlers_default_logger": False}):
             init_logging()
 
             @timeit
@@ -48,7 +48,7 @@ def test_timed(caplog):
 def test_IgnoredChainedCallLogger(caplog):
     obj = IgnoredChainedCallLogger()
 
-    with mltraq.options.option_context({"logging.stdout": True}):
+    with mltraq.options.option_context({"logging.stdout": True, "logging.clear_handlers_default_logger": False}):
         init_logging()
 
         try:
@@ -67,7 +67,9 @@ def test_IgnoredChainedCallLogger(caplog):
 
 def test_KeyBoardInterrupt_catch_exceptions(caplog):
     with caplog.at_level(logging.ERROR):
-        with mltraq.options.option_context({"logging.stdout": True, "logging.catch_exceptions": True}):
+        with mltraq.options.option_context(
+            {"logging.stdout": True, "logging.catch_exceptions": True, "logging.clear_handlers_default_logger": False}
+        ):
             init_logging()
 
             @default_exception_handler

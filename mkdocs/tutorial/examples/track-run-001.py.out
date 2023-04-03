@@ -1,4 +1,4 @@
-[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
                                  id_run  accuracy     model_name
-0  01874611-ff80-a0dd-641f-df7c48e3d7c8      0.65       baseline
-1  01874611-ff80-a0dd-641f-df7c48e3d7c9      0.83  random-forest
+0  0187477d-c868-6b40-c5f0-51d24bdd27a7      0.65       baseline
+1  0187477d-c868-6b40-c5f0-51d24bdd27a8      0.83  random-forest

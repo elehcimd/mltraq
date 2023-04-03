@@ -24,7 +24,7 @@ default_options = {
             "location": ".joblib.memory",
         },
     },
-    "tqdm": {"disable": False, "delay": 1},
+    "tqdm": {"disable": False, "delay": 0.2},
     "serialization": {
         "enable_compression": False,
         "store_pickle": False,
@@ -33,6 +33,7 @@ default_options = {
         "stdout": True,
         "level": "INFO",
         "catch_exceptions": False,
+        "clear_handlers_default_logger": True,
     },
     "dask": {
         "scheduler_address": "tcp://127.0.0.1:8786",

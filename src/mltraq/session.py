@@ -29,7 +29,7 @@ class Session:
 
         init_logging()
         self.db = Database(url, ask_password=ask_password)
-        logger.info(f"MLTRAQ v{__version__} initialized [{self.db.url.render_as_string(hide_password=True)}]")
+        logger.info(f"MLTRAQ v{__version__} ({options.get('doc.url')}) initialized")
 
     def _repr_html_(self):
         experiment_names = self.ls()["name"].tolist()
@@ -122,3 +122,14 @@ class Session:
     def version(self):
         """Log MLTRAQ version"""
         logger.info(f"MLTRAQ v{__version__}")
+
+
+def experiment(url: str = None, ask_password=False) -> Experiment:
+    """It returns an experiment binded to a session, that references only the experiment itself.
+       This is a simplified session in case we want to work with just one single experiment.
+       It saves one line of code and it's more compact, so added value is rather low.
+
+    Returns:
+        Experiment: The newly created experiment
+    """
+    return Session(url=url, ask_password=ask_password).add_experiment()

@@ -1,6 +1,6 @@
 import mltraq
 import numpy as np
-from mltraq.experiment import ExperimentAlreadyExists
+from mltraq.experiment import ExperimentAlreadyExists, ExperimentNotFoundException, PickleNotFoundException
 from mltraq.run import RunException
 
 
@@ -377,7 +377,7 @@ def test_ExperimentNotFoundException():
 
     try:
         experiment = session.load(name="test2", pickle=True)
-    except mltraq.experiment.ExperimentNotFoundException:
+    except ExperimentNotFoundException:
         return
 
     raise Exception("ExperimentNotFoundException not raised")
@@ -395,7 +395,7 @@ def test_ExperimentNotFoundException():
 
     try:
         experiment = session.load(name="test", pickle=True)
-    except mltraq.experiment.PickleNotFoundException:
+    except PickleNotFoundException:
         return
 
     raise Exception("PickleNotFoundException not raised")
