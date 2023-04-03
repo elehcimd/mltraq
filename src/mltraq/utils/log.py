@@ -44,6 +44,9 @@ class ColoredFormatter(logging.Formatter):
 def init_logging():
     """Logging intialization."""
 
+    if options.get("logging.clear_handlers_default_logger"):
+        logging.getLogger().handlers.clear()
+
     # Get logger for MLTRAQ and clear the handlers.
     logger = logging.getLogger("mltraq")
     logger.handlers.clear()

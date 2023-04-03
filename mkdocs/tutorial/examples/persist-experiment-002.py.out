@@ -1,4 +1,4 @@
-[32m■[0m MLTRAQ v0.0.52 initialized [sqlite:///:memory:]
+[32m■[0m MLTRAQ v0.0.55 (https://mltraq.com) initialized
 [32m■[0m Persisting experiment (table name: e_test)
 [32m■[0m Loading experiment 'test' (pickle)
 123
