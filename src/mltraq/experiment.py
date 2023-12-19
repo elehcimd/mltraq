@@ -4,6 +4,8 @@ from typing import Callable, List, Union
 
 import joblib
 import pandas as pd
+from sqlalchemy.orm import load_only
+
 from mltraq.options import options
 from mltraq.run import Run, Runs, get_params_list
 from mltraq.storage import models, serialization
@@ -14,7 +16,6 @@ from mltraq.utils.enums import IfExists, enforce_enum
 from mltraq.utils.frames import json_normalize, reorder_columns
 from mltraq.utils.log import logger
 from mltraq.utils.uuid import uuid3words
-from sqlalchemy.orm import load_only
 
 
 class PickleNotFoundException(Exception):
@@ -208,7 +209,7 @@ class Experiment:
         """
         logger.info("Loading runs")
         # Retrieve all columns
-        df = self.query(f"select * from {self.tablename()}")
+        df = self.query(f"select * from {self.tablename()}")  # noqa
 
         # Take care of deserialization
         for col_name in run_columns["serialized"]:
@@ -408,20 +409,18 @@ class Experiment:
             run_fields = []
             run_steps = []
 
-        return pd.Series(
-            {
-                "name": self.name,
-                "id": self.id_experiment,
-                "fields": list(self.fields.keys()),
-                "run_steps": run_steps,
-                "run_fields": run_fields,
-                "run_kwargs": run_kwargs,
-                "run_params": run_params,
-                "run_count": len(self.runs),
-                "pickle_size": self.size("mb"),
-                "table_name": self.tablename(),
-            }
-        )
+        return pd.Series({
+            "name": self.name,
+            "id": self.id_experiment,
+            "fields": list(self.fields.keys()),
+            "run_steps": run_steps,
+            "run_fields": run_fields,
+            "run_kwargs": run_kwargs,
+            "run_params": run_params,
+            "run_count": len(self.runs),
+            "pickle_size": self.size("mb"),
+            "table_name": self.tablename(),
+        })
 
     @log.default_exception_handler
     def persist(

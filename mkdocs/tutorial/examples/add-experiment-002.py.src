@@ -23,5 +23,5 @@ print(
 )
 wprint(
     "[3] SQL:"
-    f' {session.query("SELECT fields FROM experiments").fields.iloc[0]}'
-)
+    f" {session.query('SELECT fields FROM experiments').fields.iloc[0]}"
+)  # noqa

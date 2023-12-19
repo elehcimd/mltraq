@@ -3,7 +3,6 @@ from contextlib import contextmanager
 
 from joblib.parallel import DEFAULT_BACKEND
 
-
 default_options = {
     "reproducibility": {"random_seed": 123},
     "db": {

@@ -5,16 +5,17 @@ from functools import partial
 from typing import Callable, Iterator, List, Union
 
 import pandas as pd
-from mltraq.options import options
-from mltraq.storage.models import Base
-from mltraq.utils.enums import IfExists
-from mltraq.utils.log import logger
-from mltraq.utils.progress import progress
 from sqlalchemy import MetaData, Table, create_engine, sql
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.orm import Query, sessionmaker
 from ulid import monotonic as ulid
+
+from mltraq.options import options
+from mltraq.storage.models import Base
+from mltraq.utils.enums import IfExists
+from mltraq.utils.log import logger
+from mltraq.utils.progress import progress
 
 
 class Database:
@@ -212,7 +213,7 @@ def pandas_query(
     # Normalise query to sql.expression.text
     if type(query) == Query:
         query = query.statement
-    elif type(query) == str:
+    elif isinstance(query, str):
         query = sql.expression.text(query)
 
     logger.debug(f"SQL: {query.compile(session.bind)}")
@@ -220,7 +221,7 @@ def pandas_query(
     if use_tqdm:
         if tqdm_total is None:
             # If hint on total not available, query the database for it
-            tqdm_total = session.execute(f"SELECT COUNT(*) FROM ({query}) t").first()[0]
+            tqdm_total = session.execute(f"SELECT COUNT(*) FROM ({query}) t").first()[0]  # noqa
 
         df_chunks = pd.read_sql_query(query, session.bind, chunksize=options.get("db.query_read_chunk_size"))
         funcs = [partial(lambda df_chunk: (len(df_chunk), df_chunk), df_chunk) for df_chunk in df_chunks]

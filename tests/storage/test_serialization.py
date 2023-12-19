@@ -33,10 +33,8 @@ def test_serialize_df():
 
     assert_serialize_equal(
         df,
-        (
-            b'{"mltraq-type-0.0": "pandas.DataFrame-0.0", "dtype_index": "int64", "dtypes": {"a": "int64", "b":'
-            b' "int64", "c": "int64"}, "data": {"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]}, "index": [0, 1, 2]}'
-        ),
+        b'{"mltraq-type-0.0": "pandas.DataFrame-0.0", "dtype_index": "int64", "dtypes": {"a": "int64", "b":'
+        b' "int64", "c": "int64"}, "data": {"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]}, "index": [0, 1, 2]}',
     )
 
 

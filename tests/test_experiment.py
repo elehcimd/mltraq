@@ -1,6 +1,6 @@
 import mltraq
 import numpy as np
-from mltraq.experiment import ExperimentAlreadyExists, ExperimentNotFoundException, PickleNotFoundException
+from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException
 
 
@@ -363,24 +363,6 @@ def test_info_empty():
     s = e.info()
 
     assert s.run_count == 0
-
-
-def test_ExperimentNotFoundException():
-    session = mltraq.create_session()
-    experiment = session.add_experiment(name="test")
-
-    with experiment.run() as run:
-        run.a = 123
-        run.locals.b = 123
-
-    experiment.persist(store_pickle=True)
-
-    try:
-        experiment = session.load(name="test2", pickle=True)
-    except ExperimentNotFoundException:
-        return
-
-    raise Exception("ExperimentNotFoundException not raised")
 
 
 def test_ExperimentNotFoundException():
