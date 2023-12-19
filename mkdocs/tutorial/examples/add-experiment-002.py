@@ -15,4 +15,4 @@ experiment = session.load(name="test")  # Loading the experiment from DB
 
 print(f"[1] Python: experiment.fields.description = '{experiment.fields.description}'")
 print(f"[2] Python: experiment.fields.series = {experiment.fields.series.tolist()}")
-wprint(f'[3] SQL: {session.query("SELECT fields FROM experiments").fields.iloc[0]}')
+wprint(f'[3] SQL: {session.query("SELECT fields FROM experiments").fields.iloc[0]}')  # noqa

@@ -4,6 +4,7 @@ from typing import Callable, List, Union
 
 import numpy as np
 import pandas as pd
+
 from mltraq import options
 from mltraq.job import Job
 from mltraq.storage.database import next_ulid

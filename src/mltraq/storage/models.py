@@ -1,7 +1,8 @@
-from mltraq.options import options
 from sqlalchemy import BigInteger, Column, LargeBinary, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils.types.uuid import UUIDType
+
+from mltraq.options import options
 
 # Construct a base class for declarative class definitions.
 Base = declarative_base()

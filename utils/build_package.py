@@ -3,13 +3,9 @@ import os
 from common import get_package_version, project_dir, project_name
 
 
-project_dir = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir)
-project_name = os.path.basename(project_dir)
-
-
 def execute(cmd):
     print(f"Executing: {cmd}")
-    assert os.system(cmd) == 0
+    assert os.system(cmd) == 0  # noqa
 
 
 def inc_version():

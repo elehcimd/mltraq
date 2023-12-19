@@ -1,6 +1,7 @@
 import multiprocessing
 
 import joblib
+
 from mltraq.utils.log import logger
 
 try:

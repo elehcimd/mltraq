@@ -4,12 +4,9 @@ import numpy as np
 
 def toss_coins(run: mltraq.Run):
     def estimate_p_head():
-        return np.mean(
-            [
-                np.random.uniform() < run.kwargs.P
-                for _ in range(run.params.N)
-            ]
-        )
+        return np.mean([
+            np.random.uniform() < run.kwargs.P for _ in range(run.params.N)
+        ])
 
     errors = [
         np.abs(estimate_p_head() - run.kwargs.P)

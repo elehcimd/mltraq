@@ -18,7 +18,7 @@ def enforce_enum(x: Union[str, Enum], enum_type: Enum) -> Enum:
     Returns:
         Enum: Converted input object.
     """
-    if type(x) == str:
+    if isinstance(x, str):
         return enum_type[x]
     else:
         return x

@@ -5,8 +5,8 @@ from flake8.api import legacy as flake8
 
 
 def local(args):
-    cmd = " ".join(args) if type(args) == list else args
-    return subprocess.check_output(cmd, shell=True).decode("utf-8")
+    cmd = " ".join(args) if isinstance(args, list) else args
+    return subprocess.check_output(cmd, shell=True).decode("utf-8")  # noqa
 
 
 def test_pep8():
