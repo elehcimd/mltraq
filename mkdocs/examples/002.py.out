@@ -3,5 +3,5 @@ model_name
 LogisticRegression         0.960
 RandomForestClassifier     0.952
 DecisionTreeClassifier     0.938
-KMeans                     0.440
+KMeans                     0.336
 DummyClassifier            0.288
