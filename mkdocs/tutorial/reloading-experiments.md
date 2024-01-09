@@ -1,6 +1,6 @@
 # Database storage
 
-MLTRAQ stores experiments in plain SQL tables in two types of tables:
+MLtraq stores experiments in plain SQL tables in two types of tables:
 
 * Table `experiments`: Fixed name and schema, each row represents an experiment, it stores the serialized value of dictionary `experiment.fields` in the `fields` column;
 * Table `e_name`: It represents the tracking data for runs of expriment named `name`, each row represents a distinct run. It stores the `run.fields` values as a set of columns whose names are its dictionary keys, making it easily accessible from SQL.

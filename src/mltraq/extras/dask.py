@@ -18,7 +18,7 @@ def log_event(msg: Union[Dict, str]):
     Args:
         msg (Union[Dict, str]): Event to log.
     """
-    dask.distributed.get_worker().log_event("MLTRAQ", msg)
+    dask.distributed.get_worker().log_event("MLtraq", msg)
 
 
 def dask_logger(run: Run, insert_delay: float = 0) -> Run:
@@ -86,7 +86,7 @@ def monitor_events(func: Callable, client_address: str = None):
     try:
         with Client(address=client_address, timeout=options.get("dask.client_timeout")) as client:
             while True:
-                events = client.get_events("MLTRAQ")
+                events = client.get_events("MLtraq")
                 func(events)
                 time.sleep(1)
     except (CancelledError, OSError):

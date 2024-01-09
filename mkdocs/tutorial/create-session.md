@@ -1,7 +1,7 @@
 # Creating sessions
 
 A session allows you establish a connection to the database where the tracking data is stored.
-An application can instantiate one or more MLTRAQ sessions to store and manage experiments
+An application can instantiate one or more MLtraq sessions to store and manage experiments
 across different databases.
 If no database is specified, an SQLite in-memory instance is used by default:
 
@@ -14,7 +14,7 @@ this is useful to not leak credentials in shared notebooks, increasing your leve
 
 !!! Note
     * **SQLite** is a self-contained, file-based SQL database, bundled with Python. This means that
-    you can use MLTRAQ anywhere without the burden of creating and managing other databases.
+    you can use MLtraq anywhere without the burden of creating and managing other databases.
 
     * You can experiment with shared experiments using a free-tier PostgreSQL instance offered
     at [render.com](https://render.com/).

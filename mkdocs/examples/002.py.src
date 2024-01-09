@@ -37,7 +37,7 @@ def evaluate(run: mltraq.Run):
     run.fields.accuracy = accuracy_score(run.y_true, run.y_pred)
 
 
-# Connect to the MLTRAQ session and craete an experiment.
+# Connect to the MLtraq session and craete an experiment.
 session = mltraq.create_session()
 experiment = session.add_experiment()
 

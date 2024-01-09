@@ -17,4 +17,4 @@ In both cases, the user remains in direct control of the execution flow.
 !!! Warning
     With explicit and context-based tracking, runs are linked to the experiment
     only once their execution is complete and you cannot benefit from the higher
-    degree of automation that fully managed MLTRAQ experiments can offer.
+    degree of automation that fully managed MLtraq experiments can offer.

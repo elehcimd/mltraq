@@ -1,1 +1,1 @@
-MLTRAQ(db="sqlite:///:memory:", experiments(0)=[])
+MLtraq(db="sqlite:///:memory:", experiments(0)=[])
