@@ -28,8 +28,8 @@ Open source **experiment tracking API** with **ML performance analysis** to buil
 * **Collaborative**: Backup and upstream experimental results with your team.
 * **Interoperable**: Access the data anywhere with SQL, Pandas and Python API.
 * **Flexible**: Track structured types including Numpy arrays and Pandas frames/series.
-* **Orchestration**: Define and execute experiment pipelines with parameter grids.
 * **Steps library**: Use pre-built "steps" for tracking, testing, analysis and reporting.
+* **Execution engine**: Define and execute parametrized experiment pipelines.
 
 ## Requirements
 
