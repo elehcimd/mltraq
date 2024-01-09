@@ -211,7 +211,7 @@ def pandas_query(
     """
 
     # Normalise query to sql.expression.text
-    if type(query) == Query:
+    if isinstance(query, Query):
         query = query.statement
     elif isinstance(query, str):
         query = sql.expression.text(query)

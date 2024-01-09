@@ -1,3 +1,4 @@
+.python-version
 .vscode
 .DS_Store
 .pytest_cache
