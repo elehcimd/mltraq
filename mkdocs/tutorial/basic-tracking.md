@@ -5,9 +5,9 @@ simulating the tracking of accuracy scores for two competing ML models.
  
 {{include_code("mkdocs/tutorial/examples/track-run-001.py", title="Repeated toin cossing")}}
 
-The run [1] is defined and linked explicitly to the experiment. This is the 
+The run `[1]` is defined and linked explicitly to the experiment. This is the 
 fastest route to add tracking to existing code with minimum code changes.
-Instead, run [2] is implemented by using the `with` statement, resulting in more
+Instead, run `[2]` is implemented by using the `with` statement, resulting in more
 compact and elegant code.
 In both cases, the user remains in direct control of the execution flow.
 

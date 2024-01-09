@@ -1,6 +1,6 @@
 import mltraq
 
-# Connect to a MLTRAQ session and create an experiment.
+# Connect to the MLTRAQ session and create an experiment.
 session = mltraq.create_session("sqlite:///:memory:")
 experiment = session.add_experiment("hello")
 

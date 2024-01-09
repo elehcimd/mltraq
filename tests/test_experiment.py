@@ -265,7 +265,7 @@ def test_experiment_run_explicit():
 
 
 def test_experiment_basic():
-    # Connect to a MLTRAQ session and create an experiment.
+    # Connect to the MLTRAQ session and create an experiment.
     session = mltraq.create_session()
     experiment = session.add_experiment("test")
 

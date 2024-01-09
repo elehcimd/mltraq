@@ -19,6 +19,8 @@ def load(run: mltraq.Run):
 def train(run: mltraq.Run):
     # Instantiate and train classifier
     model = run.params.classifier(random_state=run.params.seed).fit(run.X[:100], run.y[:100])
+
+    # Track the classifier name
     run.fields.model_name = model.__class__.__name__
 
     # Use trained model to make predictions
@@ -27,11 +29,11 @@ def train(run: mltraq.Run):
 
 
 def evaluate(run: mltraq.Run):
-    # Track accuracy score from previously determined predictions,
+    # Track accuracy score from previously determined predictions
     run.fields.accuracy = accuracy_score(run.y_true, run.y_pred)
 
 
-# Connect to a MLTRAQ session and craete an experiment.
+# Connect to the MLTRAQ session and craete an experiment.
 session = mltraq.create_session()
 experiment = session.add_experiment()
 

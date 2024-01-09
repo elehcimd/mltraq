@@ -4,11 +4,11 @@ Once you have established a session, you may want to create a new experiment, wh
 
 {{include_code("mkdocs/tutorial/examples/add-experiment-001.py", title="Defining an experiment")}}
 
-!!! Note "Experients and runs are identified by Universally Unique Lexicographically Sortable Identifiers (ULIDs)"
+!!! Note "Experiments and runs are identified by Universally Unique Lexicographically Sortable Identifiers (ULIDs)"
 
-    * **Universal unique IDs**: Work on experiments locally, and then share them within the team once they are complete, copying them from a local database to a remote one; build multiple experiments and then consolidate the results by merging their runs into new experiments.
+    * **Superpowers of Universal unique IDs**: Work on experiments locally, and then share them with the team once they are complete, copying them from a local database to a remote one; build multiple experiments and then consolidate the results by merging their runs into a new experiment.
     * **IDs creation order == Lexicographical order**: Sorting experiments or runs by `SORT BY UUID ASC` will sort them by ascending order of creation.
-    * **Compact 128-bit representation**: Databases with native `UUID` support (postgresql, cockroachdb, mssql) will benefit from greater performance in query evaluation and storage, falling back to `CHAR(32)` otherwise.
+    * **Compact 128-bit representation**: Databases with native `UUID` support (postgresql, cockroachdb, mssql) will benefit from greater performance in query evaluation and storage. If not available, `CHAR(32)` is used.
     
 !!! Note "Tracking metadata about your experiments"
     * You can track data by either adding keyword arguments to `session.add_experiment` or by adding it directly to the `experiment.fields` dictionary.
