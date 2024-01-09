@@ -9,6 +9,7 @@ from sqlalchemy import MetaData, Table, create_engine, sql
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.orm import Query, sessionmaker
+from sqlalchemy.sql import text
 from ulid import monotonic as ulid
 
 from mltraq.options import options
@@ -113,11 +114,17 @@ class Database:
         Args:
             name (str): Name of the table to drop.
         """
+
         with self.session() as session:
+
+            meta = MetaData()
+            meta.reflect(bind=session.bind)
+
             try:
-                Table(name, MetaData(bind=session.bind), autoload_with=session.bind).drop()
+                Table(name, meta).drop(bind=session.bind, checkfirst=True)
             except NoSuchTableError:
                 pass
+
             session.commit()
 
     def vacuum(self):
@@ -130,9 +137,9 @@ class Database:
                 # postgresql doesn't. With a COMMIT,
                 # we terminate the transaction, and
                 # we can then execute the VACUUM command.
-                session.execute("COMMIT")
+                session.execute(text("COMMIT"))
 
-            session.execute("VACUUM")
+            session.execute(text("VACUUM"))
 
         logger.info("VACUUM executed.")
 
@@ -221,9 +228,12 @@ def pandas_query(
     if use_tqdm:
         if tqdm_total is None:
             # If hint on total not available, query the database for it
-            tqdm_total = session.execute(f"SELECT COUNT(*) FROM ({query}) t").first()[0]  # noqa
+            tqdm_total = session.execute(text(f"SELECT COUNT(*) FROM ({query}) t")).first()[0]  # noqa
 
-        df_chunks = pd.read_sql_query(query, session.bind, chunksize=options.get("db.query_read_chunk_size"))
+        # With SQLALchemy 2.0, we need to pass session.connection() instead of session.bind .
+        df_chunks = pd.read_sql_query(
+            sql=query, con=session.connection(), chunksize=options.get("db.query_read_chunk_size")
+        )
         funcs = [partial(lambda df_chunk: (len(df_chunk), df_chunk), df_chunk) for df_chunk in df_chunks]
         dfs = tqdm_chunk(funcs, tqdm_total)
 

@@ -3,7 +3,6 @@ import sys
 from types import ModuleType
 from typing import Callable, Dict
 
-import pkg_resources
 from IPython.core.getipython import get_ipython
 
 catch_exceptions = (FileNotFoundError, AttributeError)
@@ -53,15 +52,6 @@ def is_notebook() -> bool:
     ]
 
 
-def get_version_packages() -> Dict:
-    """Return the version of the installed packages. E.g., {"colorama": "1.2.3", ....}
-
-    Returns:
-        dict: Dict of installed package versions
-    """
-    return {pkg.key: pkg.version for pkg in pkg_resources.working_set}
-
-
 def try_callable(func: Callable) -> str:
     """Try to call the function. If it fails, return an empty string.
 
@@ -109,7 +99,6 @@ def get_environment() -> Dict:
         Dict: An overview of the Python environment.
     """
     return {
-        "pkgs_version": try_callable(get_version_packages),
         "platform": {
             "machine": try_module(platform, "machine"),
             "mac_ver": try_module(platform, "mac_ver"),
