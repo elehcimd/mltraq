@@ -6,7 +6,7 @@ The code examples are standalone, they don't require additional code to reproduc
 
 ## Installation
 
-MLTRAQ requires **Python 3.8+** and depends on **SQLAlchemy**, **Pandas**, and **Joblib**, which are installed as dependencies.
+MLTRAQ requires **Python 3.10+** and depends on **SQLAlchemy**, **Pandas**, and **Joblib**, which are installed as dependencies.
 
 ```
 pip install mltraq
