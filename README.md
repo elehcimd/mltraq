@@ -1,5 +1,5 @@
 <p align="center">
-<img width="33%" height="33%" src="https://mltraq.com/assets/img/logo-black.svg" alt="MLTRAQ Logo">
+<img width="33%" height="33%" src="https://mltraq.com/assets/img/logo-black.svg" alt="MLtraq Logo">
 </p>
 
 <p align="center">

@@ -1,6 +1,6 @@
 # Managed experiments
 
-MLTRAQ can handle for you the execution flow of experiments, offering
+MLtraq can handle for you the execution flow of experiments, offering
 an higher degree of automation and increased reproducibility:
 
 1. **Definition of execution pipelines**: organize your code into execution steps, enabling code reuse and better documentation;

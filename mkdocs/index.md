@@ -1,6 +1,6 @@
 <p align="center">
-  <img height="30%" width="30%" src="assets/img/logo-black.svg#only-light" alt="MLTRAQ">
-  <img height="30%" width="30%" src="assets/img/logo-white.svg#only-dark" alt="MLTRAQ">
+  <img height="30%" width="30%" src="assets/img/logo-black.svg#only-light" alt="MLtraq">
+  <img height="30%" width="30%" src="assets/img/logo-white.svg#only-dark" alt="MLtraq">
 </p>
 
 <p align="center">
@@ -63,13 +63,13 @@ in parallel, tracking and reporting performance results averaged on ten repeated
 
 {{include_code("mkdocs/examples/002.py", title="Fully managed execution")}}
 
-MLTRAQ makes it easy and intuitive to define, run, execute, and query experiments,
+MLtraq makes it easy and intuitive to define, run, execute, and query experiments,
 so that you can spend more time on what truly matters.
 
 
 !!! Info 
     Continue to the hands-on [tutorial](./tutorial/index.md) to learn how to leverage
-    at best the capabilities of MLTRAQ for your ML projects.
+    at best the capabilities of MLtraq for your ML projects.
 
 ## License
 

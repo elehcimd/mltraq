@@ -51,7 +51,7 @@ def init_logging():
         # duplicate log entries to stdout.
         logging.getLogger().handlers.clear()
 
-    # Get logger for MLTRAQ and clear the handlers.
+    # Get logger for MLtraq and clear the handlers.
     logger = logging.getLogger("mltraq")
     logger.handlers.clear()
     logger.setLevel(getattr(logging, options.get("logging.level")))

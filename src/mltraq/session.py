@@ -12,13 +12,13 @@ from mltraq.version import __version__
 
 
 class Session:
-    """Instantiate the MLTRAQ handler, it can then be sued
+    """Instantiate the MLtraq handler, it can then be sued
     to create, query, manage experiments. You can instantiate one or more,
     they do work together nicely without interfering.
     """
 
     def __init__(self, url: str = None, ask_password=False):
-        """Create a new MLTRAQ handler.
+        """Create a new MLtraq handler.
 
         Args:
             url (str, optional): Database URL. Defaults to db.default_url.
@@ -30,13 +30,13 @@ class Session:
 
         init_logging()
         self.db = Database(url, ask_password=ask_password)
-        logger.info(f"MLTRAQ v{__version__} ({options.get('doc.url')}) initialized")
+        logger.info(f"MLtraq v{__version__} ({options.get('doc.url')}) initialized")
 
     def _repr_html_(self):
         experiment_names = self.ls()["name"].tolist()
 
         return (
-            f"MLTRAQ(db={stringify(self.db.url.render_as_string(hide_password=True))},"
+            f"MLtraq(db={stringify(self.db.url.render_as_string(hide_password=True))},"
             f" experiments({len(experiment_names)})={stringify(experiment_names)})"
         )
 
@@ -121,8 +121,8 @@ class Session:
         return self.db.pandas(query.format(ee=options.get("db.experiments_tablename")))
 
     def version(self):
-        """Log MLTRAQ version"""
-        logger.info(f"MLTRAQ v{__version__}")
+        """Log MLtraq version"""
+        logger.info(f"MLtraq v{__version__}")
 
 
 def experiment(url: str = None, ask_password=False) -> Experiment:

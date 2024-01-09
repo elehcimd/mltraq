@@ -10,11 +10,11 @@ def test_log_enabled(caplog, capfd):
         with mltraq.options.option_context({"logging.stdout": True, "logging.clear_handlers_default_logger": False}):
             mltraq.create_session()
     assert caplog.records[0].name == "mltraq"
-    assert re.compile("^MLTRAQ .* initialized.*").match(caplog.records[0].msg)
+    assert re.compile("^MLtraq .* initialized.*").match(caplog.records[0].msg)
 
     out, err = capfd.readouterr()
 
-    assert re.compile(".*MLTRAQ .* initialized.*").match(out)
+    assert re.compile(".*MLtraq .* initialized.*").match(out)
     assert err == ""
 
 
@@ -23,7 +23,7 @@ def test_log_disabled(caplog, capfd):
         with mltraq.options.option_context({"logging.stdout": False, "logging.clear_handlers_default_logger": False}):
             mltraq.create_session()
 
-    assert re.compile("^MLTRAQ .* initialized.*").match(caplog.records[0].msg)
+    assert re.compile("^MLtraq .* initialized.*").match(caplog.records[0].msg)
 
     out, err = capfd.readouterr()
 

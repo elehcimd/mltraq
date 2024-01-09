@@ -8,7 +8,7 @@ def test_session():
 
 def test_session_html_repr():
     s = mltraq.create_session()
-    assert s._repr_html_().startswith('MLTRAQ(db="sqlite:///:memory:"')
+    assert s._repr_html_().startswith('MLtraq(db="sqlite:///:memory:"')
 
 
 def test_copy_experiment():
