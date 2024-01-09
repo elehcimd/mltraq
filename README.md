@@ -34,7 +34,7 @@ Open source **experiment tracking API** with **ML performance analysis** to buil
 
 ## Requirements
 
-* **Python >=3.8**
+* **Python >=3.10**
 * **SQLAlchemy**, **Pandas**, and **Joblib** (installed as dependencies)
 
 ## Installation
