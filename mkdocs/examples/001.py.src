@@ -2,7 +2,7 @@ import mltraq
 
 # Connect to a MLTRAQ session and create an experiment.
 session = mltraq.create_session("sqlite:///:memory:")
-experiment = session.add_experiment("honey")
+experiment = session.add_experiment("hello")
 
 # Instantiate a new run and track metrics.
 run = experiment.runs.next()
@@ -14,4 +14,4 @@ with experiment.run() as run:
 
 # Persist experiment to database and query it with SQL.
 experiment.persist()
-print(session.query("SELECT id_run, accuracy FROM e_honey"))
+print(session.query("SELECT id_run, accuracy FROM e_hello"))

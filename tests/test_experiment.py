@@ -267,7 +267,7 @@ def test_experiment_run_explicit():
 def test_experiment_basic():
     # Connect to a MLTRAQ session and create an experiment.
     session = mltraq.create_session()
-    experiment = session.add_experiment("honey")
+    experiment = session.add_experiment("test")
 
     # Instantiate a new run and track metrics.
     run = experiment.runs.next()
@@ -279,7 +279,7 @@ def test_experiment_basic():
 
     # Persist experiment to database and query it with SQL.
     experiment.persist()
-    assert session.query("SELECT accuracy FROM e_honey").accuracy.tolist() == [0.87, 0.95]
+    assert session.query("SELECT accuracy FROM e_test").accuracy.tolist() == [0.87, 0.95]
 
 
 def test_experiment_exception():
