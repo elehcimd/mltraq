@@ -187,7 +187,7 @@ def default_exception_handler(func: Callable) -> Callable:
             try:
                 return func(*args, **kwargs)
             except (KeyboardInterrupt, TypeError, Exception) as e:
-                if type(e) == KeyboardInterrupt:
+                if isinstance(e, KeyboardInterrupt):
                     return fatal("Keyboard interrupt.")
                 else:
                     return fatal(f"{compact_exception_message(e)}.")

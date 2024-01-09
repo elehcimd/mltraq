@@ -15,8 +15,7 @@ uuid_type = UUIDType(binary=False)
 class Experiment(Base):
     """Model representing the index record of an experiment in the database."""
 
-    # TODO here, __tablename__ is set once and never changed again, regardless of the
-    # possibly changed value in options.
+    # TODO: use a class property to eval the value of the option.
     __tablename__ = options.get("db.experiments_tablename")
     id_experiment = Column(uuid_type, primary_key=True, default=None)
     name = Column(String, nullable=False, unique=True)
