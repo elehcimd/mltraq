@@ -4,4 +4,4 @@ By joining the **Insiders program**, you'll get immediate access to the latest f
 
 ## How to join the Insiders program
 
-Please send a short email to [mltraq-sponsors@sigforge.com](mailto:mltraq-sponsors@sigforge.com), Thank You.
+Please send a short email to [michele.dallachiesa@sigforge.com](mailto:michele.dallachiesa@sigforge.com), Thank You.
