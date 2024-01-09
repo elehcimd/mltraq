@@ -3,12 +3,12 @@
 MLTRAQ stores experiments in plain SQL tables in two types of tables:
 
 * Table `experiments`: Fixed name and schema, each row represents an experiment, it stores the serialized value of dictionary `experiment.fields` in the `fields` column;
-* Table `e_name`: It represents the tracking data for runs of expriment `name`, each row represents a distinct run. It stores the `run.fields` values as a set of columns whose names are its dictionary keys, making it easily accessible from SQL.
+* Table `e_name`: It represents the tracking data for runs of expriment named `name`, each row represents a distinct run. It stores the `run.fields` values as a set of columns whose names are its dictionary keys, making it easily accessible from SQL.
 
 !!! Important
     The serialization of `experiment.fields` and `run.fields` supports a wide range of object types: `dict`, `list`, `tuple`, `string`, `int`, `float`, `bool`, `pandas.Series`, `pandas.DataFrame`, `numpy.ndarray`, and `datetime64[ns]`. 
     This is a powerful feature that enables a series of very important use cases, such as the
-    decoupling of the generation of ML predictions from their evaluation.
+    decoupling of the generation of ML predictions from their evaluation in separate pipelines.
 
 In the next example, we demonstrate the decoupling of simulations from their evaluation: step `toss_coins` is executed once and the outcomes are persisted to database. The evaluation of the error metric is then
 executed on a copy of the experiment loaded from the database in the `metrics` step.
