@@ -47,7 +47,7 @@ def main():
     stats["pypi"] = pkg_version  # get_pkg_version_latest_pypi()
     stats["license"] = "BSD-3"
     stats["code-style"] = "black"
-    stats["python"] = ">=3.8"
+    stats["python"] = ">=3.10"
 
     coverage_thresholds = {0.6: "red", 0.7: "orange", 0.9: "yellow", 1: "green"}
 
