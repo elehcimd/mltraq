@@ -1,4 +1,5 @@
 import getpass
+import logging
 import re
 import uuid
 from functools import partial
@@ -15,8 +16,9 @@ from ulid import monotonic as ulid
 from mltraq.options import options
 from mltraq.storage.models import Base
 from mltraq.utils.enums import IfExists
-from mltraq.utils.log import logger
 from mltraq.utils.progress import progress
+
+log = logging.getLogger(__name__)
 
 
 class Database:
@@ -75,7 +77,7 @@ class Database:
 
     def info(self):
         """Log some stats about the database."""
-        logger.info(f"Database: {self.url.render_as_string(hide_password=True)}")
+        log.info(f"Database: {self.url.render_as_string(hide_password=True)}")
 
     def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: dict = None):
         """Insert a Pandas dataframe as a new database table.
@@ -141,7 +143,7 @@ class Database:
 
             session.execute(text("VACUUM"))
 
-        logger.info("VACUUM executed.")
+        log.info("VACUUM executed.")
 
     def pandas(
         self,
@@ -223,7 +225,7 @@ def pandas_query(
     elif isinstance(query, str):
         query = sql.expression.text(query)
 
-    logger.debug(f"SQL: {query.compile(session.bind)}")
+    log.debug(f"SQL: {query.compile(session.bind)}")
 
     if use_tqdm:
         if tqdm_total is None:

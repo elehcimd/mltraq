@@ -1,3 +1,4 @@
+import logging
 import time
 from asyncio.exceptions import CancelledError
 from datetime import datetime
@@ -9,7 +10,8 @@ from IPython.display import clear_output, display
 from mltraq.options import options
 from mltraq.run import Run
 from mltraq.storage import serialization
-from mltraq.utils.log import default_exception_handler, init_logging, logger
+
+log = logging.getLogger(__name__)
 
 
 def log_event(msg: Union[Dict, str]):
@@ -42,7 +44,6 @@ def dask_logger(run: Run, insert_delay: float = 0) -> Run:
     return run
 
 
-@default_exception_handler
 def monitor_latest_event(client_address: str = None):
     """Utility function to report the latest tracked Run event, useful to start
     debugging execution issues. The function returns after a keyboard interrupt
@@ -57,8 +58,6 @@ def monitor_latest_event(client_address: str = None):
     if client_address is None:
         client_address = options.get("dask.scheduler_address")
 
-    init_logging()
-
     def display_progress(events):
         clear_output(wait=True)
         print(f"Time: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} Count events: {len(events)}\n")  # noqa
@@ -69,7 +68,6 @@ def monitor_latest_event(client_address: str = None):
     monitor_events(display_progress, client_address=client_address)
 
 
-@default_exception_handler
 def monitor_events(func: Callable, client_address: str = None):
     """Utility function to execute a callable, passing a Pandas dataframe as argument, representing
     all the tracked events. It can be used to implement custom tracking monitors.
@@ -90,4 +88,4 @@ def monitor_events(func: Callable, client_address: str = None):
                 func(events)
                 time.sleep(1)
     except (CancelledError, OSError):
-        logger.error("Connection failed or cluster terminated")
+        log.error("Connection failed or cluster terminated")

@@ -30,7 +30,6 @@ def main():
     execute("poetry run python utils/build_badges.py")
     execute("poetry build")
 
-    # execute("ls -la dist/")
     print(f"Package {project_name} v{pkg_version} ready!")
     print('To publish:\n 1. $ poetry "-u$PYPI_USERNAME" "-p$PYPI_PASSWORD" --build publish\n 2. update repository')
 

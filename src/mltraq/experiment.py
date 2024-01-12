@@ -1,4 +1,5 @@
 import copy
+import logging
 from contextlib import contextmanager
 from typing import Callable, List, Union
 
@@ -10,12 +11,12 @@ from mltraq.options import options
 from mltraq.run import Run, Runs, get_params_list
 from mltraq.storage import models, serialization
 from mltraq.storage.database import Database, next_ulid, pandas_query, sanitize_table_name
-from mltraq.utils import log
 from mltraq.utils.dicts import ObjectDictionary
 from mltraq.utils.enums import IfExists, enforce_enum
 from mltraq.utils.frames import json_normalize, reorder_columns
-from mltraq.utils.log import logger
 from mltraq.utils.uuid import uuid3words
+
+log = logging.getLogger(__name__)
 
 
 class PickleNotFoundException(Exception):
@@ -91,14 +92,8 @@ class Experiment:
         self.fields = ObjectDictionary(fields)
         self.runs = Runs(runs)
 
-        # if param_grid is not None:
-        #    self.runs.add_grid(param_grid, kwargs=kwargs, steps=steps)
-
         # Populate properties
         self.properties = ObjectDictionary(properties)
-        # if "env" not in self.properties:
-        # If the experiment is loaded, then "env" is already populated and we retain it.
-        # self.properties["env"] = get_environment()
 
     def __reduce__(self):
         """
@@ -173,7 +168,6 @@ class Experiment:
 
         return sanitize_table_name(f"{options.get('db.experiment_tableprefix')}{self.name}")
 
-    @log.default_exception_handler
     def query(self, query: str = "SELECT * FROM {table_name}") -> pd.DataFrame:
         """Query the experiment's table
 
@@ -207,7 +201,7 @@ class Experiment:
         Returns:
             _type_: _description_
         """
-        logger.info("Loading runs")
+        log.info("Loading runs")
         # Retrieve all columns
         df = self.query(f"select * from {self.tablename()}")  # noqa
 
@@ -258,7 +252,7 @@ class Experiment:
         Returns:
             _type_: _description_
         """
-        logger.info(f"Loading experiment '{name}' (pickle)")
+        log.info(f"Loading experiment '{name}' (pickle)")
 
         with db.session() as session:
             record = (
@@ -304,7 +298,7 @@ class Experiment:
         if pickle:
             return cls.load_pickle(db, name)
 
-        logger.info(f"Loading experiment '{name}'")
+        log.info(f"Loading experiment '{name}'")
 
         # Create a new session
         columns = [
@@ -337,7 +331,6 @@ class Experiment:
 
             return experiment
 
-    @log.default_exception_handler
     def execute(
         self,
         steps: Union[Callable, List[Callable]] = None,
@@ -422,7 +415,6 @@ class Experiment:
             "table_name": self.tablename(),
         })
 
-    @log.default_exception_handler
     def persist(
         self,
         if_exists: IfExists = IfExists["fail"],
@@ -447,7 +439,7 @@ class Experiment:
         if enable_compression is None:
             enable_compression = options.get("serialization.enable_compression")
 
-        logger.info(f"Persisting experiment (table name: {self.tablename()})")
+        log.info(f"Persisting experiment (table name: {self.tablename()})")
 
         if_exists = enforce_enum(if_exists, IfExists)
 
@@ -486,7 +478,6 @@ class Experiment:
 
         return self
 
-    @log.default_exception_handler
     def delete(self, if_exists: IfExists = IfExists["fail"]) -> None:
         """Delete the expeirment.
 

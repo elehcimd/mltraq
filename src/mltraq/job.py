@@ -1,8 +1,13 @@
+import logging
 import multiprocessing
+from typing import Callable, List
 
 import joblib
 
-from mltraq.utils.log import logger
+from mltraq.utils.progress import progress
+
+log = logging.getLogger(__name__)
+
 
 try:
     # We expect this import to work if we want to use Dask.
@@ -10,10 +15,6 @@ try:
     from distributed import get_client
 except ImportError:
     pass
-
-from typing import Callable, List
-
-from mltraq.utils.progress import progress
 
 
 class ProgressParallel(joblib.Parallel):
@@ -102,9 +103,9 @@ class Job:
 
         if self.backend == "dask":
             client = get_client()
-            logger.info(f"Using backend: {self.backend}")
-            logger.info(f"Dashboard: {client.dashboard_link}")
-            logger.info(f"Scheduler: {client.scheduler.address}")
+            log.info(f"Using backend: {self.backend}")
+            log.info(f"Dashboard: {client.dashboard_link}")
+            log.info(f"Scheduler: {client.scheduler.address}")
             if self.n_jobs == -1:
                 n_jobs = len(client.scheduler_info()["workers"])
         elif self.backend == joblib.parallel.DEFAULT_BACKEND:
@@ -112,7 +113,7 @@ class Job:
                 n_jobs = multiprocessing.cpu_count()
 
         with joblib.parallel_backend(self.backend):
-            logger.info(f"Executing {len(self.tasks)} tasks on {n_jobs} workers (backend:{self.backend})")
+            log.info(f"Executing {len(self.tasks)} tasks on {n_jobs} workers (backend:{self.backend})")
 
             executed_tasks = parallel(self.tasks, n_jobs=n_jobs)
 

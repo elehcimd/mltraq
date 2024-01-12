@@ -1,4 +1,5 @@
 import copy
+import logging
 
 import pandas as pd
 
@@ -6,9 +7,10 @@ from mltraq.experiment import Experiment
 from mltraq.options import options
 from mltraq.storage.database import Database
 from mltraq.utils.enums import IfExists, enforce_enum
-from mltraq.utils.log import default_exception_handler, init_logging, logger
 from mltraq.utils.text import stringify
 from mltraq.version import __version__
+
+log = logging.getLogger(__name__)
 
 
 class Session:
@@ -28,9 +30,8 @@ class Session:
         if url is None:
             url = options.get("db.url")
 
-        init_logging()
         self.db = Database(url, ask_password=ask_password)
-        logger.info(f"MLtraq v{__version__} ({options.get('doc.url')}) initialized")
+        log.info(f"MLtraq v{__version__} ({options.get('doc.url')}) initialized")
 
     def _repr_html_(self):
         experiment_names = self.ls()["name"].tolist()
@@ -40,7 +41,6 @@ class Session:
             f" experiments({len(experiment_names)})={stringify(experiment_names)})"
         )
 
-    @default_exception_handler
     def add_experiment(self, name: str = None, **fields) -> Experiment:
         """Define a new experiment.
 
@@ -62,7 +62,6 @@ class Session:
             fields=fields,
         )
 
-    @default_exception_handler
     def ls(self, include_properties=False) -> pd.DataFrame:
         """List the tracked experiments.
 
@@ -71,7 +70,6 @@ class Session:
         """
         return Experiment.ls(self.db, include_properties=include_properties)
 
-    @default_exception_handler
     def load(self, name: str = None, pickle=False) -> Experiment:
         """Load an experiment from the database and return it.
 
@@ -83,7 +81,6 @@ class Session:
         """
         return Experiment.load(self.db, name, pickle=pickle)
 
-    @default_exception_handler
     def persist(self, experiment: Experiment, if_exists: IfExists = "fail") -> Experiment:
         """Persist the experiment to the database (not necessarily
         the one used to track it initially).
@@ -122,7 +119,7 @@ class Session:
 
     def version(self):
         """Log MLtraq version"""
-        logger.info(f"MLtraq v{__version__}")
+        log.info(f"MLtraq v{__version__}")
 
 
 def experiment(url: str = None, ask_password=False) -> Experiment:

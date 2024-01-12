@@ -40,7 +40,7 @@ default_options = {
         "scheduler_port": 8786,
         "client_timeout": "5s",
     },
-    "doc": {"url": "https://mltraq.com"},
+    "doc": {"url": "https://www.mltraq.com"},
 }
 
 

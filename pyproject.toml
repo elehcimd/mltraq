@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.100"
+version = "0.0.101"
 description = "Open source experiment tracking API with ML performance analysis."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -18,7 +18,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.10.0"
-pandas = "^1.4.4,<2.0"
+pandas = ">=1.5.3"
 joblib = ">=1.1.1"
 sqlalchemy = ">=2.0.0" 
 sqlalchemy-utils = ">=0.38.3"
@@ -67,7 +67,7 @@ preview = true
 
 [tool.ruff]
 line-length = 120
-select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C"] # ANN FBT
+select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
 target-version = "py37"
 ignore = ["A003", "S101", "T201"]
 
