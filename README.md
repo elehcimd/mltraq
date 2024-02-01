@@ -14,7 +14,8 @@
 ---
 
 <h1 align="center">
-Design ML Experiments<br>as State Monads with Persistence
+Design ML Experiments as<br>
+State Monads with Persistence
 </h1>
 
 MLtraq is an open-source ML framework for Python that adopts the **state monads** design pattern to model experiments. An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`. It incorporates **database persistence** for state recovery and full interoperability using open standards such as Pandas, Arrow and SQL.
