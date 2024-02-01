@@ -1,4 +1,4 @@
 #!/bin/sh
 
-pip install mkdocs mkdocs-material mkdocs-macros-plugin pymdown-extensions mdx_include mkdocstrings
+pip install mkdocs mkdocs-material mkdocs-macros-plugin pymdown-extensions mdx_include mkdocstrings mltraq
 mkdocs build
