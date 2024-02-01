@@ -30,6 +30,8 @@ Manage ML Experiments with Persistence
 MLtraq is an open-source ML framework for Python to manage experiments.
 With database persistence for state recovery and collaboration. Using open standards, no vendor lock-in.
 
+---
+
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
 

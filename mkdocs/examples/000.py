@@ -11,4 +11,4 @@ with experiment.run() as run:
 experiment.persist()
 
 # Query experiment with SQL.
-print(experiment.db.query("SELECT * FROM experiment_example"))
+print(experiment.db.query("SELECT * FROM experiment_example").iloc[0])
