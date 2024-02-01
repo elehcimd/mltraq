@@ -38,7 +38,7 @@ With database persistence for state recovery and collaboration. Using open stand
 
 * **Offers extreme interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles
 
-* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments in-memory or [using any SQL database](advanced/storage.md) with your team
+* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments in-memory or with your team [using any SQL database](advanced/storage.md)
 
 
 ## Key features
