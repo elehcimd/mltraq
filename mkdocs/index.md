@@ -24,14 +24,14 @@ hide:
 
 ---
 <h1 align="center">
-Design ML Experiments as<br>
-State Monads with Persistence
+Manage ML Experiments with Persistence
 </h1>
 
-MLtraq is an open-source ML framework for Python that adopts the **state monads** design pattern to model experiments. An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`. It incorporates **database persistence** for state recovery and full interoperability using open standards such as Pandas, Arrow and SQL.
+MLtraq is an open-source ML framework for Python to manage experiments.
+With database persistence for state recovery and collaboration. Using open standards, no vendor lock-in.
 
 !!! Success ""
-    **Funding**: You can support as a [sponsor](./sponsor.md), hiring [me](https://www.linkedin.com/in/dallachiesa/) for ML/AI projects, [citing](./cite.md) and [starring](https://github.com/elehcimd/mltraq). Thank You!
+    **Funding**: You can support as a [sponsor](./sponsor.md), hiring [me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work, [citing](./cite.md) and [starring](https://github.com/elehcimd/mltraq) the project. Thank You!
 
 ## Motivations & benefits
 
@@ -47,7 +47,6 @@ MLtraq is an open-source ML framework for Python that adopts the **state monads*
 * **Collaborative**: Backup, merge, share and reload experiments with their computation state anywhere.
 * **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types － no vendor lock-in.
 * **Flexible**: Track native Python data types and structures, as well as Numpy, Pandas and PyArrow objects.
-* **Encourages good design**: State monads encourage composability, encapsulation, code reuse and clean interfaces.
 * **Lightweight**: Thin layer with minimal dependencies that can run anywhere and can complement other components/services.
 
 ## Limitations
@@ -55,7 +54,7 @@ MLtraq is an open-source ML framework for Python that adopts the **state monads*
 * **Not designed for MLOps**: The aim of ML experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
 * **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle` (the serializer used by Joblib).
 You should not expect a fully fledged orchestrator of ML pipelines, which is out of scope.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports a wide range of types, including: `boo`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and Arrow objects.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports a wide range of types, including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and Arrow objects.
 
 ## Requirements
 
