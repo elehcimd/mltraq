@@ -1,0 +1,16 @@
+Experiment:
+Experiment(name="kc91w9", runs.count=50, id="84c4d2f0-4fbc-4677-d852-1fa008591ced")
+
+--
+A random run:
+{'model_name': 'KMeans', 'accuracy': 0.2}
+
+--
+Leaderboard:
+                        accuracy
+model_name                      
+LogisticRegression         0.960
+RandomForestClassifier     0.952
+DecisionTreeClassifier     0.938
+KMeans                     0.336
+DummyClassifier            0.288

@@ -1,17 +1,37 @@
-import mltraq
+from mltraq import create_experiment
 
-# Connect to the MLtraq session and create an experiment.
-session = mltraq.create_session("sqlite:///:memory:")
-experiment = session.add_experiment("hello")
 
-# Instantiate a new run and track metrics.
-run = experiment.runs.next()
-run["accuracy"] = 0.87
+def f1(run):
+    """
+    Store inputs as fields and compute AB
+    """
+    run.fields.A = run.params.A
+    run.fields.B = run.params.B
+    run.fields.C = run.config.C
+    run.fields.AB = run.fields.A + run.fields.B
 
-# Instantiate a new run using the context manager for cleaner code.
-with experiment.run() as run:
-    run["accuracy"] = 0.95
 
-# Persist experiment to database and query it with SQL.
-experiment.persist()
-print(session.query("SELECT id_run, accuracy FROM e_hello"))
+def f2(run):
+    """
+    Compute ABC
+    """
+    run.fields.ABC = run.fields.AB + run.fields.C
+
+
+def f3(run):
+    """
+    Compute ABCD
+    """
+    run.fields.ABCD = run.fields.ABC + run.config.D
+
+
+print(
+    create_experiment("example")
+    .add_runs(A=[1, 2], B=[3, 4])  # Parameters grid
+    .execute([f1, f2], config={"C": 5})  # Execute steps
+    .persist()  # Persistence to database
+    .reload()  # Reload experiment from database
+    .execute(f3, config={"D": 6})  # Continue execution
+    .persist(if_exists="replace")  # Persist to database
+    .db.query("SELECT * FROM experiment_example")  # SQL query
+)

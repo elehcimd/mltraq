@@ -1,0 +1,23 @@
+List of Experiment state attributes:
+('id_experiment', 'name', 'fields', 'runs', 'db')
+
+List of Experiment pickled attributes:
+('id_experiment', 'name', 'fields', 'runs')
+
+List of Run state attributes:
+('id_run',
+ 'config',
+ 'params',
+ 'fields',
+ 'state',
+ 'exception',
+ 'vars',
+ 'steps')
+
+List of Run pickled attributes:
+('id_run',
+ 'config',
+ 'params',
+ 'fields',
+ 'state',
+ 'exception')

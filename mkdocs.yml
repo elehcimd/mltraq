@@ -5,8 +5,15 @@ docs_dir: mkdocs/
 site_dir: dist/docs
 theme: # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
   features:
+    - navigation.tracking
     - navigation.expand
+    #- navigation.top
+    #- toc.integrate
+    #- navigation.path
+    #- navigation.sections
+    - content.code.copy
     - search.highlight
+
   logo: assets/img/favicon-white.svg
   favicon: assets/img/favicon-black.svg
   name: material
@@ -38,6 +45,7 @@ markdown_extensions:
 - admonition # Render call-outs like WARNING: , ... https://squidfunk.github.io/mkdocs-material/reference/admonitions/
 - mdx_include # Let .md files include lines from .py files
 - extra # The "extra" extension, handling tables, footnotes, definitions, ...: https://python-markdown.github.io/extensions/extra/
+- pymdownx.details
 - pymdownx.superfences: # Adding support for Mermaid.js diagrams: https://squidfunk.github.io/mkdocs-material/reference/diagrams/#usage
     custom_fences:
     - name: mermaid
@@ -54,18 +62,27 @@ markdown_extensions:
 # Documentation on code blocks: https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
 - pymdownx.tasklist:
     custom_checkbox: true
-
+      
 nav:
   - index.md
   - Tutorial - User Guide:
     - tutorial/index.md
-    - tutorial/create-session.md
-    - tutorial/basic-tracking.md
-    - tutorial/add-experiment.md
-    - tutorial/managed-experiments.md
-    - tutorial/reloading-experiments.md
+    - tutorial/01-sessions.md
+    - tutorial/02-experiments.md
+    - tutorial/03-parameters.md
+    - tutorial/04-storage.md
+    - tutorial/05-ml.md
+  - HOWTO:
+    - howto/01-tracking.md
+  - Advanced topics:
+    - advanced/computation-model.md
+    - advanced/state.md
+    - advanced/storage.md
+    - advanced/options.md
+    - advanced/handover.md
   - Become a sponsor ❤️: sponsor.md
   - License: license.md
+  - Citing: cite.md
   
 plugins:
     - search # If you are creating the plugins entry in your config file, you should also insert a line for the search plugin.
@@ -73,6 +90,7 @@ plugins:
         module_name: mkdocs/mymacros
         #on_error_fail: true
     - mkdocstrings
+
 
 extra_css:
 - assets/css/custom.css
@@ -82,13 +100,10 @@ extra_javascript:
 - assets/js/custom.js
 - https://s.pageclip.co/v1/pageclip.js
 
-copyright: Copyright © 2022 - 2023 Michele Dallachiesa
+copyright: Copyright © 2022 - 2024 Michele Dallachiesa
 
 
 extra:
-  analytics:
-    provider: google
-    property: UA-133183413-1
   social:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/elehcimd/mltraq

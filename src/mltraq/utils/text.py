@@ -1,23 +1,28 @@
 import json
 from collections.abc import KeysView
-from textwrap import wrap
+from uuid import UUID
 
 
-def stringify(d: object, max_len=200):
-    """Convert string to object, capping its approximate length
+class UUIDEncoder(json.JSONEncoder):
+    """
+    Extension of JSONEncoder to support UUIDs.
+    """
 
-    Args:
-        d (object): Object to stringify
-        max_len (int, optional): Max length (approximate, we'll add
-            some dots that are not taken into account). Defaults to 200.
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
 
-    Returns:
-        _type_: String representation of the object.
+
+def stringify(d: object, max_len: int = 200) -> str:
+    """
+    Convert object `d` to JSON string, capping its approximate length to `max_len`.
+    Useful to report/log stats of objects without risking too long outputs.
     """
     if isinstance(d, KeysView):
         d = list(d)
 
-    s = json.dumps(d)
+    s = json.dumps(d, cls=UUIDEncoder)
     if len(s) > max_len:
         if isinstance(d, list):
             s = s[:max_len] + " ...]"
@@ -26,23 +31,3 @@ def stringify(d: object, max_len=200):
         else:
             s = s[:max_len] + " ..."
     return s
-
-
-def wprint(text):
-    """print string, wrapping it.
-
-    Args:
-        text (_type_): string to wrap and print.
-
-    Returns:
-        _type_: stats about the wrapped string.
-    """
-    lstats = []
-    for idx, wrapped_text in enumerate(wrap(text)):
-        lstats.append(len(wrapped_text))
-        if idx == 0:
-            print(wrapped_text)
-        else:
-            print(f"  {wrapped_text}")
-
-    return lstats

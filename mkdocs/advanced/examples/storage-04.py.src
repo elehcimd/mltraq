@@ -1,0 +1,50 @@
+import pickle
+import zlib
+from io import BytesIO
+from pprint import pprint
+
+import numpy as np
+from mltraq import create_experiment, options
+
+experiment = create_experiment("example")
+
+with experiment.run() as run:
+    run.fields.result = np.linspace(0, 100, num=20)
+
+# Set explicitly the compression codec used.
+with options.ctx({"serialization.compression.codec": "zlib"}):
+    experiment.persist()
+
+serialized = experiment.db.query("SELECT result from experiment_example")[
+    "result"
+].iloc[0]
+
+print("Serialized:")
+pprint(serialized, width=70)
+print("\n--")
+
+# Identify compression, if any
+print("Compression codec magic prefix:")
+pprint(serialized[:2], width=70)
+print("\n--")
+
+decompressed = zlib.decompress(serialized[2:])
+
+print("Decompressed:")
+pprint(decompressed, width=70)
+print("\n--")
+
+depickled = pickle.loads(decompressed)  # noqa
+
+print("Depickled:")
+pprint(depickled, width=70)
+print("\n--")
+
+memfile = BytesIO()
+memfile.write(depickled["value"])
+memfile.seek(0)
+array = np.load(memfile, allow_pickle=False)
+
+print("Numpy array:")
+pprint(array, width=70)
+print("\n--")

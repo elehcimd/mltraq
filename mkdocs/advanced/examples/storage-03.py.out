@@ -1,0 +1,2 @@
+{b'C0': <CompressionCodec.uncompressed: 'uncompressed'>,
+ b'C1': <CompressionCodec.zlib: 'zlib'>}

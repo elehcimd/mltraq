@@ -1,59 +1,51 @@
-import copy
+import logging
 
 import pandas as pd
 
 from mltraq.experiment import Experiment
-from mltraq.options import options
 from mltraq.storage.database import Database
 from mltraq.utils.enums import IfExists, enforce_enum
-from mltraq.utils.log import default_exception_handler, init_logging, logger
 from mltraq.utils.text import stringify
-from mltraq.version import __version__
+
+log = logging.getLogger(__name__)
 
 
 class Session:
-    """Instantiate the MLtraq handler, it can then be sued
-    to create, query, manage experiments. You can instantiate one or more,
-    they do work together nicely without interfering.
+    """
+    Instantiate a new session handler.
     """
 
-    def __init__(self, url: str = None, ask_password=False):
-        """Create a new MLtraq handler.
+    __slots__ = ("db",)
 
-        Args:
-            url (str, optional): Database URL. Defaults to db.default_url.
-            echo (bool, optional): Enable SQLAlchemy logging. Defaults to False.
+    def __init__(self, url: str | None = None, ask_password: bool | None = None):
+        """
+        Create a new session handler, with `url` as database URL and `ask_password`
+        triggering the interactive input of the password if True.
+        By default, an in-memory SQLite database is initialised.
         """
 
-        if url is None:
-            url = options.get("db.url")
-
-        init_logging()
         self.db = Database(url, ask_password=ask_password)
-        logger.info(f"MLtraq v{__version__} ({options.get('doc.url')}) initialized")
 
-    def _repr_html_(self):
+    def __str__(self) -> str:
+        """
+        Return a string with an overview of the available experiments in the linked database.
+        Experiments that are not persisted are not visible.
+        """
         experiment_names = self.ls()["name"].tolist()
 
         return (
-            f"MLtraq(db={stringify(self.db.url.render_as_string(hide_password=True))},"
+            f"Session(db={stringify(self.db.url.render_as_string(hide_password=True))},"
             f" experiments({len(experiment_names)})={stringify(experiment_names)})"
         )
 
-    @default_exception_handler
-    def add_experiment(self, name: str = None, **fields) -> Experiment:
-        """Define a new experiment.
+    def _repr_html_(self) -> str:
+        return self.__str__()
 
-        Args:
-            name (str, optional): Name of the experiment (must be unique). Defaults to None.
-            steps (Union[Callable, List[Callable]], optional): Function(s) we want to apply to
-            the input parameters. Defaults to None. kwargs (dict, optional): Fixed arguments to
-            the functions. Defaults to None. attributes (dict, optional): Fixed experiment properties
-            to be tracked. Defaults to None. parameter_grid (List, optional): Variable parameters
-            to pass to the functions. Defaults to None.
-
-        Returns:
-            Experiment: The newly defined experiment, reaady to be executed.
+    def create_experiment(self, name: str | None = None, **fields) -> Experiment:
+        """
+        Create a new experiment, binded to the database of this session:
+        - `name` is optional, a 6 alphanum hash of ID experiment is used if missing.
+        - `fields` is a dictionary loaded on `Experiment.fields`, with database persistence.
         """
 
         return Experiment(
@@ -62,75 +54,51 @@ class Session:
             fields=fields,
         )
 
-    @default_exception_handler
-    def ls(self, include_properties=False) -> pd.DataFrame:
-        """List the tracked experiments.
-
-        Returns:
-            pd.DataFrame: Pandas dataframe.
+    def ls(self) -> pd.DataFrame:
         """
-        return Experiment.ls(self.db, include_properties=include_properties)
-
-    @default_exception_handler
-    def load(self, name: str = None, pickle=False) -> Experiment:
-        """Load an experiment from the database and return it.
-
-        Args:
-            name (str, optional): The name of the experiment. Defaults to None.
-
-        Returns:
-            Experiment: The loaded experiment.
+        Returns a Pandas dataframe with the list of persisted experiments.
         """
-        return Experiment.load(self.db, name, pickle=pickle)
+        return Experiment.ls(self.db)
 
-    @default_exception_handler
-    def persist(self, experiment: Experiment, if_exists: IfExists = "fail") -> Experiment:
-        """Persist the experiment to the database (not necessarily
-        the one used to track it initially).
-
-        Args:
-            experiment (Experiment): Experiment object to be persisted.
-            if_exists (IfExists, optional): Either "replace" of "fail" in case
-            the experiment name is already present. Defaults to "fail".
-
-        Returns:
-            Experiment: The persisted experiment.
+    def load(self, name: str | None = None, unsafe_pickle: bool = False) -> Experiment:
+        """
+        Loads a persisted experiment by `name`. If `pickle` is True, it will
+        attempt to reload the pickled Experiment object from database.
+        Unpickling Experiment objects is unsafe, but powerful.
+        Whenever possible, prefer the safe persistence of experiment states.
         """
 
-        # Enforce if_exists value
+        return Experiment.load(self.db, name, unsafe_pickle=unsafe_pickle)
+
+    def persist(self, experiment: Experiment, name: str | None = None, if_exists: IfExists = "fail") -> Experiment:
+        """
+        Persist the experiment on the database linked by the session (as a copy), and return it.
+        The database considered is the one of the session, allowing us to copy experiments
+        between datasets. The new experiment will have a different UUID and its name will be retained.
+
+        If `name` is passed, it is used as name of the experiment to persist.
+
+        Parameter `if_exists` controls the behaviour in case of already existing experiment:
+        - If "fail", an exception will be triggered (default).
+        - If "replace", we experiment will be overwritten.
+        """
+
+        # Enforce if_exists value to be among valid ones.
         if_exists = enforce_enum(if_exists, IfExists)
 
-        # We make a copy of the experiment, and change the database reference.
-        # We can then use all its methods, including persist(...).
-        experiment = copy.deepcopy(experiment)
-        experiment.db = self.db
-        experiment.persist(if_exists=if_exists)
-        return experiment
+        # Make a copy of the experiment linked to the session database and persist it.
+        experiment_copy = experiment.copy_to(db=self.db, name=name)
+        experiment_copy.persist(if_exists=if_exists)
 
-    def query(self, query: str, verbose: bool = False) -> pd.DataFrame:
-        """Query the experiment's table
-
-        Args:
-            query (str): SQL query. "{ee}" occurrences are substituted with the experiments table name.
-            verbose (bool, optional): If true, print the resulting query. Defaults to False.
-
-        Returns:
-            pd.DataFrame: Result of the query.
-        """
-
-        return self.db.pandas(query.format(ee=options.get("db.experiments_tablename")))
-
-    def version(self):
-        """Log MLtraq version"""
-        logger.info(f"MLtraq v{__version__}")
+        # We return the newly created experiment, the copy.
+        return experiment_copy
 
 
-def experiment(url: str = None, ask_password=False) -> Experiment:
-    """It returns an experiment binded to a session, that references only the experiment itself.
-       This is a simplified session in case we want to work with just one single experiment.
-       It saves one line of code and it's more compact, so added value is rather low.
-
-    Returns:
-        Experiment: The newly created experiment
+def create_experiment(
+    name: str | None = None, url: str | None = None, ask_password: bool | None = None, **fields
+) -> Experiment:
     """
-    return Session(url=url, ask_password=ask_password).add_experiment()
+    Create a new experiment binded to a new session. Shortcut to create a single experiment.
+    """
+
+    return Session(url=url, ask_password=ask_password).create_experiment(name=name, **fields)

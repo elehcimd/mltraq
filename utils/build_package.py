@@ -3,12 +3,12 @@ import os
 from common import get_package_version, project_dir, project_name
 
 
-def execute(cmd):
+def execute(cmd: str):
     print(f"Executing: {cmd}")
     assert os.system(cmd) == 0  # noqa
 
 
-def inc_version():
+def inc_version() -> str:
     execute("poetry version patch")
 
     pkg_version = get_package_version(f"{project_dir}/pyproject.toml")
@@ -30,7 +30,6 @@ def main():
     execute("poetry run python utils/build_badges.py")
     execute("poetry build")
 
-    # execute("ls -la dist/")
     print(f"Package {project_name} v{pkg_version} ready!")
     print('To publish:\n 1. $ poetry "-u$PYPI_USERNAME" "-p$PYPI_PASSWORD" --build publish\n 2. update repository')
 

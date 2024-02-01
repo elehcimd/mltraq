@@ -1,5 +1,7 @@
 import getpass
+import logging
 import re
+import sys
 import uuid
 from functools import partial
 from typing import Callable, Iterator, List, Union
@@ -7,57 +9,57 @@ from typing import Callable, Iterator, List, Union
 import pandas as pd
 from sqlalchemy import MetaData, Table, create_engine, sql
 from sqlalchemy.engine import make_url
-from sqlalchemy.exc import NoSuchTableError
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Query, sessionmaker
+from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
-from ulid import monotonic as ulid
+from sqlalchemy.sql.elements import TextClause
+from sqlalchemy.sql.selectable import Select
+from tqdm.auto import tqdm
 
-from mltraq.options import options
+from mltraq.opts import options
 from mltraq.storage.models import Base
+from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists
-from mltraq.utils.log import logger
-from mltraq.utils.progress import progress
+from mltraq.utils.exceptions import InvalidInput
+
+QueryType = Union[Query, str, Select, TextClause]
+
+log = logging.getLogger(__name__)
+
+# Fixed incremental UUID seed, to be used only for generating
+# predictable UUIDs for examples and documentation.
+next_fake_uuid_int = 176480063973334418222224317881181085494
 
 
 class Database:
     """
     This class is the entry point for all things SQLAlchemy, and it represents the link
-    to the database for experiments and runs. It uses the SQAlchemy 1.4 API interface.
+    to the database for experiments. It uses the SQAlchemy 2.0 API interface.
     """
 
-    def __init__(self, url: str = None, lazy=False, ask_password=False):
-        """It creates a new database interface.
+    # Attributes to store and serialize.
+    __slots__ = ("params", "url", "session", "engine")
+    __state__ = ("params",)
 
-        Args:
-            url (str, optional): Database URL, passed to SQLAlchemy. Defaults to url.
-            lazy (bool, optional): If True, don't initialize the object (useful to handle serialization).
-                Defaults to False.
-            ask_password (bool, optional): If True, ask password interactively.
+    def __init__(self, url: str = None, ask_password: bool = None):
+        """
+        Initialize connection to a new database, with connection `url`,
+        asking interactively for a password if `ask_password` is True.
+
+        If `lazy` is True, do not initialize the connection to the database.
+        Useful to handle unpickling of Database objects.
         """
 
-        if url is None:
-            url = options.get("db.url")
+        # Save original parameters
+        self.params = Bunch(url=url, ask_password=ask_password)
 
-        if url.startswith("postgres://"):
-            # Re-introduce support for the deprecated and then dropped "postgres://",
-            # still used in URL connect strings from render.com.
-            url = url.replace("postgres://", "postgresql://")
-
-        if lazy:
-            # We activate this flag in the __reduce__, called upon pickling.
-            # This behaviour allows to use sqlite in memory, since only one sqlite instance
-            # gets created and reused for all experiments, runs, created or loaded via unpickling.
-            # Further, it let us not run into pickling errors, which do happen with SQLAlchemy objects.
-            return
-
-        self.url = make_url(url)
-        if ask_password:
-            self.url = self.url.set(password=getpass.getpass(prompt="Password: "))
+        self.init_url(url, ask_password)
 
         # Set up database connector, without establishing any connection yet
         # https://docs.sqlalchemy.org/en/13/core/pooling.html#disconnect-handling-pessimistic
         self.engine = create_engine(
-            self.url, echo=options.get("db.echo"), pool_pre_ping=options.get("db.pool_pre_ping")
+            self.url, echo=options.get("database.echo"), pool_pre_ping=options.get("database.pool_pre_ping")
         )
 
         # Session factory
@@ -66,25 +68,52 @@ class Database:
         # create tables if missing
         Base.metadata.create_all(self.engine)
 
-    def __reduce__(self):
+    def init_url(self, url: str, ask_password: bool):
         """
-        We return a tuple of class_name to call,
-        and optional parameters to pass when re-creating
+        Initialize the URL to the database, handling defaults,
+        special cases and interactive passwords.
         """
-        return self.__class__, (self.url)
+        url = options.default_if_null(url, "database.url")
+        ask_password = options.default_if_null(ask_password, "database.ask_password")
 
-    def info(self):
-        """Log some stats about the database."""
-        logger.info(f"Database: {self.url.render_as_string(hide_password=True)}")
+        if url.startswith("postgres://"):
+            # Re-introduce support for the deprecated and then dropped "postgres://" prefix
+            url = url.replace("postgres://", "postgresql://")
+
+        self.url = make_url(url)
+        if ask_password:
+            self.url = self.url.set(password=getpass.getpass(prompt="Password: "))
+
+    def __getstate__(self) -> dict:
+        """
+        Create state for pickling. Only attributes in `__state__` are considered.
+        """
+        state = {key: getattr(self, key) for key in self.__state__}
+        return state
+
+    def __setstate__(self, state):
+        """
+        Set state for unpickling.
+        """
+        for k, v in state.items():
+            self.__setattr__(k, v)
+        self.__init__(url=self.params.url, ask_password=self.params.ask_password)
+
+    def __str__(self) -> str:
+        return f'Database(db="{self.url.render_as_string(hide_password=True)}")'
+
+    def _repr_html_(self) -> str:
+        return self.__str__()
 
     def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: dict = None):
-        """Insert a Pandas dataframe as a new database table.
+        """
+        Insert a Pandas dataframe `df` as a new database table `name`.
+        If `if_exists` == "replace", it overwrite existing tables.
+        If `if_exists` == "fail", it will trigger an exception if the table exists.
+        `dtype` passes the types to consider, if any.
 
-        Args:
-            df (pd.DataFrame): Dataframe to insert.
-            name (str): Name of the database table to create.
-            if_exists (IfExists): Either "replace" or "fail".
-            dtype: Specify dtype for columns. Defaults to None.
+        Progress bar with tqdm.
+        Option "database.query_write_chunk_size" controls the number of rows to write per chunk.
         """
 
         with self.session() as session:
@@ -94,7 +123,7 @@ class Database:
                 # single call to df.to_sql(...).
                 df.to_sql(name, session.bind, if_exists=if_exists, index=False, dtype=dtype)
             else:
-                dfs = chunker(df, options.get("db.query_write_chunk_size"))
+                dfs = chunker(df, options.get("database.query_write_chunk_size"))
                 funcs = []
                 for idx, df_chunk in enumerate(dfs):
 
@@ -105,14 +134,11 @@ class Database:
                         return len(df_chunk), None
 
                     funcs.append(partial(process_chunk, df_chunk, idx))
+                tqdm_chunks(funcs, len(df))
 
-                tqdm_chunk(funcs, len(df))
-
-    def drop_table(self, name: str):
-        """Drop database table if it exists.
-
-        Args:
-            name (str): Name of the table to drop.
+    def drop_table(self, name: str) -> bool:
+        """
+        Drop table it it exists, returning True. Returns False otherwise.
         """
 
         with self.session() as session:
@@ -121,177 +147,233 @@ class Database:
             meta.reflect(bind=session.bind)
 
             try:
-                Table(name, meta).drop(bind=session.bind, checkfirst=True)
-            except NoSuchTableError:
-                pass
+                Table(name, meta).drop(bind=session.bind, checkfirst=False)
+            except OperationalError:
+                return 0
 
             session.commit()
+            return 1
 
-    def vacuum(self):
-        """Vacuum the database. This operation makes the database
-        more compact and performant.
+    def query_table(self, name: str) -> pd.DataFrame:
+        """
+        Read the complete table `name` from db
         """
         with self.session() as session:
-            if self.url.drivername not in ["sqlite"]:
-                # sqlite wants a transaction to VACUUM,
-                # postgresql doesn't. With a COMMIT,
+            meta = MetaData()
+            meta.reflect(bind=session.bind)
+            table = Table(name, meta)
+            return session.query(table)
+
+    def get_table_columns(self, name: str) -> List[str]:
+        """
+        Given a table `name`, return its SQLAlchemy columns.
+        """
+
+        with self.session() as session:
+            meta = MetaData()
+            meta.reflect(bind=session.bind)
+            return [str(s) for s in Table(name, meta).columns]
+
+    def vacuum(self):
+        """
+        Vacuum the database. This operation makes the database more compact and performant.
+        """
+        with self.session() as session:
+            if self.url.drivername != "sqlite":
+                # SQLite wants a transaction to VACUUM,
+                # Postgresql doesn't. With a COMMIT,
                 # we terminate the transaction, and
                 # we can then execute the VACUUM command.
                 session.execute(text("COMMIT"))
-
             session.execute(text("VACUUM"))
+        log.debug("VACUUM executed.")
 
-        logger.info("VACUUM executed.")
-
-    def pandas(
+    def query(
         self,
-        query: Union[str, Query, sql.expression.text],
-        use_tqdm=True,
+        query: QueryType,
         tqdm_total=None,
     ) -> pd.DataFrame:
-        """Query database and return result as Pandas dataframe.
-
-        Args:
-            query (Union[str, Query, sql.expression.text]): Query to execute.
-            verbose (bool, optional): If True, log the SQL query. Defaults to False.
-            use_tqdm (bool, optional): If True, use tqdm progress bar. Defaults to True.
-            tqdm_total (_type_, optional): Provide the expected number of rows retrieved.
-                If missing, we'll first count them, and then retrieve them, resulting in two
-                distinct queries. Defaults to None.
-
-        Returns:
-            pd.DataFrame: Resulting rows.
+        """
+        Query database with `query` (a string) and return result as a Pandas dataframe.
         """
 
         with self.session() as session:
             df = pandas_query(
                 query,
                 session,
-                use_tqdm=use_tqdm,
                 tqdm_total=tqdm_total,
             )
 
-            # handle UUID type conversions. If the DB handled natively UUID columns,
+            # We handle UUID type conversions. If the DB handled natively UUID columns,
             # SQLAlchemy is already handling it transparently. If it doesn't, we need
             # to detect it, and apply the conversion.
-            if len(df) > 0:
-                if "id_run" in df and not isinstance(df["id_run"].iloc[0], uuid.UUID):
-                    df["id_run"] = df["id_run"].apply(uuid.UUID)
-
-                if "id_experiment" in df and not isinstance(df["id_experiment"].iloc[0], uuid.UUID):
-                    df["id_experiment"] = df["id_experiment"].apply(uuid.UUID)
+            for col_name in ["id_run", "id_experiment"]:
+                if col_name in df and not isinstance(df[col_name].iloc[0], uuid.UUID):
+                    df[col_name] = df[col_name].apply(uuid.UUID)
 
             return df
 
+    def query_count(self, query) -> int:
+        return query_count(query, self.session)
+
 
 def sanitize_table_name(name: str) -> str:
-    """Sanitize the table name from the experiment name, allowing only lowercase alphanum characters.
-
-    Args:
-        name (str): name to sanitize (the experiment name)
-
-    Returns:
-        str: sanitized name.
+    """
+    Sanitize the table name from the experiment name, allowing only lowercase alphanum characters.
     """
     return re.sub("[^0-9a-zA-Z]+", "_", str(name)).strip("_").lower()
 
 
 def pandas_query(
-    query: Union[str, Query, sql.expression.text],
-    session,
-    use_tqdm=True,
+    query: QueryType,
+    session: Session,
     tqdm_total=None,
 ) -> pd.DataFrame:
-    """Evaluate an SQL query on the database and return the result
-    as a Pandas dataframe.
+    """
+    Evaluate an SQL query on the database `session`, returning the result as a
+    Pandas dataframe. If `tqdm_total` is passed, it will be used as hint
+    on the count of returned rows for the progress bar.
 
-    Args:
-        query (Union[str, Query, sql.expression.text]): Query to execute.
-        session: SQLAlchemy session to use.
-        use_tqdm (bool, optional): If True, use tqdm progress bar. Defaults to True.
-        tqdm_total (_type_, optional): Provide the expected number of rows retrieved.
-            If missing, we'll first count them, and then retrieve them, resulting in two
-            distinct queries. Defaults to None.
-
-    Returns:
-        pd.DataFrame: Resulting rows. The column types are guessed by Pandas.
+    Option "database.query_read_chunk_size" controls how many rows are read per chunk.
     """
 
-    # Normalise query to sql.expression.text
-    if isinstance(query, Query):
-        query = query.statement
-    elif isinstance(query, str):
-        query = sql.expression.text(query)
+    query = normalize_query(query)
 
-    logger.debug(f"SQL: {query.compile(session.bind)}")
+    log.debug(f"SQL: {query.compile(session.bind)}")
 
-    if use_tqdm:
-        if tqdm_total is None:
-            # If hint on total not available, query the database for it
-            tqdm_total = session.execute(text(f"SELECT COUNT(*) FROM ({query}) t")).first()[0]  # noqa
+    if options.get("tqdm.disable"):
+        return pd.read_sql_query(query, session.bind)
 
-        # With SQLALchemy 2.0, we need to pass session.connection() instead of session.bind .
-        df_chunks = pd.read_sql_query(
-            sql=query, con=session.connection(), chunksize=options.get("db.query_read_chunk_size")
-        )
-        funcs = [partial(lambda df_chunk: (len(df_chunk), df_chunk), df_chunk) for df_chunk in df_chunks]
-        dfs = tqdm_chunk(funcs, tqdm_total)
+    if tqdm_total is None:
+        # If hint on total not available, query the database for it.
+        tqdm_total = query_count(query, session)
 
-        df = pd.concat(dfs, ignore_index=True)
+    # With SQLALchemy 2.0, we need to pass session.connection() instead of session.bind.
+    # `df_chunks`` is an iterator where `chunksize` is the number of rows to include in each chunk.
+    df_chunks_iterator = pd.read_sql_query(
+        sql=query, con=session.connection(), chunksize=options.get("database.query_read_chunk_size")
+    )
+
+    def fetch_chunk(df_chunk):
+        """
+        Returns the count of rows fetched, and the resulting dataframe.
+        """
+        return (len(df_chunk), df_chunk)
+
+    # As soon as the `fetch_chunk` functions are evaluated, the items are retrieved from the iterator.
+    chunk_fetchers = [partial(fetch_chunk, df_chunk) for df_chunk in df_chunks_iterator]
+    # Fetch chunks
+    dfs = tqdm_chunks(chunk_fetchers, tqdm_total)
+    # Concatenate dataframes and return
+    return pd.concat(dfs, ignore_index=True)
+
+
+def next_uuid() -> uuid.UUID:
+    """
+    Return the next UUID to use.
+
+    If option "reproducibility.fake_incremental_uuids" is true,
+    return a reproducible sequence of UUIDs, to be used for
+    tests and documentation. Otherwise, return a random UUID.
+    """
+
+    global next_fake_uuid_int
+
+    if options.get("reproducibility.fake_incremental_uuids"):
+        # Use a predefined random UUID as seed to remove randomness.
+        # Used to make documentation examples and tests reproducible.
+        # Apply a simple function s.t. the next UUID doesn't look too similar.
+        next_fake_uuid_int += int(next_fake_uuid_int / 12345) % sys.maxsize
+        return uuid.UUID(int=next_fake_uuid_int)
     else:
-        df = pd.read_sql_query(query, session.bind)
-
-    return df.apply(pd.to_numeric, errors="ignore")
+        return uuid.uuid4()
 
 
-def next_ulid() -> str:
-    """Return the next monotonic ULID (https://github.com/ulid/spec) as a string.
-
-    Returns:
-        str: New ULID in UUID format, ready to be used as Experiment or Run ID.
+def chunker(seq: List, size: int) -> List[List]:
     """
-    return str(uuid.UUID(bytes=ulid.new().bytes))  # str(uuid.UUID(bytes=ulid.new().bytes))
-
-
-def chunker(seq: List, size) -> List[List]:
-    """Given a list, return a list of lists, where each sub-list is up to a certain
-    chunk size.
-
-    Args:
-        seq (List): List to partition.
-        size (_type_): Chunk size.
-
-    Returns:
-        List[List]: List of chunks.
+    Given a `list` of items, return a list of lists of items,
+    where each sub-list is up to a certain chunk `size`.
     """
+
+    # flake8 complains on E203 whitespace before ':'.
     return (seq[pos : pos + size] for pos in range(0, len(seq), size))  # noqa
 
 
-def tqdm_chunk(
+def tqdm_chunks(
     iterator: Iterator[Callable],
     total: int,
 ) -> List:
-    """Renders a progress bar, working on chunks of work.
+    """
+    Renders a progress bar, working on chunks of work.
+    Functions to execute are fetched from `iterator`,
+    `total` is the expected count to reach.
 
-    Args:
-        iterator (Iterator[Callable]): Iterator of functions to call, returning (size, ret). Size is
-        used to update the progress bar, and ret is accumulated as one more element in the returned list.
-        total (int): Total number of items to process, regardless of chunking.
+    Functions return a pair (size, result), with
+    `size` being accumulate to reach `total`.
 
-    Returns:
-        List: List of return values from callables.
+    It returns a list of the accumulated `result` values.
     """
 
-    pbar = progress(total=total)
-    pbar.clear()
+    pbar = tqdm(**(options.get("tqdm") | {"total": total}))
 
+    pbar.clear()
     rets = []
     for item in iterator:
         size, ret = item()
         pbar.update(size)
-
         rets.append(ret)
-
     pbar.close()
 
     return rets
+
+
+def hash_uuid(value: Union[uuid.UUID, str]) -> str:
+    """
+    Create a 6-alphanum hash of `value`, which can be
+    either a string representing an UUID or an UUID object.
+    If uuid1 == uuid2, hash_uuid(uuid1) == hash_uuid(uuid2).
+    """
+
+    if isinstance(value, uuid.UUID):
+        value = value.int
+    else:
+        value = uuid.UUID(value).int
+
+    expected_length = 6
+    padding = "0" * expected_length
+    alphabet = "123456789ACEFHJKLMNPRTUVWXY"
+    length = len(alphabet)
+    result = ""
+    remain = value
+    while remain > 0:
+        pos = remain % length
+        remain //= length
+        result += alphabet[pos]
+    result += padding
+    return result[:expected_length].lower()
+
+
+def query_count(query: QueryType, session: Session):
+    """
+    Returns the number of rows returned if executing `query`.
+    """
+
+    query = normalize_query(query)
+    return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # noqa
+
+
+def normalize_query(query: QueryType):
+    """
+    Normalize SQL query to an executable statement.
+    """
+
+    if isinstance(query, Query):
+        return query.statement
+    elif isinstance(query, str):
+        return sql.expression.text(query)
+    elif isinstance(query, Select):
+        return query
+    elif isinstance(query, TextClause):
+        return query
+    else:
+        raise InvalidInput(f"Expected Query or string, found {type(query)}")

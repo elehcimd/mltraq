@@ -1,7 +1,0 @@
-[1] Python: experiment.fields.description = 'some text'
-[2] Python: experiment.fields.series = [1, 2, 3]
-[3] SQL: b'{"description": "some text", "series": {"mltraq-type-0.0":
-  "pandas.Series-0.0", "dtype_index": "int64", "dtypes": {"0": "int64"},
-  "data": {"0": [1, 2, 3]}, "index": [0, 1, 2]}, "frame": {"mltraq-
-  type-0.0": "pandas.DataFrame-0.0", "dtype_index": "object", "dtypes":
-  {"x": "int64"}, "data": {"x": [4, 5, 6]}, "index": ["a", "b", "c"]}}'

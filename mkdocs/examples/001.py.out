@@ -1,3 +1,7 @@
-                                 id_run  accuracy
-0  018cee8a-3e2f-cb03-b1b3-f77cdfbe0c06      0.87
-1  018cee8a-3e2f-cb03-b1b3-f77cdfbe0c07      0.95
+                          id_experiment  ...  C
+0  84c4d2f0-4fbc-4693-9ab5-581c8beda322  ...  5
+1  84c4d2f0-4fbc-4693-9ab5-581c8beda322  ...  5
+2  84c4d2f0-4fbc-4693-9ab5-581c8beda322  ...  5
+3  84c4d2f0-4fbc-4693-9ab5-581c8beda322  ...  5
+
+[4 rows x 8 columns]

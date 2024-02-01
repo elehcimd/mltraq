@@ -1,22 +1,26 @@
 # Getting started
 
-In this tutorial, we will guide you through the various features and capabilities of MLtraq.
-You can follow the tutorial sequentially or jump to specific sections as needed.
-The code examples are standalone, they don't require additional code to reproduce the outputs.
+In this tutorial, you will learn how to define and execute experiments, trying the key features.
+You can follow it sequentially or jump to specific questions as needed.
 
 ## Installation
 
-MLtraq requires **Python 3.10+** and depends on **SQLAlchemy**, **Pandas**, and **Joblib**, which are installed as dependencies.
+MLtraq requires **Python 3.10+** and depends on  **SQLAlchemy 2.0+**, **Pandas 1.5.3+**, and **Joblib 1.3.2+**, which are installed as dependencies. To install:
 
 ```
-pip install mltraq
+pip install mltraq --upgrade
 ```
 
-!!! Info
-    
-    You can also install MLtraq with all optional dependencies, including **Dask**, **Scikit-learn**, and others.
-    These optional dependencies are not needed for this tutorial, but are required to use some advanced functionalities.
+## Examples
 
-    ```
-    pip install "mltraq[complete]"
-    ```
+The code examples are fully self-contained to reproduce the outputs.
+In this example, the version of MLtraq used to compile this tutorial is shown.
+Make sure to have the latest release installed.
+
+{{include_code("mkdocs/tutorial/examples/version.py", title="MLtraq version")}}
+
+# Key concepts
+
+Let's introduce some general concepts:
+
+{{include_mk("mkdocs/advanced/handover.md", path_prefix="../advanced", snippet="general_concepts")}}

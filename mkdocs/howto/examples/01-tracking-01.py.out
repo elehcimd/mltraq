@@ -1,0 +1,21 @@
+Session(db="sqlite:///:memory:", experiments(0)=[])
+--
+
+Experiment(name="example", runs.count=2, id="84c4d2f0-4fbc-4694-dad0-e06bf506c729")
+--
+
+Contents of sequence in a single run:
+                   timestamp  n_executions    random
+0 2024-02-01 15:55:42.389139           1.0  0.861175
+1 2024-02-01 15:55:42.390457           2.0  0.625831
+2 2024-02-01 15:55:42.391268           3.0  0.763788
+3 2024-02-01 15:55:42.398086           4.0  0.861175
+4 2024-02-01 15:55:42.399781           5.0  0.625831
+5 2024-02-01 15:55:42.401304           6.0  0.763788
+6 2024-02-01 15:55:42.445000           7.0  0.861175
+--
+
+Contents of X, N and score on all runs:
+   X  N  score
+0  2  7      1
+1  1  7      1

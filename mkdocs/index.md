@@ -1,6 +1,13 @@
+---
+hide:
+  - toc
+---
+
+#
+
 <p align="center">
-  <img height="30%" width="30%" src="assets/img/logo-black.svg#only-light" alt="MLtraq">
-  <img height="30%" width="30%" src="assets/img/logo-white.svg#only-dark" alt="MLtraq">
+  <img height="50%" width="50%" src="assets/img/logo-wide-black.svg#only-light" alt="MLtraq">
+  <img height="50%" width="50%" src="assets/img/logo-wide-white.svg#only-dark" alt="MLtraq">
 </p>
 
 <p align="center">
@@ -12,66 +19,81 @@
 <img src="/assets/img/badges/code-style.svg" alt="Code style">
 </p>
 
----
-
-Open source **experiment tracking API** with **ML performance analysis** to build better models faster, facilitating collaboration and transparency within the team and with stakeholders.
 
 ---
+<h1 align="center">
+Design ML Experiments<br>as State Monads with Persistence
+</h1>
 
-* **Documentation**: [https://www.mltraq.com](https://www.mltraq.com)
-* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
+MLtraq is an open-source ML framework for Python that adopts the **state monads** design pattern to model experiments. An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`. It incorporates **database persistence** for state recovery and full interoperability using open standards such as PyArrow and SQL.
 
----
+!!! Success ""
+    **Funding**: This project is supported by [sponsors](./sponsor.md) and clients that [hire me](https://www.linkedin.com/in/dallachiesa/) for Data Science and AI/ML. If you find MLtraq useful, please consider sponsoring it, [citing](./cite.md) it in your publications, starring it on [GitHub](https://github.com/elehcimd/mltraq), requesting customizations and/or other consulting services you might need. Thank You!
+
+## Motivations & benefits
+
+* Designed for **maximum interoperability**: Reproducible, transparent and accessible experiments. I and my clients prefer open standards to mitigate the risks associacted to vendor lock-in, coupled with a sound, robust approach to experimentation.
+
+* Architected to **promote distributed collaboration**: Seamlessly create, store, manage and share experiments [using any SQL database](advanced/storage.md). I want to work with my team on the client's existing infrastructure to lower complexity and costs.
+
+* Built for **faster knowledge transfer**: [High-quality documentation](advanced/handover.md) on code organization with detailed instructions for running, reproducing, and accessing results. I want handovers to be a valued, positive and well-designed experience.
 
 ## Key features
 
-* **Immediate**: start tracking experiments with a few lines of code.
-* **Collaborative**: Backup and upstream experimental results with your team.
-* **Interoperable**: Access the data anywhere with SQL, Pandas and Python API.
-* **Flexible**: Track structured types including Numpy arrays and Pandas frames/series.
-* **Steps library**: Use pre-built "steps" for tracking, testing, analysis and reporting.
-* **Execution engine**: Define and execute parametrized experiment pipelines.
+* **Immediate**: Design and execute experiments with a few lines of code.
+* **Collaborative**: Backup, merge, share and reload experiments with their computation state anywhere.
+* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types － no vendor lock-in.
+* **Flexible**: Track native Python data types and structures, as well as Numpy, Pandas and PyArrow objects.
+* **Encourages good design**: State monads encourage composability, encapsulation, code reuse and clean interfaces.
+* **Lightweight**: Thin layer with minimal dependencies that can run anywhere and can complement other components/services.
 
+## Limitations
+
+* **Not designed for MLOps**: The aim of ML experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
+* **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle` (the serializer used by Joblib).
+You should not expect a fully fledged orchestrator of ML pipelines, which is out of scope.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports Python data types (`int`, `float`, `string`, `UUID.uuid`, `bytes`) and structures (`dict`, `list`, `tuple`, `set`), as well as Numpy, Pandas and PyArrow objects.
 
 ## Requirements
 
-* **Python >=3.10**
-* **SQLAlchemy**, **Pandas**, and **Joblib** (installed as dependencies)
+* **Python 3.10+**
+* **SQLAlchemy 2.0+**, **Pandas 1.5.3+**, and **Joblib 1.3.2+** (installed as dependencies)
 
 
 ## Installation
 
+To install MLtraq:
+
 ```
-pip install mltraq
+pip install mltraq --upgrade
 ```
 
 
-## Examples
+## Example: Define, execute and query an experiment with SQL
 
-### 1. Track and query with SQL
+{{include_code("mkdocs/examples/000.py", title="Define, execute and query an experiment with SQL", drop_comments=False)}}
 
-Add tracking to your experiments with a few lines of code and start querying them with SQL:
+## Example: Parameter grids, parallel and resumed execution
 
-{{include_code("mkdocs/examples/001.py", title="Fast tracking")}}
-
-
-### 2. Iris dataset classification
-
-In less than 70 lines of code, we load, train, and test five models
-in parallel, tracking and reporting performance results averaged on ten repeated runs:
+{{include_code("mkdocs/examples/001.py", title="Parameter grids, parallel and resumed execution", drop_comments=False)}}
 
 
-{{include_code("mkdocs/examples/002.py", title="Fully managed execution")}}
+## Example: IRIS Flowers Classification
 
-MLtraq makes it easy and intuitive to define, run, execute, and query experiments,
-so that you can spend more time on what truly matters.
+{{include_code("mkdocs/examples/002.py", title="IRIS Flowers Classification", drop_comments=False)}}
 
+## Highlights from the documentation
 
-!!! Info 
-    Continue to the hands-on [tutorial](./tutorial/index.md) to learn how to leverage
-    at best the capabilities of MLtraq for your ML projects.
+* [Tutorial](./tutorial/index.md): Hands-on tutorial to learn how to use at best MLtraq.
+* [State storage](advanced/storage.md): Serialization strategy with JSON and native database types.
+* [Model of computation](advanced/computation-model.md): State monads, execution of experiments and runs, handling of exceptions.
+* [State management](advanced/state.md): Accessibility of state dictionaries in experiments and runs.
+* [Options management](advanced/options.md): Management of preferences and context manager.
 
 ## License
 
-This project is licensed under the terms of the [BSD 3-Clause License](./license).
+This project is licensed under the terms of the [BSD 3-Clause License](./license.md).
 
+---
+
+*Latest update: `{{include_current_date()}}` using `mltraq=={{include_mltraq_version()}}`*

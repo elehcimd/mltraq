@@ -1,597 +1,436 @@
-import copy
-from contextlib import contextmanager
-from typing import Callable, List, Union
+from __future__ import annotations
 
-import joblib
+import copy
+import logging
+import random
+from contextlib import contextmanager
+from typing import Callable
+
 import pandas as pd
 from sqlalchemy.orm import load_only
 
-from mltraq.options import options
-from mltraq.run import Run, Runs, get_params_list
+from mltraq.opts import options
+from mltraq.run import Run
+from mltraq.runs import Runs
 from mltraq.storage import models, serialization
-from mltraq.storage.database import Database, next_ulid, pandas_query, sanitize_table_name
-from mltraq.utils import log
-from mltraq.utils.dicts import ObjectDictionary
+from mltraq.storage.database import Database, hash_uuid, next_uuid, pandas_query, sanitize_table_name
+from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists, enforce_enum
-from mltraq.utils.frames import json_normalize, reorder_columns
-from mltraq.utils.log import logger
-from mltraq.utils.uuid import uuid3words
+from mltraq.utils.exceptions import ExceptionWithMessage, InvalidInput
+from mltraq.utils.frames import reorder_columns
+from mltraq.version import __version__
+
+log = logging.getLogger(__name__)
 
 
-class PickleNotFoundException(Exception):
-    """Exception raised when an attempt to load an experiment from its Pickle fails
-    as it was not previously stored.
-
-
-    Args:
-        Exception (_type_): _description_
+class PickleNotFoundException(ExceptionWithMessage):
+    """
+    Exception raised if the pickled experiment is not found.
     """
 
-    def __init__(self):
-        self.message = "The pickle blob was not found."
-        super().__init__(self.message)
+    def __init__(self, name):
+        return super().__init__(f"Pickle not found for experiment '{name}'.")
 
 
-class ExperimentAlreadyExists(Exception):
-    """Exception to handle the attempt to add one more experiment with the same name."""
+class ExperimentAlreadyExists(ExceptionWithMessage):
+    """
+    Raised if we try to overwrite an existing experiment, with if_exists="fail".
+    """
 
     def __init__(self, name):
-        self.message = f"Experiment '{name}' already existing, use if_exists=\"replace\" to overwrite it."
-        super().__init__(self.message)
+        return super().__init__(f"Experiment '{name}'already exists, pass if_exists=\"replace\" to overwrite.")
 
 
-class ExperimentNotFoundException(Exception):
-    """Exception raised if the experiment is not found."""
+class ExperimentNotFoundException(ExceptionWithMessage):
+    """
+    Raised if we try to load an experiment that is not found in the database.
+    """
 
     def __init__(self, name):
-        self.message = f"Experiment '{name}' not found. List with .ls() the available experiments."
-        super().__init__(self.message)
+        return super().__init__(f"Experiment '{name}' not found. List with .ls() the available experiments.")
 
 
 class Experiment:
-    """This class represents a new experiment.
-
-    Raises:
-        ExperimentNotFoundException: Raised if we try to use a non-existing experiment.
-        ExperimentAlreadyExists: Raised if the experiment name is already present.
-
-    Returns:
-        Experiment: A defined experiment, ready to be executed, tracked, stored, queried.
+    """
+    Class modeling a new experiment. Class attribute `model_cls` is the SQLAlchemy model representing the
+    "experiments" table in the database.
     """
 
     # model_cls is the SQLAlchemy model mapped to this class.
     model_cls = models.Experiment
 
+    __slots__ = ("id_experiment", "name", "fields", "runs", "db")
+    __state__ = ("id_experiment", "name", "fields", "runs")
+
     def __init__(
         self,
-        db: Database = None,
-        id_experiment: str = None,
-        name: str = None,
-        fields: dict = None,
-        properties: dict = None,
-        runs: List[Run] = None,
+        db: Database | None = None,
+        id_experiment: str | None = None,
+        name: str | None = None,
+        fields: dict | None = None,
+        runs: list[Run] | None = None,
     ):
-        """Create a new experiment.
-
-        Args:
-            db (Database, optional): Database to link to. Defaults to None.
-            id_experiment (str, optional): ID of the experiment to be used. Defaults to None.
-            name (str, optional): Name of the experiment. Defaults to None.
-            fields (dict, optional): Fixed experiment fields to be tracked. Defaults to None.
-            properties (dict, optional): Experiment properties, used to hold meta-attributes. Defaults to None.
-            runs (List[Run], optional): List of runs belonging to the experiment. Defaults to None.
+        """
+        Crete a new experiment linked to database `db`.
         """
 
         self.db = db
-        self.id_experiment = next_ulid() if id_experiment is None else id_experiment
-
-        if name is None:
-            name = uuid3words(self.id_experiment)
-        self.name = name
-        self.fields = ObjectDictionary(fields)
+        self.id_experiment = next_uuid() if id_experiment is None else id_experiment
+        self.name = hash_uuid(self.id_experiment) if name is None else name
+        self.fields = Bunch(fields)
         self.runs = Runs(runs)
 
-        # if param_grid is not None:
-        #    self.runs.add_grid(param_grid, kwargs=kwargs, steps=steps)
-
-        # Populate properties
-        self.properties = ObjectDictionary(properties)
-        # if "env" not in self.properties:
-        # If the experiment is loaded, then "env" is already populated and we retain it.
-        # self.properties["env"] = get_environment()
-
-    def __reduce__(self):
+    def __getstate__(self):
         """
-        Make the expriment pickable, avoiding unpickable objects in SQLAlchemy.
-
-        Returns:
-            Experiment: An unpickled Experiment object.
+        Build state for pickling.
         """
-        return self.__class__, (
-            None,
-            self.id_experiment,
-            self.name,
-            self.fields,
-            self.properties,
-            self.runs,
-        )
+        state = {key: getattr(self, key) for key in self.__state__}
+        return state
+
+    def __setstate__(self, state):
+        """
+        Load state for unpickling.
+        """
+        for k, v in state.items():
+            self.__setattr__(k, v)
+        self.db = None
 
     @contextmanager
     def run(self):
-        """Enter run context
-
-        Yields:
-            _type_: run
         """
+        Returns a new Run object as temporary context.
+        """
+
         try:
             run = Run()
             yield run
         finally:
+            run.clear_after_execution()
             self.runs.add(run)
 
-    def _repr_html_(self):
-        """Experiment representation as HTML, used in notebooks.
-
-        Returns:
-            _type_: HTML.
+    def __str__(self) -> str:
         """
-        return f'experiment(name="{self.name}", n_runs={len(self.runs)}, id="{self.id_experiment}")'
-
-    def add_runs(self, **param_grid):
-        """Add runs to the experiment, defining them from Cartesian product of parameter grid.
-
-        Returns:
-            _type_: The experiment (self).
+        Compact representation of the experiment with its runs.
         """
-        if not param_grid:
-            param_grid = [{}]
-        elif isinstance(param_grid, dict):
-            param_grid = get_params_list(**param_grid)
-        else:
-            param_grid = list(param_grid)
+        return f'Experiment(name="{self.name}", runs.count={len(self.runs)}, id="{self.id_experiment}")'
 
-        for params in param_grid:
-            self.runs.add(Run(params=params))
+    def _repr_html_(self) -> str:
+        return self.__str__()
+
+    def add_runs(self, **params) -> Experiment:
+        """
+        Add runs to experiment. `params` is a dictionary containing lists and it's used to generate
+        parameters for experiments from its Cartesian product.
+        """
+
+        params_list = list(Bunch(params).cartesian_product())
+        random.Random(options.get("reproducibility.random_seed")).shuffle(params_list)
+
+        if len(params_list) == 1 and params_list[0] == {}:
+            raise InvalidInput(
+                "Invalid parameters grid, no added runs. This is likely due to a parameter associated to zero possible"
+                " values."
+            )
+
+        for params in params_list:
+            self.add_run(**params)
 
         return self
 
-    def add_run(self, **params):
-        """Add single run with a list of parameters.
-
-        Returns:
-            _type_: The experiment (self).
+    def add_run(self, **params) -> Experiment:
+        """
+        Add single run with a list of parameters.
         """
         self.runs.add(Run(params=params))
         return self
 
-    def tablename(self) -> str:
-        """Return the table name of the experiment
-
-        Returns:
-            str: Table name
+    def get_tablename(self) -> str:
+        """
+        Return the table name of the experiment.
+        The table name is constructed by concatenating the option prefix "database.experiment_tableprefix"
+        and the experiment name, sanitizing the resulting value to consier only characters [^0-9a-zA-Z].
         """
 
-        return sanitize_table_name(f"{options.get('db.experiment_tableprefix')}{self.name}")
+        return sanitize_table_name(f"{options.get('database.experiment_tableprefix')}{self.name}")
 
-    @log.default_exception_handler
-    def query(self, query: str = "SELECT * FROM {table_name}") -> pd.DataFrame:
-        """Query the experiment's table
-
-        Args:
-            query (str, optional): SQL query. {name} is replaced with the table name of the experiment,
-                {id} with the experiment ID, {experiment} with the experiment table and {experiments} wtih
-                the experiments table. Defaults to the complete record.
-
-        Returns:
-            pd.DataFrame: Result of the query.
+    def load_runs(self, meta: dict) -> Experiment:
+        """
+        Load self.runs from database, using the serialization config as found in `meta`.
         """
 
-        df = self.db.pandas(
-            query.format(
-                id=f"'{self.id_experiment}'",
-                name=f"'{self.name}'",
-                experiment=self.tablename(),
-                experiments=options.get("db.experiments_tablename"),
-            ),
-        )
-
-        return df
-
-    def load_runs(self, run_columns):
-        """Load runs for experiment from db, considering run_columns.
-
-        Args:
-            run_columns (_type_): dictionary that specifies which columns have
-                been serialized or not.
-
-        Returns:
-            _type_: _description_
-        """
-        logger.info("Loading runs")
-        # Retrieve all columns
-        df = self.query(f"select * from {self.tablename()}")  # noqa
+        # Retrieve the table of the experiment.
+        df = self.db.query(self.db.query_table(self.get_tablename()))
+        # Columns have type `sqlalchemy.sql.elements.quoted_name`, convert to str
+        # (this avoids explicit handling of this type in serialization.)
+        df.columns = [str(s) for s in df.columns]
 
         # Take care of deserialization
-        for col_name in run_columns["serialized"]:
+        for col_name in meta.runs.columns.serialized:
             df[col_name] = df[col_name].map(serialization.deserialize)
 
-        # Reconstruct fields
-        def series_to_run(row: pd.Series):
-            fields = row[run_columns["serialized"] + run_columns["non_serialized"]].to_dict()
+        def series_to_run(row: pd.Series) -> Run:
+            """
+            Given a `row` fetched from the database, reconstruct the `run` represented by it.
+            """
+            fields = row[meta.runs.columns.serialized + meta.runs.columns.non_serialized].to_dict()
             run = Run(id_run=row["id_run"], fields=fields)
             return run
 
-        self.runs = Runs(df.apply(lambda row: series_to_run(row), axis=1).values)
+        # Reconstruct runs with their fields
+        self.runs = Runs(df.apply(lambda row: series_to_run(row), axis=1).tolist())
 
-    def copy(self, name=None):
-        """Deep copy of an experiment.
-
-        Args:
-            name (_type_, optional): Name of the new experiment. If none, the 3words hash
-                is used as name. Defaults to None.
-
-        Returns:
-            _type_: _description_
+    def copy_to(self, name: str | None = None, db: Database | None = None) -> Experiment:
         """
+        Return a deep copy of the experiment, setting `name` and `db` if provided.
+        A new UUID for the copy of the experiment is always generated.
+        If the name of the experiment was the hashed UUID, in case of no `name`,
+        a `name` value aligned with the new UUID is generated from its hash.
+        """
+
         experiment = copy.deepcopy(self)
-        experiment.id_experiment = next_ulid()
+        experiment.id_experiment = next_uuid()
 
-        if name is None:
-            name = uuid3words(self.id_experiment)
+        if name:
+            experiment.name = name
+        else:
+            if self.id_experiment == hash_uuid(self.id_experiment):
+                experiment.name = hash_uuid(experiment.id_experiment)
+            else:
+                experiment.name = self.name
 
-        experiment.name = name
+        if db:
+            experiment.db = db
+        else:
+            experiment.db = self.db
 
         return experiment
 
     @classmethod
-    def load_pickle(cls, db: Database, name: str):
-        """Lod experiment from pickle
-
-        Args:
-            db (Database): Database to load the experiment from
-            name (str): Name of the experiment
-
-        Raises:
-            ExperimentNotFoundException: _description_
-            PickleNotFoundException: _description_
-
-        Returns:
-            _type_: _description_
+    def load_pickle(cls, db: Database, name: str) -> Experiment:
         """
-        logger.info(f"Loading experiment '{name}' (pickle)")
+        Load an Experiment object from its pickle, provided a `db` and an experiment `name`.
+        This is *unsafe* and error-prone, you should prefer the offered persistence of `the fields attribute`.
+        """
+
+        log.debug(f"Loading experiment '{name}' (pickle)")
 
         with db.session() as session:
+            # Retrieving only the "pickle" column
             record = (
                 session.query(cls.model_cls)
-                .options(load_only(Experiment.model_cls.pickle))
+                .options(load_only(Experiment.model_cls.unsafe_pickle))
                 .filter_by(name=name)
                 .first()
             )
 
             if record is None:
                 raise ExperimentNotFoundException(name)
-            # Unpicke the serialized object.
 
-            if record.pickle is None:
-                raise PickleNotFoundException()
+            if record.unsafe_pickle is None:
+                raise PickleNotFoundException(name)
 
-            experiment = serialization.pickle_loads(record.pickle)
-            # Set the db of the experiment. Pickled db instances are never re-instantiated
-            # completely, this let us reuse the existing database instance. See the Database
-            # class for more comments on this.
-            #
-            # Important: this let us use SQLite memory databases, as only one instance is
-            # used on all experiments.
+            experiment = serialization.unsafe_unpickle(record.unsafe_pickle)
+
+            # Pickling/unpickling experiments excludes the .db attribute,
+            # which we can set now to the provided `db`.
             experiment.db = db
+
             return experiment
 
+    def reload(self, unsafe_pickle: bool = False) -> Experiment:
+        """
+        Reload the experiment from database (discarding its current state).
+        """
+        return Experiment.load(self.db, self.name, unsafe_pickle=unsafe_pickle)
+
     @classmethod
-    def load(cls, db: Database, name: str, pickle=False):
-        """Load an experiment from database.
-
-        Args:
-            db (Database): Reference to a database.
-            name (str): Name of the experiment.
-            pickle (bool): If true, load experiment from its Pickle.
-
-        Raises:
-            ExperimentNotFoundException: Raised if the experiment is not found.
-
-        Returns:
-            Experiment: Loaded experiment.
+    def load(cls, db: Database, name: str, unsafe_pickle: bool = False):
+        """
+        Load experiment `name` from `db`. If `pickle` is True, load
+        it from its pickled Experiment object (unsafe).
         """
 
-        if pickle:
+        log.debug(f"Loading experiment '{name}'")
+
+        if unsafe_pickle:
             return cls.load_pickle(db, name)
 
-        logger.info(f"Loading experiment '{name}'")
-
-        # Create a new session
-        columns = [
-            Experiment.model_cls.id_experiment,
-            Experiment.model_cls.name,
-            Experiment.model_cls.run_count,
-            Experiment.model_cls.run_columns,
-            Experiment.model_cls.fields,
-            Experiment.model_cls.properties,
-        ]
-
         with db.session() as session:
+
+            # Load all columns but "pickle", which might be heavy.
+            columns = [
+                Experiment.model_cls.id_experiment,
+                Experiment.model_cls.name,
+                Experiment.model_cls.meta,
+                Experiment.model_cls.fields,
+            ]
+
             record = session.query(cls.model_cls).options(load_only(*columns)).filter_by(name=name).first()
 
-            # If the record is not found, raise an error.
             if record is None:
                 raise ExperimentNotFoundException(name)
 
-            # Load the experiment from the record in "experiments" table.
+            # Create Experiment object from loaded columns.
             experiment = Experiment(
                 db=db,
                 id_experiment=record.id_experiment,
                 name=record.name,
                 fields=serialization.deserialize(record.fields),
-                properties=serialization.deserialize(record.properties),
             )
 
-            if record.run_count > 0:
-                experiment.load_runs(run_columns=serialization.deserialize(record.run_columns))
+            # Deserialize "meta" column, required to load runs.
+            meta = serialization.deserialize(record.meta)
+            if meta.runs.count > 0:
+                experiment.load_runs(meta=meta)
 
             return experiment
 
-    @log.default_exception_handler
+    def __call__(self, *args, **kwargs) -> Experiment:
+        """
+        Shortcut to .execute(...).
+        """
+        return self.execute(*args, **kwargs)
+
     def execute(
         self,
-        steps: Union[Callable, List[Callable]] = None,
-        kwargs=None,
-        backend=joblib.parallel.DEFAULT_BACKEND,
-        n_jobs=-1,
+        steps: Callable | list[Callable] | None = None,
+        config: dict | None = None,
+        backend: str | None = None,
+        n_jobs: int | None = None,
+        args_field: str | None = None,
     ):
-        """Execute the experiment, then retuning it.
+        """
+        Execute the experiment, by executing its runs:
 
-        Args:
-            steps (Union[Callable, List[Callable]], optional): Function(s) that will override the defined ones.
-                If the value is "all", the re-evaluation of all defined functions is forced. Defaults to None.
-            kwargs: Fixed arguments to pass to the run.
-            backend (_type_, optional): Joblib baackend. Defaults to joblib.parallel.DEFAULT_BACKEND.
-            n_jobs (int, optional): Parallelization degree, defined as in Joblib. Defaults to -1.
-
-        Returns:
-            Run: the same experiment, ready for chained operations.
+        - `steps` is an ordered list of functions applied to all runs in `self.Runs`
+        - `config` is passed to the runs (constant), accessible as `Run.config`
+        - `backend` and `n_jobs` are passed to joblib.Parallel
+        - `args_field` is the optional field name used to store/load both `Run.config` and `Run.params`
         """
 
-        self.runs.execute(steps=steps, kwargs=kwargs, backend=backend, n_jobs=n_jobs)
-
+        self.runs.execute(steps=steps, config=config, backend=backend, n_jobs=n_jobs, args_field=args_field)
         return self
 
     def record(
         self,
-        run_columns=None,
-        store_pickle=None,
-        enable_compression=None,
+        meta: dict | None = None,
+        store_unsafe_pickle: bool = None,
     ) -> models.Experiment:
-        """Build an SQLAlchemy ORM object from the existing Experiment object.
-
-        Returns:
-            models.Experiment: SQLAlchemy ORM object.
+        """
+        Build an SQLAlchemy ORM object from the existing Experiment object.
         """
 
-        if store_pickle is None:
-            store_pickle = options.get("serialization.store_pickle")
-        if enable_compression is None:
-            enable_compression = options.get("serialization.enable_compression")
+        store_unsafe_pickle = options.default_if_null(store_unsafe_pickle, "serialization.store_unsafe_pickle")
 
         return self.model_cls(
             id_experiment=self.id_experiment,
             name=self.name,
-            fields=serialization.serialize(self.fields, enable_compression=enable_compression),
-            properties=serialization.serialize(self.properties, enable_compression=enable_compression),
-            pickle=serialization.pickle_dumps(self) if store_pickle else None,
-            run_count=len(self.runs),
-            run_columns=serialization.serialize(run_columns, enable_compression=enable_compression),
+            fields=serialization.serialize(self.fields),
+            unsafe_pickle=serialization.unsafe_pickle(self) if store_unsafe_pickle else None,
+            meta=serialization.serialize(meta),
         )
 
-    def info(self):
-        """Return a series with some stats about the experiment.
-
-        Returns:
-            Experiment: self
+    def get_metadata(self) -> dict:
         """
+        Return a tree-like dictionary with properties about the experiment and its
+        serialization strategy.
+        """
+        meta = Bunch()
+        meta.runs = serialization.meta_runs(self.runs, table_name=self.get_tablename())
+        meta.serialization = serialization.meta()
+        meta.mltraq = Bunch()
+        meta.mltraq.version = __version__
+        return meta
 
-        if self.runs:
-            run = self.runs.first()
-            run_kwargs = list(run.kwargs.keys())
-            run_params = list(run.params.keys())
-            run_fields = list(run.fields.keys())
-            run_steps = [func.__name__ for func in run.steps]
-
-        else:
-            run_kwargs = []
-            run_params = []
-            run_fields = []
-            run_steps = []
-
-        return pd.Series({
-            "name": self.name,
-            "id": self.id_experiment,
-            "fields": list(self.fields.keys()),
-            "run_steps": run_steps,
-            "run_fields": run_fields,
-            "run_kwargs": run_kwargs,
-            "run_params": run_params,
-            "run_count": len(self.runs),
-            "pickle_size": self.size("mb"),
-            "table_name": self.tablename(),
-        })
-
-    @log.default_exception_handler
     def persist(
         self,
         if_exists: IfExists = IfExists["fail"],
-        store_pickle=None,
-        enable_compression=None,
+        store_unsafe_pickle: bool = None,
     ):
-        """Persist the experiment.
-
-        Args:
-            if_exists (IfExists, optional): Either "replace" or "fail". Defaults to "fail".
-            store_pickle: If None, defaults to the configuration. If true or false, honor preference.
-
-        Raises:
-            ExperimentReadOnlyException: Experiment loaded in SQL read-only mode.
-
-        Returns:
-            _type_: self.
+        """
+        Persist an experiment to the binded database, honoring `if_exists` the `store_unsafe_pickle`.
+        If `if_exists` is set to "fail" and the experiment exists, an exception will be triggered.
+        To overwrite existing experiments, set `if_exists` to "replace".
         """
 
-        if store_pickle is None:
-            store_pickle = options.get("serialization.store_pickle")
-        if enable_compression is None:
-            enable_compression = options.get("serialization.enable_compression")
+        log.debug(f"Persisting experiment (table name: {self.get_tablename()})")
 
-        logger.info(f"Persisting experiment (table name: {self.tablename()})")
-
+        # Ensure a valid value for if_exists.
         if_exists = enforce_enum(if_exists, IfExists)
 
-        # Delete record and table of experiment, honoring if_exists.
+        # Delete experiment from database.
         self.delete(if_exists)
 
-        if self.runs:
-            # The experiment has runs, let's find out the columns definition and persist it with the experiment.
-            # Work on a copy, to avoid modifications a slided copy of the dataframe.
-            df_runs = self.runs.df(max_level=0).copy()
-            df_runs["id_experiment"] = self.id_experiment
-            df_runs, run_columns = serialization.serialize_df(
-                df_runs, ignore_columns=["id_run", "id_experiment"], enable_compression=enable_compression
-            )
-            df_runs = reorder_columns(df_runs, ["id_experiment", "id_run"])
-        else:
-            df_runs = pd.DataFrame(columns=["id_experiment", "id_run"])
-            run_columns = {"serialized": [], "non_serialized": [], "compression": enable_compression}
+        # Generate metadata about experiment to persist.
+        meta = self.get_metadata()
 
         # Insert row in "experiments" table.
-
         with self.db.session() as session:
-            session.add(
-                self.record(run_columns=run_columns, store_pickle=store_pickle, enable_compression=enable_compression)
-            )
+            session.add(self.record(meta=meta, store_unsafe_pickle=store_unsafe_pickle))
             session.commit()
 
-        dtype = {
-            **{"id_run": models.uuid_type},
-            **{"id_experiment": models.uuid_type},
-            **{col_name: models.LargeBinary for col_name in run_columns["serialized"]},
-        }
-
-        # Create the experiment table.
-        self.db.pandas_to_sql(df_runs, self.tablename(), if_exists.name, dtype=dtype)
+        # Create and insert rows in "experiment_..." table.
+        df_runs, dtype = serialization.runs_to_sql(self.id_experiment, meta, self.runs)
+        self.db.pandas_to_sql(df_runs, meta.runs.table_name, if_exists.name, dtype=dtype)
 
         return self
 
-    @log.default_exception_handler
-    def delete(self, if_exists: IfExists = IfExists["fail"]) -> None:
-        """Delete the expeirment.
-
-        Args:
-            if_exists (IfExists, optional): Either "replace" or "fail". In case
-                the experiment exists and the value is "replace", nothing happens.
-                If the experiment exists and the value is "fail", it will raise an
-                exception. It is designed to work correctly together with insertions.
-                Defaults to "fail".
-
-        Raises:
-            ExperimentAlreadyExists: Raised if the experiment exists.
+    def delete(self, if_exists: IfExists = IfExists["fail"]):
+        """
+        Delete experiment from database, honoring `if_exists`.
         """
 
+        # Ensure a valid value for if_exists
         if_exists = enforce_enum(if_exists, IfExists)
 
-        # Create a new session
         with self.db.session() as session:
-            # If we find the record ...
             if session.query(self.model_cls).filter_by(name=self.name).count() > 0:
-                # And we are fine deleting it, proceed.
+                # If we find the record ...
                 if if_exists == IfExists["replace"]:
-                    # We filter on matching experiment names, as these are the ones that might result
-                    # in conflicts, since they must be unique.
+                    # And we are fine deleting it, proceed.
                     session.query(Experiment.model_cls).filter(Experiment.model_cls.name == self.name).delete()
                 else:
                     # Otherwise, raise an exception.
-                    raise ExperimentAlreadyExists(self.name)
+                    raise ExperimentAlreadyExists(
+                        f"Experiment '{self.name}' already existing, use if_exists=\"replace\" to overwrite it."
+                    )
             session.commit()
 
-        # We also need to drop the experiment table.
-        self.db.drop_table(self.tablename())
+        # Drop also the entire "experiment_..." table.
+        self.db.drop_table(self.get_tablename())
 
     def df(self, max_level=0) -> pd.DataFrame:
-        """Returns a Pandas dataframe representing the experiment, including
-        parameters and fields. The processing does not depend on
-        database queries, but the returned dataframe matches the contents
-        of the experiment table (which is generated using this method).
-
-        In presence of overlapping column names from the fixed fields
-        of the experiment and the run fields, the fields use
-        "_run" as suffix.
-
-        Args:
-            include_experiment (bool, optional): If False, do not include the
-            fixed experiment fields (it will be a constant column).
-            Defaults to True.
-
-        Raises:
-            ExperimentReadOnlyException: Experiment loaded in SQL read-only mode.
-
-        Returns:
-            pd.DataFrame: Pandas dataframe representing the tracked properties.
+        """
+        Return a Pandas dataframe representing the experiment, flattening
+        the fields up to `max_level`.
         """
 
-        df_experiment = json_normalize(
-            {
-                **self.fields,
-                **{"id_experiment": self.id_experiment, "name": self.name},
-            },
+        df_experiment = pd.json_normalize(
+            self.fields | {"id_experiment": self.id_experiment, "name": self.name},
             max_level=max_level,
         )
 
         return reorder_columns(df_experiment, ["id_experiment", "name"])
 
-    def size(self, unit: str = "b") -> int:
-        """Return the size of the pickled version of the expeirment.
-
-        Args:
-            unit (str, optional): Unit of measure: "b" (Bytes), "kb" (KiloBytes), "mb" (MegaBytes). Defaults to "b".
-
-        Returns:
-            int: Size of the experiment once pickled.
-        """
-        return serialization.pickle_size(self, unit=unit)
-
     @classmethod
-    def ls(cls, db: Database, include_properties=False) -> pd.DataFrame:
-        """List experiments in a database.
-
-        Args:
-            db (Database): Database instance.
-
-        Returns:
-            pd.DataFrame: List of experiments.
+    def ls(cls, db: Database) -> pd.DataFrame:
         """
-
-        # Construct list of columns to retrieve
-        if include_properties:
-            columns = [Experiment.model_cls.id_experiment, Experiment.model_cls.name, Experiment.model_cls.properties]
-        else:
-            columns = [Experiment.model_cls.id_experiment, Experiment.model_cls.name]
+        Return a Pandas Dataframe with a list of experiments referenced in table "experiments in `db`.
+        Three columns are returned:
+        - `id_experiment`: ID of the experiment (UUID)
+        - `name`: Name of the experiment
+        - `table_name` Table name with runs of the experiment
+        """
 
         with db.session() as session:
+            columns = [Experiment.model_cls.id_experiment, Experiment.model_cls.name]
             df_experiments = pandas_query(
                 session.query(Experiment.model_cls).options(load_only(*columns)),
                 session,
             )
 
             df_experiments["table_name"] = df_experiments["name"].apply(
-                lambda name: sanitize_table_name(f"{options.get('db.experiment_tableprefix')}{name}")
+                lambda name: sanitize_table_name(f"{options.get('database.experiment_tableprefix')}{name}")
             )
-
-            if include_properties:
-                df_experiments["properties"] = df_experiments["properties"].map(serialization.deserialize)
-                df_experiments = serialization.explode_json_column(df_experiments, col_name="properties")
 
             return df_experiments
