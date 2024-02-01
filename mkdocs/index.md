@@ -35,17 +35,17 @@ With database persistence for state recovery and collaboration. Using open stand
 
 ## Motivations & benefits
 
-* Designed for **maximum interoperability**: Reproducible, transparent and accessible experiments. I and my clients prefer open standards to mitigate the risks associacted to vendor lock-in, coupled with a sound, robust approach to experimentation.
 
-* Architected to **promote distributed collaboration**: Seamlessly create, store, manage and share experiments [using any SQL database](advanced/storage.md). I want to work with my team on the client's existing infrastructure to lower complexity and costs.
+* **Offers extreme interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles
 
-* Built for **faster knowledge transfer**: [High-quality documentation](advanced/handover.md) on code organization with detailed instructions for running, reproducing, and accessing results. I want handovers to be a valued, positive and well-designed experience.
+* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments in-memory or [using any SQL database](advanced/storage.md) with your team
+
 
 ## Key features
 
 * **Immediate**: Design and execute experiments with a few lines of code.
 * **Collaborative**: Backup, merge, share and reload experiments with their computation state anywhere.
-* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types － no vendor lock-in.
+* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types and open formats － no vendor lock-in.
 * **Flexible**: Track native Python data types and structures, as well as Numpy, Pandas and PyArrow objects.
 * **Lightweight**: Thin layer with minimal dependencies that can run anywhere and can complement other components/services.
 
