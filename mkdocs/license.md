@@ -1,7 +1,7 @@
 ```
 BSD 3-Clause License
 
-Copyright (c) 2022-2023, Michele Dallachiesa <michele.dallachiesa@sigforge.com>
+Copyright (c) 2022-2024, Michele Dallachiesa <michele.dallachiesa@sigforge.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -5,7 +5,7 @@ import anybadge
 from common import local, pkg_version, project_dir, project_name
 
 
-def tests_coverage():
+def tests_coverage() -> tuple[int, int]:
     pytest_output = local("pytest --cov=src/mltraq tests/")
 
     pos_end = pytest_output.find(" passed")
@@ -24,7 +24,7 @@ def tests_coverage():
     return n_passed_tests, percent_covered
 
 
-def get_pkg_version_latest_pypi():
+def get_pkg_version_latest_pypi() -> str:
     """Returns the pypi latest version. Not used since it ends up being always outdated.
 
     Returns:
@@ -47,7 +47,7 @@ def main():
     stats["pypi"] = pkg_version  # get_pkg_version_latest_pypi()
     stats["license"] = "BSD-3"
     stats["code-style"] = "black"
-    stats["python"] = ">=3.10"
+    stats["python"] = "3.10+"
 
     coverage_thresholds = {0.6: "red", 0.7: "orange", 0.9: "yellow", 1: "green"}
 

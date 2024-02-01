@@ -1,0 +1,15 @@
+Experiment:
+                          id_experiment     name   a
+0  84c4d2f0-4fbc-4685-1975-f7b69596ce04  example  10
+
+--
+SQL query:
+                                 id_run   b
+0  84c4d2f0-4fbc-4685-597b-796011023b9f  20
+1  84c4d2f0-4fbc-4685-9980-fb098c6da93a  30
+
+--
+Numpy array in first run:
+[1 2 3]
+
+--
