@@ -31,7 +31,7 @@ State Monads with Persistence
 MLtraq is an open-source ML framework for Python that adopts the **state monads** design pattern to model experiments. An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`. It incorporates **database persistence** for state recovery and full interoperability using open standards such as Pandas, Arrow and SQL.
 
 !!! Success ""
-    **Funding**: This project is supported by [sponsors](./sponsor.md) and clients that [hire me](https://www.linkedin.com/in/dallachiesa/) for Data Science and AI/ML. If you find MLtraq useful, please consider sponsoring it, [citing](./cite.md) it in your publications, starring it on [GitHub](https://github.com/elehcimd/mltraq), requesting customizations and/or other consulting services you might need. Thank You!
+    **Funding**: You can support as a [sponsor](./sponsor.md), hiring [me](https://www.linkedin.com/in/dallachiesa/) for ML/AI projects, [citing](./cite.md) and [starring](https://github.com/elehcimd/mltraq). Thank You!
 
 ## Motivations & benefits
 
@@ -55,7 +55,7 @@ MLtraq is an open-source ML framework for Python that adopts the **state monads*
 * **Not designed for MLOps**: The aim of ML experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
 * **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle` (the serializer used by Joblib).
 You should not expect a fully fledged orchestrator of ML pipelines, which is out of scope.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports Python data types (`int`, `float`, `string`, `UUID.uuid`, `bytes`) and structures (`dict`, `list`, `tuple`, `set`), as well as Numpy, Pandas and PyArrow objects.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports a wide range of types, including: `boo`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and Arrow objects.
 
 ## Requirements
 
