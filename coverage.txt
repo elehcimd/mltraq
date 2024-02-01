@@ -18,11 +18,11 @@ src/mltraq/storage/serializers/serializer.py                    45      9    80%
 src/mltraq/utils/__init__.py                                     0      0   100%
 src/mltraq/utils/base_options.py                                51      4    92%
 src/mltraq/utils/bunch.py                                       37      0   100%
-src/mltraq/utils/enums.py                                        8      1    88%
+src/mltraq/utils/enums.py                                       11      1    91%
 src/mltraq/utils/exceptions.py                                  21      8    62%
 src/mltraq/utils/frames.py                                       5      0   100%
 src/mltraq/utils/sequence.py                                    35      1    97%
 src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1016     78    92%
+TOTAL                                                         1019     78    92%
