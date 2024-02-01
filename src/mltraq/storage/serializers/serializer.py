@@ -1,6 +1,6 @@
 import abc
 import zlib
-from enum import StrEnum
+from enum import Enum
 
 from mltraq.opts import options
 from mltraq.utils.bunch import Bunch
@@ -16,7 +16,7 @@ class UnsupportedCompressionCodec(ExceptionWithMessage):
 
 
 # Enum of supported codecs.
-CompressionCodec = StrEnum("CompressionCodec", ["uncompressed", "zlib"])
+CompressionCodec = Enum("CompressionCodec", ["uncompressed", "zlib"])
 
 
 # Compression prefixes.
@@ -69,7 +69,7 @@ class Serializer(abc.ABC):
         if not isinstance(data, bytes):
             raise InvalidInput("You can compress only type `bytes`.")
 
-        codec = options.get("serialization.compression.codec")
+        codec = CompressionCodec[options.get("serialization.compression.codec")]
         if codec == CompressionCodec.uncompressed:
             return data
         elif codec == CompressionCodec.zlib:
