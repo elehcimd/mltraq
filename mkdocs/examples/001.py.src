@@ -33,5 +33,7 @@ print(
     .reload()  # Reload experiment from database
     .execute(f3, config={"D": 6})  # Continue execution
     .persist(if_exists="replace")  # Persist to database
-    .db.query("SELECT * FROM experiment_example")  # SQL query
+    .db.query(
+        "SELECT A, B, C, AB, ABC, ABCD FROM experiment_example"
+    )  # SQL query
 )

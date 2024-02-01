@@ -24,3 +24,4 @@ MLtraq is an open-source ML framework for Python to manage experiments. With dat
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
 
+---
