@@ -1,7 +1,9 @@
+<!--
 ---
 hide:
   - toc
 ---
+-->
 
 #
 
@@ -22,29 +24,29 @@ hide:
 
 ---
 <h1 align="center">
-Design ML Experiments<br>as State Monads with Persistence
+Manage ML Experiments with Persistence
 </h1>
 
-MLtraq is an open-source ML framework for Python that adopts the **state monads** design pattern to model experiments. An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`. It incorporates **database persistence** for state recovery and full interoperability using open standards such as PyArrow and SQL.
+MLtraq is an open-source ML framework for Python to manage experiments.
+With database persistence for state recovery and collaboration. Using open standards, no vendor lock-in.
 
 !!! Success ""
-    **Funding**: This project is supported by [sponsors](./sponsor.md) and clients that [hire me](https://www.linkedin.com/in/dallachiesa/) for Data Science and AI/ML. If you find MLtraq useful, please consider sponsoring it, [citing](./cite.md) it in your publications, starring it on [GitHub](https://github.com/elehcimd/mltraq), requesting customizations and/or other consulting services you might need. Thank You!
+    **Funding**: You can support as a [sponsor](./sponsor.md), hiring [me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work, [citing](./cite.md) and [starring](https://github.com/elehcimd/mltraq) the project. Thank You!
 
 ## Motivations & benefits
 
-* Designed for **maximum interoperability**: Reproducible, transparent and accessible experiments. I and my clients prefer open standards to mitigate the risks associacted to vendor lock-in, coupled with a sound, robust approach to experimentation.
 
-* Architected to **promote distributed collaboration**: Seamlessly create, store, manage and share experiments [using any SQL database](advanced/storage.md). I want to work with my team on the client's existing infrastructure to lower complexity and costs.
+* **Offers extreme interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles
 
-* Built for **faster knowledge transfer**: [High-quality documentation](advanced/handover.md) on code organization with detailed instructions for running, reproducing, and accessing results. I want handovers to be a valued, positive and well-designed experience.
+* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments in-memory or [using any SQL database](advanced/storage.md) with your team
+
 
 ## Key features
 
 * **Immediate**: Design and execute experiments with a few lines of code.
 * **Collaborative**: Backup, merge, share and reload experiments with their computation state anywhere.
-* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types － no vendor lock-in.
+* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types and open formats － no vendor lock-in.
 * **Flexible**: Track native Python data types and structures, as well as Numpy, Pandas and PyArrow objects.
-* **Encourages good design**: State monads encourage composability, encapsulation, code reuse and clean interfaces.
 * **Lightweight**: Thin layer with minimal dependencies that can run anywhere and can complement other components/services.
 
 ## Limitations
@@ -52,7 +54,7 @@ MLtraq is an open-source ML framework for Python that adopts the **state monads*
 * **Not designed for MLOps**: The aim of ML experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
 * **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle` (the serializer used by Joblib).
 You should not expect a fully fledged orchestrator of ML pipelines, which is out of scope.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports Python data types (`int`, `float`, `string`, `UUID.uuid`, `bytes`) and structures (`dict`, `list`, `tuple`, `set`), as well as Numpy, Pandas and PyArrow objects.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports a wide range of types, including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and Arrow objects.
 
 ## Requirements
 
@@ -69,26 +71,18 @@ pip install mltraq --upgrade
 ```
 
 
-## Example: Define, execute and query an experiment with SQL
+## Example 1: Define, execute and query an experiment with SQL
 
 {{include_code("mkdocs/examples/000.py", title="Define, execute and query an experiment with SQL", drop_comments=False)}}
 
-## Example: Parameter grids, parallel and resumed execution
+## Example 2: Parameter grids, parallel and resumed execution
 
 {{include_code("mkdocs/examples/001.py", title="Parameter grids, parallel and resumed execution", drop_comments=False)}}
 
 
-## Example: IRIS Flowers Classification
+## Example 3: IRIS Flowers Classification
 
 {{include_code("mkdocs/examples/002.py", title="IRIS Flowers Classification", drop_comments=False)}}
-
-## Highlights from the documentation
-
-* [Tutorial](./tutorial/index.md): Hands-on tutorial to learn how to use at best MLtraq.
-* [State storage](advanced/storage.md): Serialization strategy with JSON and native database types.
-* [Model of computation](advanced/computation-model.md): State monads, execution of experiments and runs, handling of exceptions.
-* [State management](advanced/state.md): Accessibility of state dictionaries in experiments and runs.
-* [Options management](advanced/options.md): Management of preferences and context manager.
 
 ## License
 

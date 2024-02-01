@@ -1,5 +1,6 @@
 # Introducing experiments
 
+An `experiment` consists of a collection of `runs` whose state progresses through a chained sequence of `steps`.
 We can define, execute, persist and load experiments.
 
 ## Creating experiments

@@ -19,8 +19,20 @@ Make sure to have the latest release installed.
 
 {{include_code("mkdocs/tutorial/examples/version.py", title="MLtraq version")}}
 
+
 # Key concepts
 
-Let's introduce some general concepts:
+* **Experimentation**: The process of systematically changing and testing different input values in an algorithm to observe their impact on performance, behavior, or outcomes. Experiments can be defined and executed, with their outcomes and/or results persisted for later analysis.
 
-{{include_mk("mkdocs/advanced/handover.md", path_prefix="../advanced", snippet="general_concepts")}}
+* **Session**: A `session` object lets you define the connection to a database, load and add experiments. Sessions are binded to a database.
+
+* **Experiment**: An `experiment` object manages a collection of `run` objects. Experiments can be created, persisted, loaded and executed. It implements the experimentation process. A `run` is an instantiation of the experiment with a configuration of input values. The execution of an `experiment` requires the execution of all its `runs`. Experiments are binded to a database and are unaware of sessions.
+
+* **Run**: A `run` object is an instantiation of the experiment with a configuration of input values. The execution of a `run` is defined as the chained evaluation of `step` functions, whose sole parameter is the `run` object itself. Runs are unaware of databases, sessions, experiments or other runs, and are isolated from the rest of the experiment.
+
+* **Step**: Step functions are a Python functions that take as sole input the `run` object, changing its internal state. There is no return value. Steps can access the configuration of the `run` in the attributes `run.config` and `run.params`, and can change the state of the `run` by modifying the attributes `run.vars`, `run.state` and `run.fields`.
+
+!!! Tip
+    An overview of the `run` state attributes can be found in [State management](../advanced/state.md), with a discussion of their semantics in the [Model of computation](../advanced/computation-model.md).
+
+

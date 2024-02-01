@@ -1,19 +1,23 @@
-from enum import StrEnum
+from enum import Enum
 from typing import Union
 
+from mltraq.utils.exceptions import InvalidInput
+
 # Enum used with if-then situation with insertions
-IfExists = StrEnum("IfExists", ["replace", "fail"])
+IfExists = Enum("IfExists", ["replace", "fail"])
 
 # Enum used with if-then situations with deletions
-IfMissing = StrEnum("IfMissing", ["ignore", "fail"])
+IfMissing = Enum("IfMissing", ["ignore", "fail"])
 
 
-def enforce_enum(x: Union[str, StrEnum], enum_type: StrEnum) -> StrEnum:
+def enforce_enum(x: Union[str, Enum], enum_type: Enum) -> Enum:
     """
     Convert string `x` to an enum value for type `enum_type`, or do nothing in case of enums.
     An invalid value results in a raised exception.
     """
     if isinstance(x, str):
         return enum_type[x]
-    else:
+    elif isinstance(x, Enum):
         return x
+    else:
+        InvalidInput(f"Expected str or Enum, found type `{type(x)}`")
