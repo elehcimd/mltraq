@@ -1,7 +1,9 @@
+<!--
 ---
 hide:
   - toc
 ---
+-->
 
 #
 
@@ -70,26 +72,18 @@ pip install mltraq --upgrade
 ```
 
 
-## Example: Define, execute and query an experiment with SQL
+## Example 1: Define, execute and query an experiment with SQL
 
 {{include_code("mkdocs/examples/000.py", title="Define, execute and query an experiment with SQL", drop_comments=False)}}
 
-## Example: Parameter grids, parallel and resumed execution
+## Example 2: Parameter grids, parallel and resumed execution
 
 {{include_code("mkdocs/examples/001.py", title="Parameter grids, parallel and resumed execution", drop_comments=False)}}
 
 
-## Example: IRIS Flowers Classification
+## Example 3: IRIS Flowers Classification
 
 {{include_code("mkdocs/examples/002.py", title="IRIS Flowers Classification", drop_comments=False)}}
-
-## Highlights from the documentation
-
-* [Tutorial](./tutorial/index.md): Hands-on tutorial to learn how to use at best MLtraq.
-* [State storage](advanced/storage.md): Serialization strategy with JSON and native database types.
-* [Model of computation](advanced/computation-model.md): State monads, execution of experiments and runs, handling of exceptions.
-* [State management](advanced/state.md): Accessibility of state dictionaries in experiments and runs.
-* [Options management](advanced/options.md): Management of preferences and context manager.
 
 ## License
 
