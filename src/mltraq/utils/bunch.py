@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 from collections import OrderedDict
+from typing import Iterator
 
 
 class Bunch(OrderedDict):
@@ -63,7 +64,7 @@ class Bunch(OrderedDict):
         else:
             return d
 
-    def cartesian_product(self) -> dict:
+    def cartesian_product(self) -> Iterator[dict]:
         """
         Cartesian product of arguments:
 

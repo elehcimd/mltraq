@@ -1,4 +1,2 @@
-                          id_experiment  ... tracked
-0  84c4d2f0-4fbc-4693-1aaa-54c99516c7ec  ...       5
-
-[1 rows x 3 columns]
+                                 id_run  tracked
+0  84c4d2f0-4fbc-4693-5aaf-d67310823587        5

@@ -24,21 +24,27 @@ hide:
 
 ---
 <h1 align="center">
-Manage ML Experiments with Persistence
+Manage AI Experiments with Persistence
 </h1>
 
-MLtraq is an open-source ML framework for Python to manage experiments.
-With database persistence for state recovery and collaboration. Using open standards, no vendor lock-in.
+MLtraq helps AI developers design, execute and share experiments.
+Track anything, reproduce and collaborate, resume the computation state anywhere.
+Standing on open standards.
 
-!!! Success ""
-    **Funding**: You can support as a [sponsor](./sponsor.md), hiring [me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work, [citing](./cite.md) and [starring](https://github.com/elehcimd/mltraq) the project. Thank You!
+---
+
+* **Documentation**: [https://mltraq.com](https://mltraq.com/)
+* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
+* **License**: [BSD 3-Clause](https://mltraq.com/license/)
+* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/) and [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
+
 
 ## Motivations & benefits
 
 
-* **Offers extreme interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles
+* **Offers extreme tracking and interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles.
 
-* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments in-memory or [using any SQL database](advanced/storage.md) with your team
+* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments with your team in-memory or [using any SQL database](advanced/storage.md).
 
 
 ## Key features
@@ -51,10 +57,9 @@ With database persistence for state recovery and collaboration. Using open stand
 
 ## Limitations
 
-* **Not designed for MLOps**: The aim of ML experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
-* **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle` (the serializer used by Joblib).
-You should not expect a fully fledged orchestrator of ML pipelines, which is out of scope.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence supports a wide range of types, including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and Arrow objects.
+* **Not designed for MLOps**: The aim of experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Dataset and model versioning, model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
+* **Computation**: The managed execution is optional. The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence [supports a wide range of types](./advanced/storage.md), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and PyArrow objects.
 
 ## Requirements
 

@@ -1,7 +1,7 @@
-from mltraq import create_experiment
+from mltraq import Run, create_experiment
 
 
-def f1(run):
+def f1(run: Run):
     """
     Store inputs as fields and compute AB
     """
@@ -11,14 +11,14 @@ def f1(run):
     run.fields.AB = run.fields.A + run.fields.B
 
 
-def f2(run):
+def f2(run: Run):
     """
     Compute ABC
     """
     run.fields.ABC = run.fields.AB + run.fields.C
 
 
-def f3(run):
+def f3(run: Run):
     """
     Compute ABCD
     """
@@ -33,5 +33,7 @@ print(
     .reload()  # Reload experiment from database
     .execute(f3, config={"D": 6})  # Continue execution
     .persist(if_exists="replace")  # Persist to database
-    .db.query("SELECT * FROM experiment_example")  # SQL query
+    .db.query(
+        "SELECT A, B, C, AB, ABC, ABCD FROM experiment_example"
+    )  # SQL query
 )

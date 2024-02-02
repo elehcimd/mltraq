@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 import numpy as np
 import pandas as pd
@@ -18,16 +19,16 @@ class Sequence:
 
     __slots__ = ["data", "frame"]
 
-    def __init__(self, frame: pd.DataFrame = None):
+    def __init__(self, frame: pd.DataFrame | None = None):
         """
         Initialize the sequence to the empty sequence, or with `data` if not None.
         """
 
-        self.data = []
-        if frame is not None:
-            self.frame = frame
+        self.data: List[dict] = []
+        if frame is None:
+            self.frame = pd.DataFrame(columns=["timestamp"], dtype="datetime64[ns]")
         else:
-            self.frame = None
+            self.frame = frame
 
     def append(self, **kwargs):
         """

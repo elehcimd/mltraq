@@ -5,6 +5,7 @@ import joblib
 from tqdm.auto import tqdm
 
 from mltraq.opts import options
+from mltraq.utils.base_options import validate_type
 from mltraq.utils.exceptions import ExceptionWithMessage
 
 log = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ class ProgressParallel(joblib.Parallel):
     Manage progress bar monitoring of parallel execution of tasks.
     """
 
-    def __init__(self, total: int = None, *args, **kwargs):
+    def __init__(self, total: int | None = None, *args, **kwargs):
         """
         Create a new progress bar, with `total` number of tasks,
         `args`/`kwargs` additional parameters to pass to the joblib.Parallel constructor.
@@ -55,7 +56,7 @@ class ProgressParallel(joblib.Parallel):
         self._pbar.refresh()
 
 
-def parallel(tasks: List[Callable], n_jobs: int = None) -> List[object]:
+def parallel(tasks: List[Callable], n_jobs: int | None = None) -> List[object]:
     """
     Execute a list of callables, `tasks`, in parallel, returning their return values as a list.
     """
@@ -87,9 +88,9 @@ class Job:
         Using ‘n_jobs=1’ enables to turn off parallel computing for debugging.
         """
 
-        self.tasks = tasks
+        self.tasks: list = validate_type(tasks, list)
         self.backend = options.default_if_null(backend, "execution.backend")
-        self.n_jobs = options.default_if_null(n_jobs, "execution.n_jobs")
+        self.n_jobs: int = validate_type(options.default_if_null(n_jobs, "execution.n_jobs"), int)
 
     def execute(self) -> List[object]:
         """

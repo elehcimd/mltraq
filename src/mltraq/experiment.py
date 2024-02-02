@@ -314,7 +314,7 @@ class Experiment:
     def record(
         self,
         meta: dict | None = None,
-        store_unsafe_pickle: bool = None,
+        store_unsafe_pickle: bool | None = None,
     ) -> models.Experiment:
         """
         Build an SQLAlchemy ORM object from the existing Experiment object.
@@ -345,7 +345,7 @@ class Experiment:
     def persist(
         self,
         if_exists: IfExists = IfExists["fail"],
-        store_unsafe_pickle: bool = None,
+        store_unsafe_pickle: bool | None = None,
     ):
         """
         Persist an experiment to the binded database, honoring `if_exists` the `store_unsafe_pickle`.
