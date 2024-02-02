@@ -1,7 +1,7 @@
-from mltraq import create_experiment, Run
+from mltraq import Run, create_experiment
 
 
-def f1(run:Run):
+def f1(run: Run):
     """
     Store inputs as fields and compute AB
     """
@@ -11,14 +11,14 @@ def f1(run:Run):
     run.fields.AB = run.fields.A + run.fields.B
 
 
-def f2(run:Run):
+def f2(run: Run):
     """
     Compute ABC
     """
     run.fields.ABC = run.fields.AB + run.fields.C
 
 
-def f3(run:Run):
+def f3(run: Run):
     """
     Compute ABCD
     """

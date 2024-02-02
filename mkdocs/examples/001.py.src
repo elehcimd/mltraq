@@ -1,4 +1,4 @@
-from mltraq import create_experiment, Run
+from mltraq import Run, create_experiment
 
 
 def f1(run: Run):

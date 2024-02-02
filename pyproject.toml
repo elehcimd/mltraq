@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.108"
+version = "0.0.109"
 description = "Design ML Experiments as State Monads with Persistence"
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
