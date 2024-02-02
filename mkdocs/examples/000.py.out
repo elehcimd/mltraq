@@ -1,4 +1,2 @@
-id_experiment    84c4d2f0-4fbc-4693-1aaa-54c99516c7ec
-id_run           84c4d2f0-4fbc-4693-5aaf-d67310823587
-tracked                                             5
-Name: 0, dtype: object
+                                 id_run  tracked
+0  84c4d2f0-4fbc-4693-5aaf-d67310823587        5
