@@ -35,6 +35,7 @@ Standing on open standards.
 
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
+* **License**: [BSD 3-Clause](./license.md)
 
 ---
 
@@ -44,7 +45,7 @@ Standing on open standards.
 ## Motivations & benefits
 
 
-* **Offers extreme interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles.
+* **Offers extreme tracking and interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles.
 
 * **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments with your team in-memory or [using any SQL database](advanced/storage.md).
 

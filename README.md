@@ -23,5 +23,5 @@ MLtraq helps AI developers design, execute and share experiments. Track anything
 
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
-
+* **License**: [BSD 3-Clause](https://github.com/elehcimd/mltraq/blob/main/LICENSE)
 ---
