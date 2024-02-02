@@ -2,6 +2,15 @@ from __future__ import annotations
 
 import copy
 from contextlib import contextmanager
+from typing import Any, TypeVar
+
+T = TypeVar("T")
+
+
+class TypeValidationError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
 class BaseOptions:
@@ -14,8 +23,8 @@ class BaseOptions:
     E.g., "group1.value".
     """
 
-    _instance = None
-    default_values = {}
+    _instance: BaseOptions | None = None
+    default_values: dict = {}
 
     def __init__(self):
         raise RuntimeError("There can be up to one instance of this class, you can get it with .instance()")
@@ -42,6 +51,7 @@ class BaseOptions:
         d = self.values
         for step in steps:
             d = d[step]
+
         return d
 
     def set(self, path: str, value: object):
@@ -60,7 +70,7 @@ class BaseOptions:
         """
         self.values = copy.deepcopy(values)
 
-    def copy(self) -> BaseOptions:
+    def copy_values(self) -> dict:
         """
         Returns a deepcopy of the `values`.
         """
@@ -83,8 +93,7 @@ class BaseOptions:
 
     def default_if_null(self, value: object, path: str) -> object:
         """
-        Returns the option value if `value` is NULL,
-        `value` otherwise.
+        Returns the option value if `value` is NULL, `value` otherwise.
         """
 
         if value is not None:
@@ -105,3 +114,16 @@ class BaseOptions:
             yield self
         finally:
             self.values = orig_options
+
+
+def validate_type(value: object, expected_type: T) -> Any:
+    """
+    Validate the type of `value` to be `expected_type`, if provided.
+    Otherwise, return `value` with no checks.
+    TODO: avoid use of Any.
+    """
+
+    if type(value) == expected_type:
+        return value
+    else:
+        raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")

@@ -60,7 +60,7 @@ class Session:
         """
         return Experiment.ls(self.db)
 
-    def load(self, name: str | None = None, unsafe_pickle: bool = False) -> Experiment:
+    def load(self, name: str, unsafe_pickle: bool = False) -> Experiment:
         """
         Loads a persisted experiment by `name`. If `pickle` is True, it will
         attempt to reload the pickled Experiment object from database.

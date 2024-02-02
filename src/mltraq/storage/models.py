@@ -1,10 +1,13 @@
 from sqlalchemy import Column, LargeBinary, String, Uuid
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from mltraq.opts import options
 
-# Construct a base class for declarative class definitions.
-Base = declarative_base()
+
+# Define a base class for declarative class definitions.
+class Base(DeclarativeBase):
+    pass
+
 
 # Using the recently introduced UUID type:
 # https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.Uuid

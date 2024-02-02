@@ -47,12 +47,18 @@ def compact_exception_message() -> str:
     exc_type, exc_value, exc_traceback = sys.exc_info()
     frame = inspect.trace()[-1]
 
+    code = (
+        "<unkown>"
+        if (not frame.index or not frame.code_context or len(frame.code_context) == 0)
+        else frame.code_context[frame.index].strip()
+    )
+
     details = {
-        "file": exc_traceback.tb_frame.f_code.co_filename,
-        "lineno": exc_traceback.tb_lineno,
-        "type": exc_type.__name__,
+        "file": "<unknown>" if not exc_traceback else exc_traceback.tb_frame.f_code.co_filename,
+        "lineno": "<unknown>" if not exc_traceback else exc_traceback.tb_lineno,
+        "type": "<unkown>" if not exc_type else exc_type.__name__,
         "message": str(exc_value),
-        "trace": f'{frame.filename}:{frame.lineno}::{frame.function} "{frame.code_context[frame.index].strip()}"',
+        "trace": f'{frame.filename}:{frame.lineno}::{frame.function} "{code}"',
     }
 
     return f'{details["type"]} at {details["trace"]}: {details["message"]}'

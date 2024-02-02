@@ -92,10 +92,10 @@ class Runs(dict):
     def execute(
         self,
         steps: StepsType,
-        config=dict | None,
-        backend=str | None,
-        n_jobs=int | None,
-        args_field: str = None,
+        config: dict | None = None,
+        backend: str | None = None,
+        n_jobs: int | None = None,
+        args_field: str | None = None,
     ):
         """
         Given an existing collection of runs, execute `steps` on them, considering `config`, `backend`, and `n_jobs`.
@@ -123,7 +123,7 @@ class Runs(dict):
         random.Random(options.get("reproducibility.random_seed")).shuffle(task_funcs)
 
         # Execute runs.
-        executed_runs = Job(task_funcs, n_jobs=n_jobs, backend=backend).execute()
+        executed_runs: list[Run] = Job(task_funcs, n_jobs=n_jobs, backend=backend).execute()
 
         # TODO: raise exception as soon as it's encountered, without waiting for all
         # parallel jobs to return. (joblib can return an iterator, this is likely how

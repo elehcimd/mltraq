@@ -39,7 +39,7 @@ class Serializer(abc.ABC):
         """
         Return unique name/version of the serializer.
         """
-        return
+        pass
 
     @abc.abstractclassmethod
     def serialize(cls, obj: object) -> bytes:
@@ -47,7 +47,7 @@ class Serializer(abc.ABC):
 
     @abc.abstractclassmethod
     def deserialize(cls, data: bytes) -> object:
-        return
+        pass
 
     @classmethod
     def meta(cls) -> Bunch:
@@ -95,6 +95,6 @@ class Serializer(abc.ABC):
             try:
                 return zlib.decompress(data[2:])
             except zlib.error:
-                pass
+                return data
         else:
             raise UnsupportedCompressionCodec(f"Codec not supported: '{codec}'")

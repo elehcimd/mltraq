@@ -39,7 +39,7 @@ class Options(BaseOptions):
 # Singleton object that handles options.
 # It is accessible also within runs running in parallel thanks
 # to the propagation of its values on the run workers.
-options: Options = Options.instance()
+options: BaseOptions = Options.instance()
 
 # Other project constants
 doc_url = "https://www.mltraq.com"

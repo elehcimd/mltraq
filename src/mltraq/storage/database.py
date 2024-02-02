@@ -4,7 +4,7 @@ import re
 import sys
 import uuid
 from functools import partial
-from typing import Callable, Iterator, List, Union
+from typing import Callable, Iterator, List
 
 import pandas as pd
 from sqlalchemy import MetaData, Table, create_engine, sql
@@ -23,7 +23,7 @@ from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists
 from mltraq.utils.exceptions import InvalidInput
 
-QueryType = Union[Query, str, Select, TextClause]
+QueryType = Query | str | Select | TextClause
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class Database:
     __slots__ = ("params", "url", "session", "engine")
     __state__ = ("params",)
 
-    def __init__(self, url: str = None, ask_password: bool = None):
+    def __init__(self, url: str | None = None, ask_password: bool | None = None):
         """
         Initialize connection to a new database, with connection `url`,
         asking interactively for a password if `ask_password` is True.
@@ -105,7 +105,7 @@ class Database:
     def _repr_html_(self) -> str:
         return self.__str__()
 
-    def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: dict = None):
+    def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: dict | None = None):
         """
         Insert a Pandas dataframe `df` as a new database table `name`.
         If `if_exists` == "replace", it overwrite existing tables.
@@ -327,7 +327,7 @@ def tqdm_chunks(
     return rets
 
 
-def hash_uuid(value: Union[uuid.UUID, str]) -> str:
+def hash_uuid(value: uuid.UUID | str) -> str:
     """
     Create a 6-alphanum hash of `value`, which can be
     either a string representing an UUID or an UUID object.
@@ -335,16 +335,16 @@ def hash_uuid(value: Union[uuid.UUID, str]) -> str:
     """
 
     if isinstance(value, uuid.UUID):
-        value = value.int
+        int_value = value.int
     else:
-        value = uuid.UUID(value).int
+        int_value = uuid.UUID(value).int
 
     expected_length = 6
     padding = "0" * expected_length
     alphabet = "123456789ACEFHJKLMNPRTUVWXY"
     length = len(alphabet)
     result = ""
-    remain = value
+    remain = int_value
     while remain > 0:
         pos = remain % length
         remain //= length
