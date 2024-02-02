@@ -2,27 +2,27 @@ Name                                                         Stmts   Miss  Cover
 --------------------------------------------------------------------------------
 src/mltraq/__init__.py                                           7      0   100%
 src/mltraq/experiment.py                                       165      7    96%
-src/mltraq/job.py                                               54     12    78%
+src/mltraq/job.py                                               55     12    78%
 src/mltraq/opts.py                                               6      0   100%
 src/mltraq/run.py                                               76      8    89%
 src/mltraq/runs.py                                              75      4    95%
 src/mltraq/session.py                                           29      0   100%
 src/mltraq/storage/__init__.py                                   0      0   100%
 src/mltraq/storage/database.py                                 162     17    90%
-src/mltraq/storage/models.py                                    11      0   100%
+src/mltraq/storage/models.py                                    12      0   100%
 src/mltraq/storage/serialization.py                             56      0   100%
 src/mltraq/storage/serializers/datapak.py                      121      5    96%
 src/mltraq/storage/serializers/pickle.py                        30      1    97%
 src/mltraq/storage/serializers/pickle_opcodes_whitelist.py       2      0   100%
 src/mltraq/storage/serializers/serializer.py                    45      9    80%
 src/mltraq/utils/__init__.py                                     0      0   100%
-src/mltraq/utils/base_options.py                                51      4    92%
-src/mltraq/utils/bunch.py                                       37      0   100%
-src/mltraq/utils/enums.py                                       11      1    91%
-src/mltraq/utils/exceptions.py                                  21      8    62%
+src/mltraq/utils/base_options.py                                61      4    93%
+src/mltraq/utils/bunch.py                                       38      0   100%
+src/mltraq/utils/enums.py                                       10      1    90%
+src/mltraq/utils/exceptions.py                                  22      9    59%
 src/mltraq/utils/frames.py                                       5      0   100%
-src/mltraq/utils/sequence.py                                    35      1    97%
+src/mltraq/utils/sequence.py                                    36      1    97%
 src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1019     78    92%
+TOTAL                                                         1033     79    92%

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.110"
+version = "0.0.111"
 description = "Manage AI Experiments with Persistence"
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
