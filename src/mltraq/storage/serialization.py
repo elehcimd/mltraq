@@ -33,6 +33,7 @@ NATIVE_DATABASE_TYPES = [
     datetime.date,
     datetime.timedelta,
     uuid.UUID,
+    bytes,
 ]
 
 

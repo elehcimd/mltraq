@@ -7,7 +7,7 @@ from functools import partial
 from typing import Callable, Iterator, List
 
 import pandas as pd
-from sqlalchemy import MetaData, Table, create_engine, sql
+from sqlalchemy import MetaData, Table, create_engine, inspect, sql
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Query, sessionmaker
@@ -135,6 +135,17 @@ class Database:
 
                     funcs.append(partial(process_chunk, df_chunk, idx))
                 tqdm_chunks(funcs, len(df))
+
+    def get_table_names(self) -> List[str]:
+        """
+        Return table names.
+        """
+        with self.session() as session:
+            return [str(s) for s in inspect(session.bind).get_table_names()]
+
+    def has_table(self, table_name: str) -> bool:
+        with self.session() as session:
+            return inspect(session.bind).has_table(table_name)
 
     def drop_table(self, name: str) -> bool:
         """

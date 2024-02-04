@@ -68,7 +68,7 @@ The deserialization applies the inverse procedure of the serialization:
 ### Compression
 
 Compression is optional and its behaviour is controlled via [options](./options.md).
-By default, the [Python zlip library](https://docs.python.org/3/library/zlib.html) is used.
+By default, the compression is disabled and ["`zlib`"](https://docs.python.org/3/library/zlib.html) can be specified.
 If enabled, the serialized object of type `bytes` is prefixed by a magic string that specifies the compression algorithm:
 
 {{include_code("mkdocs/advanced/examples/storage-03.py", title="Supported compression codecs", 

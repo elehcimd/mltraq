@@ -11,7 +11,8 @@ NATIVE_DATABASE_TYPES
   <class 'datetime.datetime'>,
   <class 'datetime.date'>,
   <class 'datetime.timedelta'>,
-  <class 'uuid.UUID'>]
+  <class 'uuid.UUID'>,
+  <class 'bytes'>]
 --
 
 BASIC_TYPES

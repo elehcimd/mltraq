@@ -24,7 +24,7 @@ hide:
 
 ---
 <h1 align="center">
-Manage AI Experiments with Persistence
+Track and Collaborate on AI Experiments.
 </h1>
 
 MLtraq helps AI developers design, execute and share experiments.
@@ -33,7 +33,7 @@ Standing on open standards.
 
 ---
 
-* **Documentation**: [https://mltraq.com](https://mltraq.com/)
+* **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
 * **License**: [BSD 3-Clause](https://mltraq.com/license/)
 * **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/) and [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
