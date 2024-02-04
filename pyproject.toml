@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.111"
-description = "Manage AI Experiments with Persistence"
+version = "0.0.113"
+description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
 readme = "README.md"
@@ -27,7 +27,6 @@ tqdm = ">=4.64.1"
 scikit-learn = {version="^1.1.3", optional=true}
 dask = {version = "^2022.11.0", extras=["complete"], optional=true}
 psycopg = {version = "^3.1.17", extras = ["binary"], optional=true}
-pandas-stubs = "^2.1.4.231227"
 
 [tool.poetry.extras]
 pgsql = ["psycopg"]
@@ -56,6 +55,8 @@ certifi = ">=2022.12.7"
 pyspellchecker = "^0.8.1"
 mypy = "^1.8.0"
 pandas-stubs = "^2.1.4.231227"
+pyinstrument = "^4.6.2"
+mkdocs-charts-plugin = "^0.0.10"
 
 [build-system]
 requires = ["poetry-core"]
@@ -68,9 +69,9 @@ preview = true
 
 [tool.ruff]
 line-length = 120
-select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
+lint.select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
 target-version = "py37"
-ignore = ["A003", "S101", "T201", "T203"]
+lint.ignore = ["A003", "S101", "T201", "T203"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

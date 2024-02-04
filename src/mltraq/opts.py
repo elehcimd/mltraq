@@ -30,7 +30,7 @@ class Options(BaseOptions):
         "serialization": {
             "store_unsafe_pickle": False,
             "serializer": "DataPakSerializer",
-            "compression": {"codec": "zlib"},
+            "compression": {"codec": "uncompressed"},
         },
         "app": {},
     }
@@ -40,6 +40,3 @@ class Options(BaseOptions):
 # It is accessible also within runs running in parallel thanks
 # to the propagation of its values on the run workers.
 options: BaseOptions = Options.instance()
-
-# Other project constants
-doc_url = "https://www.mltraq.com"

@@ -1,5 +1,5 @@
 site_name: MLtraq
-site_description: Open source experiment tracking API with ML performance analysis.
+site_description: Track and Collaborate on AI Experiments.
 site_url: https://mltraq.com
 docs_dir: mkdocs/
 site_dir: dist/docs
@@ -51,6 +51,9 @@ markdown_extensions:
     - name: mermaid
       class: mermaid
       format: !!python/name:pymdownx.superfences.fence_code_format ''
+    - name: vegalite
+      class: vegalite
+      format: !!python/name:mkdocs_charts_plugin.fences.fence_vegalite
 - pymdownx.tabbed:
     alternate_style: true
 - pymdownx.highlight: # Code highlighting inside code blocks
@@ -89,15 +92,16 @@ plugins:
         module_name: mkdocs/mymacros
         #on_error_fail: true
     - mkdocstrings
-
+    - charts # mkdocs-charts-plugin
 
 extra_css:
 - assets/css/custom.css
-- https://s.pageclip.co/v1/pageclip.css          
 
 extra_javascript:
-- assets/js/custom.js
-- https://s.pageclip.co/v1/pageclip.js
+  - assets/js/custom.js
+  - https://cdn.jsdelivr.net/npm/vega@5 # mkdocs-charts-plugin
+  - https://cdn.jsdelivr.net/npm/vega-lite@5 # mkdocs-charts-plugin
+  - https://cdn.jsdelivr.net/npm/vega-embed@6 # mkdocs-charts-plugin
 
 copyright: Copyright © 2022 - 2024 Michele Dallachiesa
 
