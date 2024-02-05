@@ -5,7 +5,8 @@ List of Experiment pickled attributes:
 ('id_experiment', 'name', 'fields', 'runs')
 
 List of Run state attributes:
-('id_run',
+('id_experiment',
+ 'id_run',
  'config',
  'params',
  'fields',
@@ -15,7 +16,8 @@ List of Run state attributes:
  'steps')
 
 List of Run pickled attributes:
-('id_run',
+('id_experiment',
+ 'id_run',
  'config',
  'params',
  'fields',

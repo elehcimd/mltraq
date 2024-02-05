@@ -4,8 +4,8 @@ src/mltraq/__init__.py                                           8      0   100%
 src/mltraq/experiment.py                                       165      7    96%
 src/mltraq/job.py                                               55     12    78%
 src/mltraq/opts.py                                               5      0   100%
-src/mltraq/run.py                                               76      8    89%
-src/mltraq/runs.py                                              75      4    95%
+src/mltraq/run.py                                               77      8    90%
+src/mltraq/runs.py                                              77      4    95%
 src/mltraq/session.py                                           29      0   100%
 src/mltraq/storage/__init__.py                                   0      0   100%
 src/mltraq/storage/database.py                                 168     21    88%
@@ -25,4 +25,4 @@ src/mltraq/utils/sequence.py                                    36      1    97%
 src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1039     85    92%
+TOTAL                                                         1042     85    92%

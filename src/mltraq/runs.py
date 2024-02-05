@@ -75,7 +75,7 @@ class Runs(dict):
         df = pd.json_normalize([{**run.fields, **{"id_run": run.id_run}} for run in self.values()], max_level=max_level)
         return reorder_columns(df, ["id_run"])
 
-    def handle_args_field(self, name: str, config: dict):
+    def handle_args_field(self, name: str, config: dict) -> dict:
         """
         Save/reload to/from run.fields[name] both run.params and run.config in a dictionary.
         """
@@ -83,11 +83,13 @@ class Runs(dict):
         for run in self.values():
             if name not in run.fields:
                 run.fields[name] = Bunch(config=Bunch(config), params=run.params)
+                ret_config = config
             else:
                 if config or run.params:
                     raise InvalidInput("Trying to overwrite existing `config` or `params` via `args_field`.")
-                run.config = run.fields[name].config
+                ret_config = run.fields[name].config
                 run.params = run.fields[name].params
+        return ret_config
 
     def execute(
         self,
@@ -113,7 +115,7 @@ class Runs(dict):
 
         args_field = options.default_if_null(args_field, "execution.args_field")
         if args_field:
-            self.handle_args_field(args_field, config)
+            config = self.handle_args_field(args_field, config)
 
         # List of functions to execute
         task_funcs = [run.execute_func(steps=steps, config=config, options=options) for run in self.values()]

@@ -77,6 +77,7 @@ nav:
     - tutorial/05-ml.md
   - HOWTO:
     - howto/01-tracking.md
+    - howto/02-artifacts-storage.md
   - Advanced topics:
     - advanced/computation-model.md
     - advanced/state.md

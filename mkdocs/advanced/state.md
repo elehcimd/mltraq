@@ -14,6 +14,7 @@ The state of an experiment is defined by these attributes:
 
 The state of a run is defined by these attributes:
 
+* `id_experiment`: UUID of the associated experiment.
 * `id_run`: UUID of the run.
 * `config`: Fixed parameters of the `run`, cleared after execution.
 * `params`: Variable parameters of the `run`, cleared after execution.
