@@ -3,7 +3,7 @@ from random import random
 import mltraq
 import numpy as np
 
-# Create a session, binded to a in-memory SQLite database by default.
+# Create a new session, bound to an in-memory SQLite database by default.
 session = mltraq.create_session()
 print(session)
 print("--\n")

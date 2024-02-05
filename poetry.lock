@@ -85,6 +85,14 @@ doc = ["doc8", "sphinx (>=7.0.0)", "sphinx-autobuild", "sphinx-autodoc-typehints
 test = ["dateparser (>=1.0.0,<2.0.0)", "pre-commit", "pytest", "pytest-cov", "pytest-mock", "pytz (==2021.1)", "simplejson (>=3.0.0,<4.0.0)"]
 
 [[package]]
+name = "asciinema"
+version = "2.4.0"
+description = "Terminal session recorder"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "astroid"
 version = "3.0.3"
 description = "An abstract syntax tree for Python with inference support."
@@ -2376,7 +2384,7 @@ pgsql = ["psycopg"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.0"
-content-hash = "f35ee86898a37c8bfef9a7341c8868480bbc92814bd1460b89212112f2cbd60a"
+content-hash = "cde8c41bf4bce1d62e9f4eb183fe09f5ee37bc53d46bddea0f3be54285962b6e"
 
 [metadata.files]
 anybadge = [
@@ -2421,6 +2429,10 @@ argon2-cffi-bindings = [
 arrow = [
     {file = "arrow-1.3.0-py3-none-any.whl", hash = "sha256:c728b120ebc00eb84e01882a6f5e7927a53960aa990ce7dd2b10f39005a67f80"},
     {file = "arrow-1.3.0.tar.gz", hash = "sha256:d4540617648cb5f895730f1ad8c82a65f2dad0166f57b75f3ca54759c4d67a85"},
+]
+asciinema = [
+    {file = "asciinema-2.4.0-py3-none-any.whl", hash = "sha256:249ccf108509d643ddaf38979dac48c99e9e251f597173d8553a30d7a6423104"},
+    {file = "asciinema-2.4.0.tar.gz", hash = "sha256:828e04c36ba622a7b8f8f912c8f0c1329538b6c7ed1c0d1b131bbbfe3a221707"},
 ]
 astroid = [
     {file = "astroid-3.0.3-py3-none-any.whl", hash = "sha256:92fcf218b89f449cdf9f7b39a269f8d5d617b27be68434912e11e79203963a17"},

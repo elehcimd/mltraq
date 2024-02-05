@@ -57,6 +57,7 @@ mypy = "^1.8.0"
 pandas-stubs = "^2.1.4.231227"
 pyinstrument = "^4.6.2"
 mkdocs-charts-plugin = "^0.0.10"
+asciinema = "^2.4.0"
 
 [build-system]
 requires = ["poetry-core"]
