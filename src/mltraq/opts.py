@@ -26,7 +26,7 @@ class Options(BaseOptions):
             "n_jobs": -1,
             "args_field": False,
         },
-        "tqdm": {"disable": False, "delay": 0, "leave": False},
+        "tqdm": {"disable": False, "delay": 0.5, "leave": False},
         "serialization": {
             "store_unsafe_pickle": False,
             "serializer": "DataPakSerializer",

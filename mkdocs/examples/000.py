@@ -1,6 +1,6 @@
 from mltraq import create_experiment
 
-# Create a new experimend, binded to an in-memory SQLite database by default.
+# Create a new experiment, bound to an in-memory SQLite database by default.
 experiment = create_experiment("example")
 
 # Add a run and work directly on it.

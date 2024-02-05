@@ -24,9 +24,9 @@ Make sure to have the latest release installed.
 
 * **Experimentation**: The process of systematically changing and testing different input values in an algorithm to observe their impact on performance, behavior, or outcomes. Experiments can be defined and executed, with their outcomes and/or results persisted for later analysis.
 
-* **Session**: A `session` object lets you define the connection to a database, load and add experiments. Sessions are binded to a database.
+* **Session**: A `session` object lets you define the connection to a database, load and add experiments. Sessions are bound to a database.
 
-* **Experiment**: An `experiment` object manages a collection of `run` objects. Experiments can be created, persisted, loaded and executed. It implements the experimentation process. A `run` is an instantiation of the experiment with a configuration of input values. The execution of an `experiment` requires the execution of all its `runs`. Experiments are binded to a database and are unaware of sessions.
+* **Experiment**: An `experiment` object manages a collection of `run` objects. Experiments can be created, persisted, loaded and executed. It implements the experimentation process. A `run` is an instantiation of the experiment with a configuration of input values. The execution of an `experiment` requires the execution of all its `runs`. Experiments are bound to a database and are unaware of sessions.
 
 * **Run**: A `run` object is an instantiation of the experiment with a configuration of input values. The execution of a `run` is defined as the chained evaluation of `step` functions, whose sole parameter is the `run` object itself. Runs are unaware of databases, sessions, experiments or other runs, and are isolated from the rest of the experiment.
 
