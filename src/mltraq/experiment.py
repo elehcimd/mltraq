@@ -141,7 +141,7 @@ class Experiment:
         """
         Add single run with a list of parameters.
         """
-        self.runs.add(Run(params=params))
+        self.runs.add(Run(id_experiment=self.id_experiment, params=params))
         return self
 
     def get_tablename(self) -> str:

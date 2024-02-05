@@ -32,11 +32,12 @@ class Run:
     """
 
     # Attributes to store and serialize.
-    __slots__ = ("id_run", "config", "params", "fields", "state", "exception", "vars", "steps")
-    __state__ = ("id_run", "config", "params", "fields", "state", "exception")
+    __slots__ = ("id_experiment", "id_run", "config", "params", "fields", "state", "exception", "vars", "steps")
+    __state__ = ("id_experiment", "id_run", "config", "params", "fields", "state", "exception")
 
     def __init__(
         self,
+        id_experiment: str | None = None,
         id_run: str | None = None,
         steps: StepsType = None,
         config: dict | None = None,
@@ -52,6 +53,7 @@ class Run:
         - `fields`: State of the `run`
         """
 
+        self.id_experiment = id_experiment
         self.id_run = next_uuid() if id_run is None else id_run
         self.config = Bunch(config)
         self.params = Bunch(params)
@@ -59,7 +61,7 @@ class Run:
         self.state = Bunch()
         self.vars = Bunch()
 
-        # Execution state and steps to be executed
+        # Execution state and steps to be executed, and associated ID experiment.
         self.steps = normalize_steps(steps)
         self.exception = None
 

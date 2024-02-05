@@ -27,9 +27,8 @@ hide:
 Track and Collaborate on AI Experiments.
 </h1>
 
-MLtraq helps AI developers design, execute and share experiments.
+The open-source Python library for AI developers to design, execute and share experiments.
 Track anything, reproduce and collaborate, resume the computation state anywhere.
-Standing on open standards.
 
 ---
 
@@ -42,9 +41,9 @@ Standing on open standards.
 ## Motivations & benefits
 
 
-* **Offers extreme tracking and interoperability**: Using native database types, Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles.
+* **Offers extreme tracking and interoperability**: Using native database types, [Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
-* **Promotes distributed collaboration**: Seamlessly create, store, manage, reload, resume and share experiments with your team in-memory or [using any SQL database](advanced/storage.md).
+* **Promotes distributed collaboration**: Seamlessly create, store, reload, mix, resume and share experiments with your team in-memory and [using any SQL database](advanced/storage.md).
 
 
 ## Key features
@@ -57,9 +56,9 @@ Standing on open standards.
 
 ## Limitations
 
-* **Not designed for MLOps**: The aim of experimentation is to explore the computational spectrum of the possibilities: algorithms, data structures, model architectures, formulation and validation of hypotheses. Dataset and model versioning, model deployment, CI/CD pipelines, monitoring & triggering are out of scope.
-* **Computation**: The managed execution is optional. The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Storing large objects (>1GB) is out of scope. Database persistence [supports a wide range of types](./advanced/storage.md), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and PyArrow objects.
+* **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`. The managed execution is optional.
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and PyArrow objects.
+The database is not a good fit for large (>1GB) artifacts. To store model weights, images, datasets, pickled scikit-learn models, [use a separate artifacts store](./howto/02-artifacts-storage.md).
 
 ## Requirements
 

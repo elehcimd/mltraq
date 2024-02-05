@@ -3,4 +3,11 @@
 You are welcome to cite MLtraq in your research:
 
 ```
+@software{mltraq2022,
+  author = {Michele Dallachiesa},
+  license = {BSD-3},
+  title = {{MLtraq}},
+  url = {https://mltraq.com/},
+  year = {2024}
+}
 ```
