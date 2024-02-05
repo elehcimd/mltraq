@@ -28,22 +28,22 @@ Track and Collaborate on AI Experiments.
 </h1>
 
 The open-source Python library for AI developers to design, execute and share experiments.
-Track anything, reproduce and collaborate, resume the computation state anywhere.
+Track anything, reproduce, collaborate, and resume the computation state anywhere.
 
 ---
 
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
 * **License**: [BSD 3-Clause](https://mltraq.com/license/)
-* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/) and [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
+* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
 
 
 ## Motivations & benefits
 
 
-* **Offers extreme tracking and interoperability**: Using native database types, [Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
+* **Extreme tracking and interoperability**: Using native database types, [Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
-* **Promotes distributed collaboration**: Seamlessly create, store, reload, mix, resume and share experiments with your team in-memory and [using any SQL database](advanced/storage.md).
+* **Promoting distributed collaboration**: Seamlessly create, store, reload, mix, resume and share experiments with your team in-memory and [using any SQL database](advanced/storage.md).
 
 
 ## Key features
