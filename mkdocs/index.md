@@ -27,9 +27,8 @@ hide:
 Track and Collaborate on AI Experiments.
 </h1>
 
-MLtraq helps AI developers design, execute and share experiments.
+The open-source Python library for AI developers to design, execute and share experiments.
 Track anything, reproduce and collaborate, resume the computation state anywhere.
-Standing on open standards.
 
 ---
 
