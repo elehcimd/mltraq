@@ -57,7 +57,8 @@ Track anything, reproduce and collaborate, resume the computation state anywhere
 ## Limitations
 
 * **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`. The managed execution is optional.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and PyArrow objects. Storage of large artifacts (>1GB, model weights, images, datasets, pickled scikit-learn models) is flexible and [can be implemented with `steps`](./howto/02-artifacts-storage.md).
+* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, Numpy, Pandas and PyArrow objects.
+The database is not a good fit for large (>1GB) artifacts. To store model weights, images, datasets, pickled scikit-learn models, [use a separate artifacts store](./howto/02-artifacts-storage.md).
 
 ## Requirements
 
