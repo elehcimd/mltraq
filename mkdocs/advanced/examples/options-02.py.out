@@ -16,4 +16,4 @@
  'serialization': {'compression': {'codec': 'uncompressed'},
                    'serializer': 'DataPakSerializer',
                    'store_unsafe_pickle': False},
- 'tqdm': {'delay': 0, 'disable': True, 'leave': False}}
+ 'tqdm': {'delay': 0.5, 'disable': True, 'leave': False}}
