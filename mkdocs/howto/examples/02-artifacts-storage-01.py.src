@@ -75,7 +75,7 @@ experiment = session.load("example")
 experiment.execute([load_artifacts], args_field="args")
 
 # Verify hashes of reloaded binary blobs
-print(experiment.runs.df()[["cks1", "cks2", "blobs_match"]])
+print(experiment.runs.df().blobs_match)
 
 # Remove temporary directory
 temp_dir.cleanup()
