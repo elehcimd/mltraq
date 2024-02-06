@@ -3,7 +3,7 @@
 You are welcome to cite MLtraq in your research:
 
 ```
-@software{mltraq2022,
+@software{mltraq2024,
   author = {Michele Dallachiesa},
   license = {BSD-3},
   title = {{MLtraq}},
