@@ -18,13 +18,13 @@ Track and Collaborate on AI Experiments.
 </h1>
 
 The open-source Python library for AI developers to design, execute and share experiments.
-Track anything, reproduce and collaborate, resume the computation state anywhere.
+Track anything, reproduce, collaborate, and resume the computation state anywhere.
 
 ---
 
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
-* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
-* **License**: [BSD 3-Clause](https://mltraq.com/license/)
-* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/) and [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
+* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq) (License: [BSD 3-Clause](https://mltraq.com/license/))
+* **Discussions**: [Ask questions, share ideas, engage](https://github.com/elehcimd/mltraq/discussions)
+* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
 
 ---

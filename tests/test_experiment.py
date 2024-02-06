@@ -1,7 +1,7 @@
 import mltraq
 import numpy as np
 import pytest
-from mltraq import options
+from mltraq import Run, options
 from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException
 from mltraq.runs import RunsException
@@ -247,7 +247,7 @@ def test_experiment_exection_no_runs():
     """
     s = mltraq.create_session()
 
-    def f(run):
+    def f(run: Run):
         run.fields.a = 123
 
     e = s.create_experiment(name="test")
@@ -401,7 +401,7 @@ def test_experiment_runs_reload_execution():
     e = s.create_experiment("test")
     e.add_runs(A=[10, 100, 1000])
 
-    def step_inc(run):
+    def step_inc(run: Run):
         if "A" in run.fields:
             run.fields.A += run.params.A
         else:

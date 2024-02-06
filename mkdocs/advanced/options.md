@@ -71,7 +71,7 @@ Listing the default values of the options. The generation of the documentation (
     * `"database.echo"`, `"database.pool_pre_ping"`, `"database.url"` are passed to SQLAlchemy.
     * `"experiments_tablename"` defines the table name used to index the experiments and their meta data. `"experiment_tableprefix"` is the table prefix used for individual experiment tables.
 
-* Options `"execution.*"` cover how experiments (and their runs) are execucted.
+* Options `"execution.*"` cover how experiments (and their runs) are executed.
     * If `"execution.exceptions.compact_message"` is set to true, exceptions raised within runs are reported with a compact, friendly format. It might hide useful context to debug errors, so it's False by default.
 
 * Options `"reproducibility.*"` handle outputs can be reproduced accurately.
