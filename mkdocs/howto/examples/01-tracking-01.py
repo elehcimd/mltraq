@@ -52,7 +52,7 @@ experiment.execute([step], args_field="args")
 
 # Print the tracked sequence in one of the executed runs.
 print("Contents of sequence in a single run:")
-print(experiment.runs.first().fields.sequence.df())
+print(experiment.runs.first().fields.sequence.df()[["n_executions", "random"]])
 print("--\n")
 
 print("Contents of X, N and score on all runs:")

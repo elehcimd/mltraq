@@ -98,7 +98,7 @@ def create_experiment(
     name: str | None = None, url: str | None = None, ask_password: bool | None = None, **fields
 ) -> Experiment:
     """
-    Create a new experiment binded to a new session. Shortcut to create a single experiment.
+    Create a new experiment bound to a new session. Shortcut to create a single experiment.
     """
 
     return Session(url=url, ask_password=ask_password).create_experiment(name=name, **fields)

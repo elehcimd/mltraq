@@ -348,7 +348,7 @@ class Experiment:
         store_unsafe_pickle: bool | None = None,
     ):
         """
-        Persist an experiment to the binded database, honoring `if_exists` the `store_unsafe_pickle`.
+        Persist an experiment to the bound database, honoring `if_exists` the `store_unsafe_pickle`.
         If `if_exists` is set to "fail" and the experiment exists, an exception will be triggered.
         To overwrite existing experiments, set `if_exists` to "replace".
         """
