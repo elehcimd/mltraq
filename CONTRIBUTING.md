@@ -25,7 +25,7 @@ To get started, follow these steps:
     ```
 
 
-## Submitting Changes
+## Submitting changes
 
 When you're ready to contribute, follow these steps:
 
