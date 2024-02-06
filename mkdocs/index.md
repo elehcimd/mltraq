@@ -33,8 +33,8 @@ Track anything, reproduce, collaborate, and resume the computation state anywher
 ---
 
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
-* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq)
-* **License**: [BSD 3-Clause](https://mltraq.com/license/)
+* **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq) (License: [BSD 3-Clause](https://mltraq.com/license/))
+* **Discussions**: [Ask questions, share ideas, engage](https://github.com/elehcimd/mltraq/discussions)
 * **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
 
 
