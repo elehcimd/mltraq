@@ -1,4 +1,3 @@
-from random import random
 
 import mltraq
 import numpy as np
@@ -14,12 +13,24 @@ print(experiment)
 print("--\n")
 
 
+def fibonacci(n):
+    """
+    Return n-th value in Fibonacci series.
+    """
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+
 # Define a step function to execute on the runs.
 def step(run):
     """
     This step tracks:
      1. the number of times we call it in `N`
-     2. A sequential log of random numbers generated at each execution in `sequence`
+     2. A sequential log of Fibonacci numbers generated at each execution in `sequence`
      3. A constant scalar in `score`
      4. A constant Numpy array in `predictions`
     """
@@ -31,7 +42,7 @@ def step(run):
     run.fields.N = run.fields.get("N", 0)
     run.fields.N += 1
     run.fields.sequence = run.fields.get("sequence", mltraq.Sequence())
-    run.fields.sequence.append(n_executions=run.fields.sequence.size() + 1, random=random())  # noqa
+    run.fields.sequence.append(n=run.fields.N, fibonacci=fibonacci(run.fields.N))
     run.fields.score = 1
     run.fields.predictions = np.array([1, 2, 3])
 
@@ -52,7 +63,7 @@ experiment.execute([step], args_field="args")
 
 # Print the tracked sequence in one of the executed runs.
 print("Contents of sequence in a single run:")
-print(experiment.runs.first().fields.sequence.df()[["n_executions", "random"]])
+print(experiment.runs.first().fields.sequence.df()[["n", "fibonacci"]])
 print("--\n")
 
 print("Contents of X, N and score on all runs:")
