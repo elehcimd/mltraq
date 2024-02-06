@@ -1,8 +1,8 @@
-import mltraq
 import numpy as np
+from mltraq import Run, Sequence, create_session
 
 # Create a new session, bound to an in-memory SQLite database by default.
-session = mltraq.create_session()
+session = create_session()
 print(session)
 print("--\n")
 
@@ -25,7 +25,7 @@ def fibonacci(n):
 
 
 # Define a step function to execute on the runs.
-def step(run):
+def step(run: Run):
     """
     This step tracks:
      1. the number of times we call it in `N`
@@ -40,7 +40,7 @@ def step(run):
     run.fields.X = run.params.X
     run.fields.N = run.fields.get("N", 0)
     run.fields.N += 1
-    run.fields.sequence = run.fields.get("sequence", mltraq.Sequence())
+    run.fields.sequence = run.fields.get("sequence", Sequence())
     run.fields.sequence.append(
         n=run.fields.N, fibonacci=fibonacci(run.fields.N)
     )

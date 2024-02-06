@@ -1,7 +1,7 @@
-from mltraq import create_experiment
+from mltraq import Run, create_experiment
 
 
-def step_sum(run):
+def step_sum(run: Run):
     run.fields.sum_ABX = run.params.A + run.params.B + run.config.X
 
 
