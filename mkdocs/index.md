@@ -8,8 +8,8 @@ hide:
 #
 
 <p align="center">
-  <img height="50%" width="50%" src="assets/img/logo-wide-black.svg#only-light" alt="MLtraq">
-  <img height="50%" width="50%" src="assets/img/logo-wide-white.svg#only-dark" alt="MLtraq">
+  <img height="75%" width="75%" src="assets/img/logo-wide-black.svg#only-light" alt="MLtraq">
+  <img height="75%" width="75%" src="assets/img/logo-wide-white.svg#only-dark" alt="MLtraq">
 </p>
 
 <p align="center">
@@ -35,16 +35,16 @@ Track anything, reproduce, collaborate, and resume the computation state anywher
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq) (License: [BSD 3-Clause](https://mltraq.com/license/))
 * **Discussions**: [Ask questions, share ideas, engage](https://github.com/elehcimd/mltraq/discussions)
-* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work.
+* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work
 
 
 ## Motivations & benefits
 
+* **Extreme tracking and interoperability**: With native database types, [Numpy and PyArrow serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
-* **Extreme tracking and interoperability**: Using native database types, [Numpy and PyArrow native serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
+* **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or cloud SQL database](advanced/storage.md).
 
-* **Promoting distributed collaboration**: Seamlessly create, store, reload, mix, resume and share experiments with your team in-memory and [using any SQL database](advanced/storage.md).
-
+* **Flexible and open**: Interact with your experiments using Python, Pandas, and SQL from Python scripts, Jupyter notebooks, and dashboards without vendor lock-in.
 
 ## Key features
 
