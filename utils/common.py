@@ -11,6 +11,11 @@ def local(args: List[str] | str) -> str:
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa
 
 
+def execute(cmd: str):
+    print(f"Executing: {cmd}")
+    assert os.system(cmd) == 0  # noqa
+
+
 def get_package_version(pathname: str) -> str:
     section_match = False
     with open(pathname, "rb") as f:
