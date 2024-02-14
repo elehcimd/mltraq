@@ -75,8 +75,6 @@ nav:
     - tutorial/03-parameters.md
     - tutorial/04-storage.md
     - tutorial/05-ml.md
-  - FAQ:
-    - faq.md    
   - HOWTO:
     - howto/01-tracking.md
     - howto/02-artifacts-storage.md
