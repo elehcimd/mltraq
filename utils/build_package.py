@@ -1,11 +1,6 @@
 import os
 
-from common import get_package_version, project_dir, project_name
-
-
-def execute(cmd: str):
-    print(f"Executing: {cmd}")
-    assert os.system(cmd) == 0  # noqa
+from common import execute, get_package_version, project_dir, project_name
 
 
 def inc_version() -> str:

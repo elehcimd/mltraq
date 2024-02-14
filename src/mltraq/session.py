@@ -74,7 +74,8 @@ class Session:
         """
         Persist the experiment on the database linked by the session (as a copy), and return it.
         The database considered is the one of the session, allowing us to copy experiments
-        between datasets. The new experiment will have a different UUID and its name will be retained.
+        between datasets. The new experiment will have a different UUID and its name will be retained,
+        if not specified otherwise via `name`.
 
         If `name` is passed, it is used as name of the experiment to persist.
 

@@ -306,8 +306,7 @@ def chunker(seq: List, size: int) -> List[List]:
     where each sub-list is up to a certain chunk `size`.
     """
 
-    # flake8 complains on E203 whitespace before ':'.
-    return (seq[pos : pos + size] for pos in range(0, len(seq), size))  # noqa
+    return (seq[pos : pos + size] for pos in range(0, len(seq), size))
 
 
 def tqdm_chunks(

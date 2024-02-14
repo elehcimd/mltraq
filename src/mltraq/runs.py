@@ -72,7 +72,7 @@ class Runs(dict):
         if len(self) == 0:
             return pd.DataFrame(columns=["id_run"])
 
-        df = pd.json_normalize([{**run.fields, **{"id_run": run.id_run}} for run in self.values()], max_level=max_level)
+        df = pd.json_normalize([run.fields | {"id_run": run.id_run} for run in self.values()], max_level=max_level)
         return reorder_columns(df, ["id_run"])
 
     def handle_args_field(self, name: str, config: dict) -> dict:

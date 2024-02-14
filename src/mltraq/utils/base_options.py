@@ -43,13 +43,17 @@ class BaseOptions:
             cls._instance.values = copy.deepcopy(cls.default_values)
         return cls._instance
 
-    def get(self, path: str) -> object:
+    def get(self, path: str, null_if_missing: bool = False) -> object:
         """
         Returns option or dictionary representing the subtree at `path`.
+        If `null_if_missing` is True, return NULL if the key is missing,
+        otherwise fail.
         """
         steps = path.split(".")
         d = self.values
         for step in steps:
+            if step not in d and null_if_missing:
+                return None
             d = d[step]
 
         return d
