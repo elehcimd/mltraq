@@ -1,4 +1,3 @@
-import logging
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -6,9 +5,7 @@ import matplotlib.ticker as mtick
 import pandas as pd
 from scipy.stats import sem
 
-from mltraq.opts import options
-
-log = logging.getLogger(__name__)
+from mltraq import options
 
 
 def stderr(a):
@@ -18,7 +15,7 @@ def stderr(a):
         return sem(a, nan_policy="omit")
 
 
-def bar_plot(  # noqa: C901
+def bar_plot(  # noqa
     df: pd.DataFrame,
     x: str,
     y: str,
@@ -37,7 +34,6 @@ def bar_plot(  # noqa: C901
     y_logscale: bool = False,
     y_grid: bool = False,
     ax: Any | None = None,
-    hatches: bool = False,
 ):
     """
     Bar plot results of an experiment:
@@ -60,31 +56,23 @@ def bar_plot(  # noqa: C901
     `y_logscale`: If true, set logscale for Y
     `y_grid`: If true, show grid on Y
     `ax`: If not none, use it as axis object to draw on
-    `hatches`: Show hatches on bars
     """
 
     x_label = x if not x_label else x_label
     y_label = y if not y_label else y_label
 
-    rc = options().get("matplotlib.rc", null_if_missing=True)
-    style = options().get("matplotlib.style", null_if_missing=True) or "default"
+    rc = options.get("matplotlib.rc", null_if_missing=True)
+    style = options.get("matplotlib.style", null_if_missing=True) or "default"
 
     with plt.rc_context(rc), plt.style.context(style):
 
         if ax is None:
-            _, ax = plt.subplots(figsize=options().get("matplotlib.figsize", null_if_missing=True) or (5, 5))
+            _, ax = plt.subplots(figsize=options.get("matplotlib.figsize"))
 
         aggfunc = ["mean", "median", stderr]
 
         if group is None:
-
-            # Sort bars in ascending average value
-
             df = df.groupby(x, dropna=False).agg({y: aggfunc})
-
-            # Sort bars in ascending mean order
-            df = df.sort_values(by=(y, "mean"))
-
             df[y]["mean"].plot(
                 kind="bar",
                 yerr=df[y]["stderr"] if yerr else None,
@@ -93,10 +81,6 @@ def bar_plot(  # noqa: C901
             )
         else:
             df = df.pivot_table(index=x, columns=group, values=y, aggfunc=aggfunc, dropna=False)
-
-            # Sort bars in ascending average value
-            df = df.reindex(df.mean().sort_values().index, axis=1)
-
             df.plot(
                 kind="bar",
                 y="mean",
@@ -117,6 +101,7 @@ def bar_plot(  # noqa: C901
         ax.set_xlabel(x_label)
         ax.set_ylabel(y_label)
         ax.tick_params(axis="x", labelrotation=0)
+
         if y_logscale:
             ax.set_yscale("log")
             ax.tick_params(axis="y", which="minor")
@@ -128,11 +113,6 @@ def bar_plot(  # noqa: C901
         else:
             if y_grid:
                 ax.grid(axis="y", which="major")
-
-        if hatches:
-            hatches = ("./O\o*" * len(ax.patches))[: len(ax.patches)]
-            for idx, bar in enumerate(ax.patches):
-                bar.set_hatch(hatches[idx])
 
         if x_lim:
             ax.set_xlim(**x_lim)

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.1.138"
-description = "Track and Collaborate on ML/AI Experiments."
+version = "0.0.116"
+description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
 readme = "README.md"
@@ -44,7 +44,6 @@ mkdocstrings = {extras = ["python"], version = ">=0.19.1"}
 mkdocs-charts-plugin = "^0.0.10"
 mdx-include = ">=1.4.2"
 anybadge = ">=1.14.0"
-matplotlib = ">=3.6.2"
 certifi = ">=2022.12.7"
 pyspellchecker = "^0.8.1"
 mypy = "^1.8.0"
@@ -77,7 +76,7 @@ preview = true
 line-length = 120
 lint.select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
 target-version = "py37"
-lint.ignore = ["A003", "S101", "T201", "T203", "S311"]
+lint.ignore = ["A003", "S101", "T201", "T203"]
 extend-include = ["*.ipynb"]
 
 [tool.pytest.ini_options]
