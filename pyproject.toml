@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.115"
+version = "0.0.116"
 description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -70,6 +70,7 @@ line-length = 120
 lint.select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
 target-version = "py37"
 lint.ignore = ["A003", "S101", "T201", "T203"]
+extend-include = ["*.ipynb"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

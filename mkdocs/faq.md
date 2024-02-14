@@ -13,7 +13,7 @@ In summary, MLflow is a better fit if you prioritize MLOps. MLtraq is a good can
 ## Does it work for Torch models, too?
 
 Yes, MLtraq is agnostic to the specific model choice.
-To add a PyTorch model, we can start with the [IRIS Flowers Classification example](./index.md#example-3-iris-flowers-classification). Using a [skorch classifier](https://skorch.readthedocs.io/en/stable/classifier.html), we can add one more scikit-learn compatible model. Alternatively, one can redesign the train_predict step without using scikit-learn. The results will include the accuracy score for the newly added model.
+To add a PyTorch model, we can start with the [IRIS Flowers Classification example](./tutorial/05-ml.md). Using a [skorch classifier](https://skorch.readthedocs.io/en/stable/classifier.html), we can add one more scikit-learn compatible model. Alternatively, one can redesign the train_predict step without using scikit-learn. The results will include the accuracy score for the newly added model.
 
 ## Can it track the model's state during training, even if there's an early stop, for later continuation?
 
