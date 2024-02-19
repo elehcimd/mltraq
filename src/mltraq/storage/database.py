@@ -118,7 +118,7 @@ class Database:
 
         with self.session() as session:
             if len(df) == 0 or options.get("tqdm.disable"):
-                # In case of zero rows, chunked inserts won't craete the table.
+                # In case of zero rows, chunked inserts won't create the table.
                 # This is why, for zero rows or in case of no tqdm, we swich to a
                 # single call to df.to_sql(...).
                 df.to_sql(name, session.bind, if_exists=if_exists, index=False, dtype=dtype)

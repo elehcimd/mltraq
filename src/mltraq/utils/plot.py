@@ -72,7 +72,14 @@ def bar_plot(  # noqa
         aggfunc = ["mean", "median", stderr]
 
         if group is None:
+
+            # Sort bars in ascending average value
+
             df = df.groupby(x, dropna=False).agg({y: aggfunc})
+
+            # Sort bars in ascending mean order
+            df = df.sort_values(by=(y, "mean"))
+
             df[y]["mean"].plot(
                 kind="bar",
                 yerr=df[y]["stderr"] if yerr else None,
@@ -81,6 +88,10 @@ def bar_plot(  # noqa
             )
         else:
             df = df.pivot_table(index=x, columns=group, values=y, aggfunc=aggfunc, dropna=False)
+
+            # Sort bars in ascending average value
+            df = df.reindex(df.mean().sort_values().index, axis=1)
+
             df.plot(
                 kind="bar",
                 y="mean",
@@ -101,7 +112,6 @@ def bar_plot(  # noqa
         ax.set_xlabel(x_label)
         ax.set_ylabel(y_label)
         ax.tick_params(axis="x", labelrotation=0)
-
         if y_logscale:
             ax.set_yscale("log")
             ax.tick_params(axis="y", which="minor")

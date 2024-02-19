@@ -224,6 +224,23 @@ def test_experiment_replace():
     assert s.load("test").runs.first().fields.a == 124
 
 
+def test_experiment_overwrite():
+    """
+    Test: Verify that an experiment can be overwritten.
+    """
+    session = mltraq.create_session()
+    session.create_experiment("experiment").persist()
+    with pytest.raises(ExperimentAlreadyExists):
+        # By default, if the expeirment already exists, it's not overwritten.
+        session.create_experiment(
+            "experiment",
+        ).persist()
+    # We can overwrite it with "replace".
+    session.create_experiment(
+        "experiment",
+    ).persist(if_exists="replace")
+
+
 def test_copy():
     """
     Test: We can create a deep copy of an experiment.
