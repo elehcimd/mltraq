@@ -150,7 +150,7 @@ class Run:
         Return a Pandas dataframe representing the fields of the run, flattending `run.fields` up to `max_level`.
         """
 
-        df = pd.json_normalize([{**run.fields, **{"id_run": run.id_run}} for run in [self]], max_level=max_level)
+        df = pd.json_normalize(self.fields | {"id_run": self.id_run}, max_level=max_level)
         return reorder_columns(df, ["id_run"])
 
 

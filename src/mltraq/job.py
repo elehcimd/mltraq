@@ -11,16 +11,6 @@ from mltraq.utils.exceptions import ExceptionWithMessage
 log = logging.getLogger(__name__)
 
 
-try:
-    # We expect this import to work if Dask is installed/requested. Otherwise, not necessary.
-    from distributed import get_client
-
-    dask_installed = True
-except ImportError:
-    dask_installed = False
-    pass
-
-
 class MissingDependency(ExceptionWithMessage):
     pass
 
@@ -101,8 +91,10 @@ class Job:
         n_jobs = self.n_jobs
 
         if self.backend == "dask":
-            if not dask_installed:
-                raise MissingDependency("Dask backend requested but not installed, aborting.")
+            try:
+                from distributed import get_client
+            except ImportError as e:
+                raise MissingDependency("Dask backend requested but not installed, aborting.") from e
             client = get_client()
             log.debug(f"Using backend: {self.backend}")
             log.debug(f"Scheduler: {client.scheduler.address}")

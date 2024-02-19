@@ -31,11 +31,11 @@ def test_spellchecker():
     """
     Test: spellcheck mkdocs files, honoring a whitelist.
     """
-    md_pathnames = glob.glob(f"{PROJECT_DIR}/mkdocs/**/*.md", recursive=True)
+    pathnames = glob.glob(f"{PROJECT_DIR}/mkdocs/**/*.md", recursive=True)
     spell = init_spellchecker()
     misspelled = set()
-    for md_pathname in md_pathnames:
-        misspelled |= spellcheck_file(md_pathname, spell)
+    for pathname in pathnames:
+        misspelled |= spellcheck_file(pathname, spell)
 
     if len(misspelled) > 0:
         # Report mispelled tokens, s.t. they can be either fixed or added to whitelist.
