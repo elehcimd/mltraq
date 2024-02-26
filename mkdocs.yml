@@ -83,6 +83,7 @@ nav:
     - advanced/state.md
     - advanced/storage.md
     - advanced/options.md
+    - advanced/datastore.md
   # - Blog: blog/index.md
   - Benchmarks:
     - benchmarks/speed.md

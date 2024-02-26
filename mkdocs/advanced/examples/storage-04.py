@@ -12,7 +12,7 @@ with experiment.run() as run:
     run.fields.result = np.linspace(0, 100, num=20)
 
 # Set explicitly the compression codec used.
-with options.ctx({"serialization.compression.codec": "zlib"}):
+with options().ctx({"serialization.compression.codec": "zlib"}):
     experiment.persist()
 
 serialized = experiment.db.query("SELECT result from experiment_example")["result"].iloc[0]

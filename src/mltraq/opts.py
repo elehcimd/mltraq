@@ -9,7 +9,7 @@ class Options(BaseOptions):
     """
 
     default_values = {
-        "reproducibility": {"random_seed": 123, "fake_incremental_uuids": False},
+        "reproducibility": {"random_seed": 123, "sequential_uuids": False},
         "database": {
             "url": "sqlite:///:memory:",
             "echo": False,
@@ -20,6 +20,7 @@ class Options(BaseOptions):
             "experiments_tablename": "experiments",
             "experiment_tableprefix": "experiment_",
         },
+        "datastore": {"url": "file:///mltraq.datastore", "relative_path_prefix": "undefined"},
         "execution": {
             "exceptions": {"compact_message": False},
             "backend": DEFAULT_BACKEND,
@@ -36,7 +37,15 @@ class Options(BaseOptions):
     }
 
 
-# Singleton object that handles options.
-# It is accessible also within runs running in parallel thanks
-# to the propagation of its values on the run workers.
-options: BaseOptions = Options.instance()
+def options() -> BaseOptions:
+    """
+    Returns singleton object of options.
+    """
+
+    # In some complex cases (parallel execution of runs, options
+    # imported in different ways by different modules), the
+    # object is quietly copied, causing errors hard to debug.
+    #
+    # By always calling options(), this issue disappears and
+    # things work as expected.
+    return Options.instance()

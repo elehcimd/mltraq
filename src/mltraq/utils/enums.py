@@ -2,8 +2,8 @@ from enum import Enum
 
 from mltraq.utils.exceptions import InvalidInput
 
-# Enum used with if-then situation with insertions
-IfExists = Enum("IfExists", ["replace", "fail"])
+# Enum used with if-then situation with insertions/deletions
+IfExists = Enum("IfExists", ["replace", "delete", "fail"])
 
 # Enum used with if-then situations with deletions
 IfMissing = Enum("IfMissing", ["ignore", "fail"])

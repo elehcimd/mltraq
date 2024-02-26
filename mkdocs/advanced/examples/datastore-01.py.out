@@ -1,0 +1,13 @@
+ID experiment: d65df69e-1175-44a5-be2f-2232765703b8
+--
+
+Contents of datastore directory:
+
+d65df69e-1175-44a5-be2f-2232765703b8/
+d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703ba
+d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703bb
+--
+
+a <class 'numpy.ndarray'> [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+b <class 'pandas.core.series.Series'> [1 2 3]
+c <class 'int'> 123

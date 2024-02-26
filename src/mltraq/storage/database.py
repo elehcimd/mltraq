@@ -1,7 +1,6 @@
 import getpass
 import logging
 import re
-import sys
 import uuid
 from functools import partial
 from typing import Callable, Iterator, List
@@ -27,9 +26,9 @@ QueryType = Query | str | Select | TextClause
 
 log = logging.getLogger(__name__)
 
-# Fixed incremental UUID seed, to be used only for generating
-# predictable UUIDs for examples and documentation.
-next_fake_uuid_int = 176480063973334418222224317881181085494
+# If options "reproducibility.sequential_uuids" set to true,
+# next UUID (as int) to be used.
+next_sequential_uuid = 0
 
 
 class Database:
@@ -59,7 +58,7 @@ class Database:
         # Set up database connector, without establishing any connection yet
         # https://docs.sqlalchemy.org/en/13/core/pooling.html#disconnect-handling-pessimistic
         self.engine = create_engine(
-            self.url, echo=options.get("database.echo"), pool_pre_ping=options.get("database.pool_pre_ping")
+            self.url, echo=options().get("database.echo"), pool_pre_ping=options().get("database.pool_pre_ping")
         )
 
         # Session factory
@@ -73,8 +72,8 @@ class Database:
         Initialize the URL to the database, handling defaults,
         special cases and interactive passwords.
         """
-        url = options.default_if_null(url, "database.url")
-        ask_password = options.default_if_null(ask_password, "database.ask_password")
+        url = options().default_if_null(url, "database.url")
+        ask_password = options().default_if_null(ask_password, "database.ask_password")
 
         if url.startswith("postgres://"):
             # Re-introduce support for the deprecated and then dropped "postgres://" prefix
@@ -117,13 +116,13 @@ class Database:
         """
 
         with self.session() as session:
-            if len(df) == 0 or options.get("tqdm.disable"):
+            if len(df) == 0 or options().get("tqdm.disable"):
                 # In case of zero rows, chunked inserts won't create the table.
                 # This is why, for zero rows or in case of no tqdm, we swich to a
                 # single call to df.to_sql(...).
                 df.to_sql(name, session.bind, if_exists=if_exists, index=False, dtype=dtype)
             else:
-                dfs = chunker(df, options.get("database.query_write_chunk_size"))
+                dfs = chunker(df, options().get("database.query_write_chunk_size"))
                 funcs = []
                 for idx, df_chunk in enumerate(dfs):
 
@@ -252,7 +251,7 @@ def pandas_query(
 
     log.debug(f"SQL: {query.compile(session.bind)}")
 
-    if options.get("tqdm.disable"):
+    if options().get("tqdm.disable"):
         return pd.read_sql_query(query, session.bind)
 
     if tqdm_total is None:
@@ -262,7 +261,7 @@ def pandas_query(
     # With SQLALchemy 2.0, we need to pass session.connection() instead of session.bind.
     # `df_chunks`` is an iterator where `chunksize` is the number of rows to include in each chunk.
     df_chunks_iterator = pd.read_sql_query(
-        sql=query, con=session.connection(), chunksize=options.get("database.query_read_chunk_size")
+        sql=query, con=session.connection(), chunksize=options().get("database.query_read_chunk_size")
     )
 
     def fetch_chunk(df_chunk):
@@ -279,23 +278,22 @@ def pandas_query(
     return pd.concat(dfs, ignore_index=True)
 
 
-def next_uuid() -> uuid.UUID:
+def next_uuid(seed: int | None = None, inc: int = 1) -> uuid.UUID:
     """
     Return the next UUID to use.
 
-    If option "reproducibility.fake_incremental_uuids" is true,
-    return a reproducible sequence of UUIDs, to be used for
-    tests and documentation. Otherwise, return a random UUID.
+    If "reproducibility.sequential_uuids" is set to True:
+        - Return an ascending, sequential list of UUIDs, with increments of `inc`.
+        - `seq` is used as static variable and should not be set directly.
     """
 
-    global next_fake_uuid_int
+    global next_sequential_uuid
 
-    if options.get("reproducibility.fake_incremental_uuids"):
-        # Use a predefined random UUID as seed to remove randomness.
-        # Used to make documentation examples and tests reproducible.
-        # Apply a simple function s.t. the next UUID doesn't look too similar.
-        next_fake_uuid_int += int(next_fake_uuid_int / 12345) % sys.maxsize
-        return uuid.UUID(int=next_fake_uuid_int)
+    if options().get("reproducibility.sequential_uuids"):
+        if seed:
+            next_sequential_uuid = seed
+        next_sequential_uuid = (next_sequential_uuid + inc) % (2**128 - 1)
+        return uuid.UUID(int=next_sequential_uuid)
     else:
         return uuid.uuid4()
 
@@ -324,7 +322,7 @@ def tqdm_chunks(
     It returns a list of the accumulated `result` values.
     """
 
-    pbar = tqdm(**(options.get("tqdm") | {"total": total}))
+    pbar = tqdm(**(options().get("tqdm") | {"total": total}))
 
     pbar.clear()
     rets = []

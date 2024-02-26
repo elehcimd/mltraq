@@ -1,0 +1,53 @@
+import glob
+import tempfile
+
+import numpy as np
+from mltraq import DataStoreIO, create_experiment, options
+
+with tempfile.TemporaryDirectory() as dirname:
+
+    # Set datastore directory to temporary location
+    options().set("datastore.url", f"file:///{dirname}")
+
+    # Create a new experiment and execute a run
+    experiment = create_experiment()
+    with experiment.run() as run:
+        a = np.zeros(10)
+        b = b"11111"
+        run.fields.url_a = DataStoreIO.serialize_write(
+            a, relative_path_prefix=f"self_managed/{run.id_experiment}"
+        ).url
+        run.fields.url_b = DataStoreIO.write(
+            b, relative_path_prefix=f"self_managed/{run.id_experiment}"
+        ).url
+
+    print(f"ID experiment: {experiment.id_experiment}")
+    print("--\n")
+
+    print("Contents of datastore directory:")
+    # List files in datastore directory
+    for pathname in glob.glob(
+        "*/**", root_dir=f"{dirname}", recursive=True
+    ):
+        print(pathname)
+    print("--\n")
+
+    # Show urls and loaded values
+    fields = experiment.runs.first().fields
+    print("Field values:")
+    print("url_a", fields.url_a)
+    print("url_b", fields.url_b)
+    print("--\n")
+
+    print("Loaded values:")
+
+    # `a` is read and deserialized
+    a = DataStoreIO(fields.url_a).read_deserialize()
+    print("a", type(a), a)
+
+    # `b` is loaded directly, no serialization/deserialization
+    b = DataStoreIO(fields.url_b).read()
+    print("b", type(b), b)
+
+    # Delete directory containing the stored objects
+    DataStoreIO.delete("self_managed")

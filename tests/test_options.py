@@ -5,7 +5,7 @@ def test_option_get():
     """
     Test: We can get an option value.
     """
-    assert options.get("reproducibility.random_seed") == 123
+    assert options().get("reproducibility.random_seed") == 123
 
 
 def test_option_set_reset():
@@ -14,24 +14,24 @@ def test_option_set_reset():
     """
 
     # Initial value
-    assert options.get("reproducibility.random_seed") == 123
-    options.set("reproducibility.random_seed", 124)
+    assert options().get("reproducibility.random_seed") == 123
+    options().set("reproducibility.random_seed", 124)
     # Current value
-    assert options.get("reproducibility.random_seed") == 124
+    assert options().get("reproducibility.random_seed") == 124
 
-    options.reset("reproducibility.random_seed")
+    options().reset("reproducibility.random_seed")
     # Default value
-    assert options.get("reproducibility.random_seed") == 123
+    assert options().get("reproducibility.random_seed") == 123
 
 
 def test_option_context():
     """
     Text: We can temporarily set options with the context manager.
     """
-    assert options.get("reproducibility.random_seed") == 123
-    with options.ctx({"reproducibility.random_seed": 124}):
-        assert options.get("reproducibility.random_seed") == 124
-    assert options.get("reproducibility.random_seed") == 123
+    assert options().get("reproducibility.random_seed") == 123
+    with options().ctx({"reproducibility.random_seed": 124}):
+        assert options().get("reproducibility.random_seed") == 124
+    assert options().get("reproducibility.random_seed") == 123
 
 
 def test_option_context_parallel():
@@ -41,9 +41,9 @@ def test_option_context_parallel():
     """
 
     # Make sure that we're indeed setting a different value
-    assert options.get("reproducibility.random_seed") == 123
+    assert options().get("reproducibility.random_seed") == 123
 
-    with options.ctx({"reproducibility.random_seed": 124}):
+    with options().ctx({"reproducibility.random_seed": 124}):
 
         def f1(run: Run):
             # Without proper handling:
@@ -53,7 +53,7 @@ def test_option_context_parallel():
             # The correct behaviour is implemented transparently by the
             # logic of runs execution, passing an `options`` parameter
             # that doesn't interfere with the exposed interface.
-            assert options.get("reproducibility.random_seed") == 124
+            assert options().get("reproducibility.random_seed") == 124
 
         s = create_session()
         e = s.create_experiment("test")

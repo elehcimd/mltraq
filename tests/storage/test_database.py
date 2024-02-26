@@ -21,7 +21,7 @@ def test_drop_tables():
     Test: We can drop existing and unexisting tables
     """
     db = Database()
-    assert db.drop_table(options.get("database.experiments_tablename"))
+    assert db.drop_table(options().get("database.experiments_tablename"))
     assert not db.drop_table("table_not_existing")
 
 

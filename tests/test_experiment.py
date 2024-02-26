@@ -194,7 +194,7 @@ def test_experiment_many():
     e.execute(steps=[f1, f2], config={"inc": 5})
     e.persist()
 
-    prefix = options.get("database.experiment_tableprefix")
+    prefix = options().get("database.experiment_tableprefix")
     assert s.db.query(f"select count(*) as count_rows from {prefix}test").count_rows.iloc[0] == 2001  # noqa
 
 

@@ -1,10 +1,13 @@
+import tempfile
 import uuid
+from types import NoneType
 
 import pandas as pd
 import pyarrow
 import pytest
 from mltraq import Sequence, options
 from mltraq.storage.database import next_uuid
+from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
 from mltraq.utils.bunch import Bunch
 
@@ -55,11 +58,11 @@ def test_serialization_compression_onoff():
     obj = "THIS_IS_A_TEST THIS_IS_A_TEST"
     # Repeated pattern, otherwise we will find it even in the compressed blob
 
-    with options.ctx({"serialization.compression.codec": "uncompressed"}):
+    with options().ctx({"serialization.compression.codec": "uncompressed"}):
         data = DataPakSerializer.serialize(obj)
         assert b"THIS_IS_A_TEST THIS_IS_A_TEST" in data
 
-    with options.ctx({"serialization.compression.codec": "zlib"}):
+    with options().ctx({"serialization.compression.codec": "zlib"}):
         data = DataPakSerializer.serialize(obj)
         assert b"THIS_IS_A_TEST THIS_IS_A_TEST" not in data
 
@@ -74,6 +77,22 @@ def test_serialization_bunch():
     obj2 = DataPakSerializer.deserialize(data)
     assert isinstance(obj2, Bunch)
     assert obj2.a == 123
+
+
+def test_serialization_datastore():
+    """
+    Test: We can serialize/deserialize a Datastore(Bunch).
+    """
+
+    with tempfile.TemporaryDirectory() as tmpdirname, options().ctx(
+        {"datastore.url": f"file:///{tmpdirname}", "datastore.relative_path_prefix": "abc"}
+    ):
+        obj = DataStore({"a": 123})
+        data = DataPakSerializer.serialize(obj)
+        assert isinstance(data, bytes)
+        obj2 = DataPakSerializer.deserialize(data)
+        assert isinstance(obj2, DataStore)
+        assert obj2.a == 123
 
 
 def test_serialization_sequence():
@@ -100,6 +119,18 @@ def test_serialization_int():
     obj2 = DataPakSerializer.deserialize(data)
     assert isinstance(obj2, int)
     assert obj2 == 123
+
+
+def test_serialization_none():
+    """
+    Test: We can serialize/deserialize a None.
+    """
+    obj = None
+    data = DataPakSerializer.serialize(obj)
+    assert isinstance(data, bytes)
+    obj2 = DataPakSerializer.deserialize(data)
+    assert isinstance(obj2, NoneType)
+    assert obj2 is None
 
 
 def test_serialization_list():

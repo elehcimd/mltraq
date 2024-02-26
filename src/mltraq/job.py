@@ -5,8 +5,7 @@ import joblib
 from tqdm.auto import tqdm
 
 from mltraq.opts import options
-from mltraq.utils.base_options import validate_type
-from mltraq.utils.exceptions import ExceptionWithMessage
+from mltraq.utils.exceptions import ExceptionWithMessage, validate_type
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +32,7 @@ class ProgressParallel(joblib.Parallel):
         """
         Execute tasks in parallel with progress bar.
         """
-        with tqdm(**(options.get("tqdm") | {"total": self._total})) as self._pbar:
+        with tqdm(**(options().get("tqdm") | {"total": self._total})) as self._pbar:
             return joblib.Parallel.__call__(self, *args, **kwargs)
 
     def print_progress(self):
@@ -79,8 +78,8 @@ class Job:
         """
 
         self.tasks: list = validate_type(tasks, list)
-        self.backend = options.default_if_null(backend, "execution.backend")
-        self.n_jobs: int = validate_type(options.default_if_null(n_jobs, "execution.n_jobs"), int)
+        self.backend = options().default_if_null(backend, "execution.backend")
+        self.n_jobs: int = validate_type(options().default_if_null(n_jobs, "execution.n_jobs"), int)
 
     def execute(self) -> List[object]:
         """
