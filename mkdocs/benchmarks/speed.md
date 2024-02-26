@@ -2,7 +2,7 @@
 
 *Latest update: 2023.02.26*
 
-This article overviews the advantages of fast experiment tracking and presents a comparative time performance analysis of the most widely used experiment tracking solutions, and MLtraq, highlighting their strengths and weaknesses.
+This article overviews the advantages of fast experiment tracking and presents a comparative performance analysis of the most widely adopted solutions, and MLtraq, highlighting their strengths and weaknesses.
 
 !!! Info "TL;DR"
     **MLtraq is the fastest experiment tracking solution for workloads with up to hundreds of thousands of runs and arbitrarily large, complex Python objects.** However, it lacks the streaming of tracking data and a web dashboard.
