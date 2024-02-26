@@ -2,11 +2,23 @@
 
 *Latest update: 2023.02.26*
 
-In this analysis, we compare the experiment tracking speed of
-[Weights & Biases](https://wandb.ai/) (0.16.3), [MLflow](https://mlflow.org/) (2.10.2), [Neptune](https://neptune.ai/) (1.9.1),
-[Aim](https://aimstack.io/) (3.18.1), [Comet](https://www.comet.com/) (3.38.0) and [MLtraq](https://mltraq.com/) (0.0.118) by varying the number of experiments, runs and values as defined in the [key concepts](../tutorial/index.md).
+This article overviews the advantages of fast experiment tracking and presents a comparative time performance analysis of the most widely used experiment tracking solutions, and MLtraq, highlighting their strengths and weaknesses.
 
-The analysis benchmarks the tracking speed of `float` values and 1D `NumPy` arrays of varying size, disabling everything else such as logs, git, code, environment and system properties.
+!!! Info "TL;DR"
+    **MLtraq is the fastest experiment tracking solution for workloads with up to hundreds of thousands of runs and arbitrarily large, complex Python objects.** However, it lacks the streaming of tracking data and a web dashboard.
+
+In this analysis, we compare the experiment tracking speed of:
+
+* [Weights & Biases](https://wandb.ai/) (0.16.3)
+* [MLflow](https://mlflow.org/) (2.10.2)
+* [Neptune](https://neptune.ai/) (1.9.1)
+* [Aim](https://aimstack.io/) (3.18.1)
+* [Comet](https://www.comet.com/) (3.38.0)
+* [MLtraq](https://mltraq.com/) (0.0.118)
+
+Varying the number of experiments, runs and values as defined in the [key concepts](../tutorial/index.md).
+
+We benchmark the tracking speed of `float` values and 1D `NumPy` arrays of varying size, disabling everything else such as logs, git, code, environment and system properties.
 Experiments are executed offline with storage on the local filesystem. The system is a MacBook Pro (M2, 2022). The creation of directories and files is taken into account as a performance cost.
 
 For each experiment, we report the time in seconds (s). The reported results are averaged on `10` independent runs running in foreground, no parallelization.
@@ -16,6 +28,11 @@ References and instructions to reproduce the results, and more details on the se
 
 !!! Question "How can we improve this analysis?"
     In comparative analyses, there are always many nuances and little details that can make a big difference. You can [open a discussion](https://github.com/elehcimd/mltraq/discussions) to ask a question, or create a change request on the [issue tracker](https://github.com/elehcimd/mltraq/issues) if you find any issues. There might be ways to tune the methods to improve their performance that we missed, or other solutions worth considering.
+
+!!! Info
+    All solutions considered in this comparative analysis have made a positive impact in the industry and served as inspiration to guide the design of MLtraq.
+    Lastly, the many references to W&B are a testament to their very good community and documentation, and should not be considered as a criticism.
+
 
 ## Why tracking speed matters
 
@@ -38,7 +55,7 @@ The fine-grained logging/debugging of complex algorithms (not necessarily AI/ML 
 
 Workarounds to handle too much information come at a completeness/accuracy cost and include downsampling, summarization and histograms. 
 
-What if we can avoid workarounds, and simply track more efficiently?
+What if we can avoid the workarounds and track more efficiently?
 
 !!! Success "Tracking with less limitations is more powerful and robust."
 
@@ -48,9 +65,9 @@ Datasets, timeseries, forecasts, media files such as images, audio recordings an
 
 You might want to log a set of images at every step to inspect visually how the quality of the model is progressing, the datasets used in cross-validation with different configurations and random seeds, forecasts and other metrics, and more. Generally, you can produce a large quantity of heterogeneous information during the execution of complex algorithms that include, but it is not limited to, ML/AI model training.
 
-What if you can track arbitrarily large, complex Python objects, as frequently as you want?
+Most solutions have limited, very primitive and slow support for efficient serialization of complex Python objects. What if you could track anything as frequently as you want?
 
-!!! Success "Tracking arbitrarily large, complex Python objects makes tracking more powerful."
+!!! Success "Efficient tracking arbitrarily large, complex Python objects makes tracking more powerful."
 
 ## Tracking `float` values
 
@@ -167,12 +184,11 @@ In this experiment, we assess the time required to track a large number of array
 
 ## Conclusion
 
-* **MLtraq is the fastest experiment tracking solution for workloads with up to hundreds of thousands of runs and arbitrarily complex, large values**. The primary goal of other solutions gravitates toward dashboarding, streaming, third-party integrations and the complete model lifecycle management. Their support for rich modeling of experiments, runs and complex Python objects is missing or rather limited. We believe that these are important capabilities in the experimentation phase, worth optimizing.
+* **MLtraq is the fastest experiment tracking solution for workloads with up to hundreds of thousands of runs and arbitrarily large, complex Python objects**. The primary goal of other solutions gravitates toward dashboarding, streaming, third-party integrations and the complete model lifecycle management. Their support for rich modeling of experiments, runs and complex Python objects is missing or rather limited. We believe that these are important capabilities in the experimentation phase, worth optimizing.
 
 * **Relying solely on the filesystem as a database is a recipe for low performance**.
 As noted on the [SQLite website](https://www.sqlite.org/fasterthanfs.html), relying on a single file to store the local database copy could be
 35% faster than a filesystem-based solution. The higher start-up cost of having a proper database pays off in scalability and reliability.
-MLtraq provides the flexibility to store objects either in the data base or in the filesystem using the [Data store](../advanced/datastore.md) interface.
-Storing `float` values is more efficient within the data base and `NumPy` arrays can be stored in the filesystem to not overload the database.
+MLtraq provides the flexibility to choose where to store objects with the [Data store](../advanced/datastore.md) interface.
 
 * **The solutions that adopt threading to incorporate streaming capabilities pay the hidden cost of IPC (Inter-Process Communication) and the generally poor performance of threads in Python.** Further, the higher complexity results in threading-related failures, which we encountered and fighted with even in these simple comparative experiments.
