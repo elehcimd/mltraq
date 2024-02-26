@@ -20,7 +20,8 @@ BASIC_TYPES
   <class 'int'>,
   <class 'float'>,
   <class 'str'>,
-  <class 'bytes'>]
+  <class 'bytes'>,
+  <class 'NoneType'>]
 --
 
 CONTAINER_TYPES
@@ -30,6 +31,7 @@ CONTAINER_TYPES
 COMPLEX_TYPES
 [ <class 'mltraq.utils.bunch.Bunch'>,
   <class 'mltraq.utils.sequence.Sequence'>,
+  <class 'mltraq.storage.datastore.DataStore'>,
   <class 'pandas.core.frame.DataFrame'>,
   <class 'pandas.core.series.Series'>,
   <class 'pyarrow.lib.Table'>,

@@ -21,13 +21,13 @@ def test_serialization_picke():
     Test: We can configure via options the serializer to use.
     """
     obj = [1, 2, 3]
-    with options.ctx({"serialization.serializer": "PickleSerializer"}):
+    with options().ctx({"serialization.serializer": "PickleSerializer"}):
         data = serialize(obj)
     assert isinstance(data, bytes)
     obj2 = PickleSerializer.deserialize(data)
     assert isinstance(obj2, list) and obj2[0] == 1
 
-    with options.ctx({"serialization.serializer": "DataPakSerializer"}):
+    with options().ctx({"serialization.serializer": "DataPakSerializer"}):
         data = serialize(obj)
     assert isinstance(data, bytes)
     obj2 = DataPakSerializer.deserialize(data)

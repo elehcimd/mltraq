@@ -1,8 +1,17 @@
 import inspect
 import sys
 import traceback
+from typing import Any, TypeVar
 
 from mltraq.opts import options
+
+T = TypeVar("T")
+
+
+class TypeValidationError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
 class ExceptionWithMessage(Exception):
@@ -25,7 +34,7 @@ def exception_message() -> str:
     either a compact or a complete stack trace is reported.
     """
 
-    if options.get("execution.exceptions.compact_message"):
+    if options().get("execution.exceptions.compact_message"):
         return compact_exception_message()
     else:
         return complete_exception_message()
@@ -62,3 +71,16 @@ def compact_exception_message() -> str:
     }
 
     return f'{details["type"]} at {details["trace"]}: {details["message"]}'
+
+
+def validate_type(value: object, expected_type: T) -> Any:
+    """
+    Validate the type of `value` to be `expected_type`, if provided.
+    Otherwise, return `value` with no checks.
+    TODO: avoid use of Any.
+    """
+
+    if type(value) == expected_type:
+        return value
+    else:
+        raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")

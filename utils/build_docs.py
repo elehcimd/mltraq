@@ -8,6 +8,7 @@ from contextlib import redirect_stdout
 from typing import List
 
 from mltraq import options
+from mltraq.storage.database import next_uuid
 
 project_dir = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir)
 project_name = os.path.basename(project_dir)
@@ -22,7 +23,15 @@ def local_python(pathname: str) -> str:
     # Execute Python code contained in file, honoring custom options tailored for the examples:
     # 1. disabling tqdm
     # 2. making UUIDs reproducible, minimizing the resulting changes in the outputs
-    with options.ctx({"tqdm.disable": True, "reproducibility.fake_incremental_uuids": True}):
+    with options().ctx({"tqdm.disable": True, "reproducibility.sequential_uuids": True}):
+
+        # Always start from the same initial state of sequential UUIDs.
+        # Without resetting the defaults, the UUIDs will increment across different
+        # Python scripts, with potential changes to the IDs of existing scripts
+        # if a new script is added.
+
+        # The seed is a fixed random UUID, nothing special about it.
+        next_uuid(seed=284942676702030925001753272733325001654)
 
         with open(pathname) as f:
             data = f.readlines()

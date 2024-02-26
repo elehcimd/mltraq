@@ -42,7 +42,7 @@ class Serializer(abc.ABC):
         pass
 
     @abc.abstractclassmethod
-    def serialize(cls, obj: object) -> bytes:
+    def serialize(cls, obj: object, **kwargs) -> bytes:
         return
 
     @abc.abstractclassmethod
@@ -56,7 +56,7 @@ class Serializer(abc.ABC):
         """
         return Bunch(
             name=cls.name(),
-            compression_codec=options.get("serialization.compression.codec"),
+            compression_codec=options().get("serialization.compression.codec"),
         )
 
     @classmethod
@@ -69,7 +69,7 @@ class Serializer(abc.ABC):
         if not isinstance(data, bytes):
             raise InvalidInput("You can compress only type `bytes`.")
 
-        codec = CompressionCodec[options.get("serialization.compression.codec")]
+        codec = CompressionCodec[options().get("serialization.compression.codec")]
         if codec == CompressionCodec.uncompressed:
             return data
         elif codec == CompressionCodec.zlib:

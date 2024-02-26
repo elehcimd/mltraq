@@ -104,18 +104,25 @@ class Run:
         # Set options to what has been passed by the driver process (the process that requested
         # the execution of the experiment).
         # This ensures that options changed at runtime are honored in runs execution.
-        global_options.copy_from(options.values)
+        global_options().copy_from(options.values)
 
         # Determine random seed for this run, combining the UUID of the run and the
         # value of "reproducibility.random_seed". We initialise both Numpy and Random seeds.
         # This needs to be _after_ we update `global_options`, to reflect its correct values.
-        random_seed = (hash(self.id_run) + global_options.get("reproducibility.random_seed")) % 2**32 - 1
+        random_seed = (hash(self.id_run) + global_options().get("reproducibility.random_seed")) % 2**32 - 1
         np.random.seed(random_seed)
         random.seed(random_seed)
 
         self.steps = normalize_steps(steps)
         self.config = Bunch(config)
         self.exception = None
+
+        # Increment the UUID seed to ensure different incremental UUIDs across different runs.
+        # For each run, we reserve 1B sequential UUIDs, above an initial reserved range of 1B.
+        # The first 1B UUIDs: might be used by scripts to build the documentation, or other
+        # code in the examples, not necessarily runnning inside runs.
+        if options.get("reproducibility.sequential_uuids"):
+            next_uuid(inc=(1 + self.id_run.int) * 10**9)
 
         for step in self.steps:
             try:

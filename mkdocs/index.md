@@ -74,6 +74,11 @@ To install MLtraq:
 pip install mltraq --upgrade
 ```
 
+!!! Question "How to integrate MLtraq it in your projects?"
+    MLtraq is progressing rapidly and interfaces might change at any time.
+    Pin its exact version for your project, to make sure it all works.
+    Have tests for your project, and update it once you verify that things work correctly.
+
 
 ## Example 1: Define, execute and query an experiment with SQL
 

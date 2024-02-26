@@ -26,7 +26,7 @@ class Experiment(Base):
     # TODO: Use a class property to eval the value of the option.
     # Currently, changing the value of the option does not result
     # in an updated value for __tablename__.
-    __tablename__ = options.get("database.experiments_tablename")
+    __tablename__ = options().get("database.experiments_tablename")
     id_experiment = Column(Uuid, primary_key=True, default=None)
     name = Column(String, nullable=False, unique=True)
     meta = Column(LargeBinary, nullable=True, default=None)

@@ -113,16 +113,16 @@ class Runs(dict):
         if len(steps) == 0:
             raise RunsException("No step functions to execute.")
 
-        args_field = options.default_if_null(args_field, "execution.args_field")
+        args_field = options().default_if_null(args_field, "execution.args_field")
         if args_field:
             config = self.handle_args_field(args_field, config)
 
-        # List of functions to execute
-        task_funcs = [run.execute_func(steps=steps, config=config, options=options) for run in self.values()]
+        # List of functions to execute.
+        task_funcs = [run.execute_func(steps=steps, config=config, options=options()) for run in self.values()]
 
         # Randomize order of tasks (in place), so that partial results are more representative
         # of the entire set of runs being executed (and errors might be catched earlier).
-        random.Random(options.get("reproducibility.random_seed")).shuffle(task_funcs)
+        random.Random(options().get("reproducibility.random_seed")).shuffle(task_funcs)
 
         # Execute runs.
         executed_runs: list[Run] = Job(task_funcs, n_jobs=n_jobs, backend=backend).execute()

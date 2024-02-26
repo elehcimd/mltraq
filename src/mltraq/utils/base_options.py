@@ -2,15 +2,6 @@ from __future__ import annotations
 
 import copy
 from contextlib import contextmanager
-from typing import Any, TypeVar
-
-T = TypeVar("T")
-
-
-class TypeValidationError(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
 
 
 class BaseOptions:
@@ -118,16 +109,3 @@ class BaseOptions:
             yield self
         finally:
             self.values = orig_options
-
-
-def validate_type(value: object, expected_type: T) -> Any:
-    """
-    Validate the type of `value` to be `expected_type`, if provided.
-    Otherwise, return `value` with no checks.
-    TODO: avoid use of Any.
-    """
-
-    if type(value) == expected_type:
-        return value
-    else:
-        raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")

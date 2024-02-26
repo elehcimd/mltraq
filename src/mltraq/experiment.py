@@ -14,6 +14,7 @@ from mltraq.run import Run
 from mltraq.runs import Runs
 from mltraq.storage import models, serialization
 from mltraq.storage.database import Database, hash_uuid, next_uuid, pandas_query, sanitize_table_name
+from mltraq.storage.datastore import DataStoreIO
 from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists, enforce_enum
 from mltraq.utils.exceptions import ExceptionWithMessage, InvalidInput
@@ -102,7 +103,7 @@ class Experiment:
         """
 
         try:
-            run = Run()
+            run = Run(id_experiment=self.id_experiment)
             yield run
         finally:
             run.clear_after_execution()
@@ -124,7 +125,7 @@ class Experiment:
         """
 
         params_list = list(Bunch(params).cartesian_product())
-        random.Random(options.get("reproducibility.random_seed")).shuffle(params_list)
+        random.Random(options().get("reproducibility.random_seed")).shuffle(params_list)
 
         if len(params_list) == 1 and params_list[0] == {}:
             raise InvalidInput(
@@ -151,7 +152,7 @@ class Experiment:
         and the experiment name, sanitizing the resulting value to consier only characters [^0-9a-zA-Z].
         """
 
-        return sanitize_table_name(f"{options.get('database.experiment_tableprefix')}{self.name}")
+        return sanitize_table_name(f"{options().get('database.experiment_tableprefix')}{self.name}")
 
     def load_runs(self, meta: dict) -> Experiment:
         """
@@ -320,7 +321,7 @@ class Experiment:
         Build an SQLAlchemy ORM object from the existing Experiment object.
         """
 
-        store_unsafe_pickle = options.default_if_null(store_unsafe_pickle, "serialization.store_unsafe_pickle")
+        store_unsafe_pickle = options().default_if_null(store_unsafe_pickle, "serialization.store_unsafe_pickle")
 
         return self.model_cls(
             id_experiment=self.id_experiment,
@@ -358,7 +359,7 @@ class Experiment:
         # Ensure a valid value for if_exists.
         if_exists = enforce_enum(if_exists, IfExists)
 
-        # Delete experiment from database.
+        # Delete experiment from database/datastore.
         self.delete(if_exists)
 
         # Generate metadata about experiment to persist.
@@ -375,7 +376,7 @@ class Experiment:
 
         return self
 
-    def delete(self, if_exists: IfExists = IfExists["fail"]):
+    def delete(self, if_exists: IfExists = IfExists["delete"]):
         """
         Delete experiment from database, honoring `if_exists`.
         """
@@ -386,7 +387,7 @@ class Experiment:
         with self.db.session() as session:
             if session.query(self.model_cls).filter_by(name=self.name).count() > 0:
                 # If we find the record ...
-                if if_exists == IfExists["replace"]:
+                if if_exists in [IfExists["replace"], IfExists["delete"]]:
                     # And we are fine deleting it, proceed.
                     session.query(Experiment.model_cls).filter(Experiment.model_cls.name == self.name).delete()
                 else:
@@ -398,6 +399,9 @@ class Experiment:
 
         # Drop also the entire "experiment_..." table.
         self.db.drop_table(self.get_tablename())
+
+        # Drop datastore documents of experiment, if any.
+        DataStoreIO.delete(relative_path_prefix=str(self.id_experiment))
 
     def df(self, max_level=0) -> pd.DataFrame:
         """
@@ -430,7 +434,7 @@ class Experiment:
             )
 
             df_experiments["table_name"] = df_experiments["name"].apply(
-                lambda name: sanitize_table_name(f"{options.get('database.experiment_tableprefix')}{name}")
+                lambda name: sanitize_table_name(f"{options().get('database.experiment_tableprefix')}{name}")
             )
 
             return df_experiments

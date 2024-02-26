@@ -1,0 +1,18 @@
+ID experiment: d65df69e-1175-44a5-be2f-2232765703b8
+--
+
+Contents of datastore directory:
+self_managed/
+self_managed/d65df69e-1175-44a5-be2f-2232765703b8
+self_managed/d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703ba
+self_managed/d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703bb
+--
+
+Field values:
+url_a file:///self_managed/d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703ba
+url_b file:///self_managed/d65df69e-1175-44a5-be2f-2232765703b8/d65df69e117544a5be2f2232765703bb
+--
+
+Loaded values:
+a <class 'numpy.ndarray'> [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+b <class 'bytes'> b'11111'

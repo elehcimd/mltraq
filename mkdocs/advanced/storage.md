@@ -25,6 +25,7 @@ drop_comments=False)}}
     * Safe objects like `numpy.int32` or `datetime.date` cannot be part of `BASIC_TYPES` as they 
     depend on the `REDUCE` Pickle opcode, which is generally dangerous and unsafe.
     * The class `mltraq.utils.bunch.Bunch` is an ordered dictionary that mimics how[`sklearn.utils.Bunch`](https://scikit-learn.org/stable/modules/generated/sklearn.utils.Bunch.html) works: It extends dictionaries by enabling values to be accessed by key, `bunch["value_key"]`, or by an attribute, `bunch.value_key`.
+    * The class `mltraq.storage.datastore.DataStore` extends `Bunch` and its values are stored separately, as defined by the datastore strategy. At the moment, the only datastore option is the filesystem. The datastore is recommended to store large objects to limit the size of the database.
     * The class `mltraq.utils.sequence.Sequence` models a multidimensional time series, with `append` and access as a Pandas dataframe.
 
 ## Persisting complex objects
@@ -94,6 +95,9 @@ which is supported. If we try to serialize unsupported types, an exception is ra
 
 {{include_code("mkdocs/advanced/examples/storage-05.py", title="Handling of unsupported types", drop_comments=False)}}
 
+## Storing large artifacts
+
+The [Datastore](./datastore.md) interface is designed to facilitate the storage and reloading of large objects such as datasets, weights and models. See its separate article for a comprehensive discussion.
 
 ## Unsafe pickling
 

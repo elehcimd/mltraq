@@ -1,9 +1,11 @@
 import uuid
 from io import BytesIO
+from types import NoneType
 
 import numpy as np
 import pandas as pd
 import pyarrow as pa
+from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.pickle import PickleSerializer
 from mltraq.storage.serializers.serializer import Serializer
 from mltraq.utils.bunch import Bunch
@@ -29,6 +31,7 @@ BASIC_TYPES = [
     float,
     str,
     bytes,
+    NoneType,
 ]
 
 
@@ -37,7 +40,7 @@ CONTAINER_TYPES = [tuple, list, set, dict]
 
 # Complex types that are encoded to `bytes``, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
-COMPLEX_TYPES = [Bunch, Sequence, pd.DataFrame, pd.Series, pa.Table, np.ndarray, uuid.UUID]
+COMPLEX_TYPES = [Bunch, Sequence, DataStore, pd.DataFrame, pd.Series, pa.Table, np.ndarray, uuid.UUID]
 
 # Magic dict key encoding types in the list COMPLEX_TYPES (see below), with semantic versioning
 KEY_MAGIC = f"datapak-type-{VERSION_SERIALIZER}"
@@ -45,6 +48,7 @@ KEY_MAGIC = f"datapak-type-{VERSION_SERIALIZER}"
 # Key of dictionaries encoding complex types, with semantic versioning
 KEY_BUNCH = "mltraq.Bunch-0.0.0"
 KEY_SEQUENCE = "mltraq.Sequence-0.0.0"
+KEY_DATASTORE = "mltraq.DataStore-0.0.0"
 KEY_PANDAS_SERIES = "pandas.Series-0.0.0"
 KEY_PANDAS_DATAFRAME = "pandas.DataFrame-0.0.0"
 KEY_PYARROW_TABLE = "pyarrow.Table-0.0.0"
@@ -148,9 +152,10 @@ def encode_magic_key(cls, obj: object) -> dict:
     the dictionary as a serialized complex object.
     """
     if isinstance(obj, Sequence):
-        obj.flush()
         return {KEY_MAGIC: KEY_SEQUENCE, "value": cls.encode(obj.flush().frame)}
-    if isinstance(obj, Bunch):
+    elif isinstance(obj, DataStore):
+        return {KEY_MAGIC: KEY_DATASTORE, "value": obj.to_url()}
+    elif isinstance(obj, Bunch):
         return {KEY_MAGIC: KEY_BUNCH, "value": cls.encode(dict(obj))}
     elif isinstance(obj, uuid.UUID):
         return {KEY_MAGIC: KEY_UUID, "value": obj.hex}
@@ -184,11 +189,13 @@ def decode_magic_key(cls, obj: dict) -> object:
     """
     if obj[KEY_MAGIC] == KEY_SEQUENCE:
         return Sequence(frame=cls.decode(obj["value"]))
-    if obj[KEY_MAGIC] == KEY_UUID:
+    elif obj[KEY_MAGIC] == KEY_UUID:
         return uuid.UUID(hex=obj["value"])
-    if obj[KEY_MAGIC] == KEY_BUNCH:
+    elif obj[KEY_MAGIC] == KEY_BUNCH:
         return Bunch(cls.decode(obj["value"]))
-    if obj[KEY_MAGIC] == KEY_PANDAS_DATAFRAME:
+    elif obj[KEY_MAGIC] == KEY_DATASTORE:
+        return DataStore.from_url(obj["value"])
+    elif obj[KEY_MAGIC] == KEY_PANDAS_DATAFRAME:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])
         return read_feather(output_stream.getvalue())

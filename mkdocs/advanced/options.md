@@ -56,7 +56,7 @@ You can define a new group of options extending the class `BaseOptions` defined 
 Listing the default values of the options. The generation of the documentation (which relies on the `options.ctx` context manager)  alters two values:
 
 * `"tqdm.disable"` is set to `False` to improve readability in the docs.
-* `"fake_incremental_uuids"` is set to `False` to avoid random UUIDs in the documentation.
+* `"sequential_uuids"` is set to `True` to avoid random UUIDs in the documentation.
 
 {{include_code("mkdocs/advanced/examples/options-02.py", title="Default option values")}}
 
@@ -76,8 +76,12 @@ Listing the default values of the options. The generation of the documentation (
 
 * Options `"reproducibility.*"` handle outputs can be reproduced accurately.
     * The random seed of the Python `random` and `numpy` packages resets to `"reproducibility.random_seed"` before executing runs, ensuring reproducibility.
-    * If `"reproducibility.fake_incremental_uuids"` is set to True, there is no randomness for UUIDs generated for experiments and run IDs, simplifying tests and avoiding unnecessary changes in the documentation.
+    * If `"reproducibility.sequential_uuids"` is set to True, there is no randomness for UUIDs generated for experiments and run IDs, simplifying tests and avoiding unnecessary changes in the documentation.
 
 * Options `"serialization.*` set defaults on compression and storage of experiments.
 
 * Options `"tqdm.*`" are parameters passed to `tqdm` to render the progress bars used in the evaluation of `runs` and SQL queries.
+
+* Options `"datastore.*"` define how objects are serialized outside the database. E.g., the filesystem.
+    * `"datastore.url"` defines the storage location. Three slashes indicate a relative path.
+    * `"datastore.relative_path_prefix"` is appended to `"datastore.url"` and defines the relative directory that should be used to store the file(s). `DataStore` objects manage it transparently, temporarily setting it to the experiment ID.
