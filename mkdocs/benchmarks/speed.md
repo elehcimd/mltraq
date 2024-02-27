@@ -5,7 +5,7 @@
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions, and MLtraq, highlighting their strengths and weaknesses.
 
 !!! Info "TL;DR"
-    **MLtraq is the fastest experiment tracking solution for workloads with up to hundreds of thousands of runs and arbitrarily large, complex Python objects.** However, it lacks the streaming of tracking data and a web dashboard.
+    **MLtraq is the fastest experiment tracking solution for **workloads with hundreds of** thousands of runs and arbitrarily large, complex Python objects.** However, it lacks the streaming of tracking data and a web dashboard.
 
 In this analysis, we compare the experiment tracking speed of:
 
@@ -24,7 +24,7 @@ Experiments are executed offline with storage on the local filesystem. The syste
 For each experiment, we report the time in seconds (s). The reported results are averaged on `10` independent runs running in foreground, no parallelization.
 The plots report the performance varying the number of experiments, runs and values, with aggregates by method.
 
-References and instructions to reproduce the results, and more details on the setup, can be found in notebooks [Benchmarks](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks.ipynb) (`float`) and [Benchmarks 2](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks%202.ipynb) (`NumPy`).
+References and instructions to reproduce the results, and more details on the setup, can be found in notebooks [Benchmarks](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks.ipynb) (`float`) and [Benchmarks 2](https://github.com/elehcimd/mltraq/blob/fixes/notebooks/08%20Tracking%20speed%20-%20Benchmarks%202.ipynb) (`NumPy`).
 
 !!! Question "How can we improve this analysis?"
     In comparative analyses, there are always many nuances and little details that can make a big difference. You can [open a discussion](https://github.com/elehcimd/mltraq/discussions) to ask a question, or create a change request on the [issue tracker](https://github.com/elehcimd/mltraq/issues) if you find any issues. There might be ways to tune the methods to improve their performance that we missed, or other solutions worth considering.
