@@ -16,8 +16,8 @@ def test_ruff():
     """
     Test: lint/format code with ruff, and test it.
     """
-    local(f"ruff {PROJECT_DIR} --fix --exit-zero")
-    assert local(f"ruff {PROJECT_DIR} --exit-zero") == ""
+    local(f"ruff check {PROJECT_DIR} --fix --exit-zero")
+    assert local(f"ruff check {PROJECT_DIR} --exit-zero") == ""
 
 
 def test_black():

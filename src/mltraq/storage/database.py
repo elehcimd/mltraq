@@ -41,31 +41,52 @@ class Database:
     __slots__ = ("params", "url", "session", "engine")
     __state__ = ("params",)
 
-    def __init__(self, url: str | None = None, ask_password: bool | None = None):
+    def __init__(
+        self,
+        url: str | None = None,
+        ask_password: bool | None = None,
+        echo: bool | None = None,
+        pool_pre_ping: bool | None = None,
+    ):
         """
         Initialize connection to a new database, with connection `url`,
         asking interactively for a password if `ask_password` is True.
+        Options `echo` and `pool_pre_ping` are passed to SQLAlchemy.
+        (if None, their defaults do apply.)
 
         If `lazy` is True, do not initialize the connection to the database.
         Useful to handle unpickling of Database objects.
         """
 
-        # Save original parameters
-        self.params = Bunch(url=url, ask_password=ask_password)
+        # Save original parameters, including the used options
+        echo = options().default_if_null(echo, "database.echo")
+        pool_pre_ping = options().default_if_null(pool_pre_ping, "database.pool_pre_ping")
+        self.params = Bunch(url=url, ask_password=ask_password, echo=echo, pool_pre_ping=pool_pre_ping)
 
         self.init_url(url, ask_password)
 
+        log.debug(f"Created DB link: '{self.url.render_as_string(hide_password=True)}'")
+
         # Set up database connector, without establishing any connection yet
         # https://docs.sqlalchemy.org/en/13/core/pooling.html#disconnect-handling-pessimistic
-        self.engine = create_engine(
-            self.url, echo=options().get("database.echo"), pool_pre_ping=options().get("database.pool_pre_ping")
-        )
+        self.engine = create_engine(self.url, echo=self.params.echo, pool_pre_ping=self.params.pool_pre_ping)
 
         # Session factory
         self.session = sessionmaker(self.engine)
 
         # create tables if missing
         Base.metadata.create_all(self.engine)
+
+    def copy(self):
+        """
+        Return an independent thread-safe copy of the object,
+        linked to the same URL and using the same options.
+        """
+        return Database(
+            self.url.render_as_string(hide_password=False),
+            echo=self.params.echo,
+            pool_pre_ping=self.params.pool_pre_ping,
+        )
 
     def init_url(self, url: str, ask_password: bool):
         """

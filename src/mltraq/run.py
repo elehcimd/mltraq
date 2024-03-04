@@ -1,7 +1,8 @@
 import logging
 import random
+from contextlib import contextmanager
 from functools import partial
-from typing import Callable, List
+from typing import Any, Callable, List
 
 import numpy as np
 import pandas as pd
@@ -12,6 +13,7 @@ from mltraq.storage.database import next_uuid
 from mltraq.utils.bunch import Bunch
 from mltraq.utils.exceptions import ExceptionWithMessage, InvalidInput, exception_message
 from mltraq.utils.frames import reorder_columns
+from mltraq.utils.sequence import Sequence
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +34,17 @@ class Run:
     """
 
     # Attributes to store and serialize.
-    __slots__ = ("id_experiment", "id_run", "config", "params", "fields", "state", "exception", "vars", "steps")
+    __slots__ = (
+        "id_experiment",
+        "id_run",
+        "config",
+        "params",
+        "fields",
+        "state",
+        "exception",
+        "vars",
+        "steps",
+    )
     __state__ = ("id_experiment", "id_run", "config", "params", "fields", "state", "exception")
 
     def __init__(
@@ -85,6 +97,23 @@ class Run:
         # Set defaults
         self.vars = Bunch()
         self.steps = []
+
+    @contextmanager
+    def datastream_client(self) -> Any:
+        try:
+            # Importing here to avoid circular import error.
+            from mltraq.storage.datastream import DataStreamClient
+
+            ds = DataStreamClient(run=self)
+            for key, value in self.fields.items():
+                if isinstance(value, Sequence):
+                    value.set_stream(key, ds.send_sequence)
+            yield ds
+        finally:
+            ds.cleanup()
+            for value in self.fields.values():
+                if isinstance(value, Sequence):
+                    value.set_stream(None, None)
 
     def execute_func(self, steps: StepsType = None, config: dict | None = None, options: Options | None = None):
         """

@@ -18,7 +18,7 @@ Track and Collaborate on AI Experiments.
 </h1>
 
 The open-source Python library for AI developers to design, execute and share experiments.
-Track anything, reproduce, collaborate, and resume the computation state anywhere.
+Track anything, stream, reproduce, collaborate, and resume the computation state anywhere.
 
 ---
 

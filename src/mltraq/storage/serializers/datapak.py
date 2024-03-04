@@ -40,7 +40,7 @@ CONTAINER_TYPES = [tuple, list, set, dict]
 
 # Complex types that are encoded to `bytes``, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
-COMPLEX_TYPES = [Bunch, Sequence, DataStore, pd.DataFrame, pd.Series, pa.Table, np.ndarray, uuid.UUID]
+COMPLEX_TYPES = [Bunch, Sequence, DataStore, pd.DataFrame, pd.Series, pa.Table, np.ndarray, np.datetime64, uuid.UUID]
 
 # Magic dict key encoding types in the list COMPLEX_TYPES (see below), with semantic versioning
 KEY_MAGIC = f"datapak-type-{VERSION_SERIALIZER}"
@@ -53,6 +53,9 @@ KEY_PANDAS_SERIES = "pandas.Series-0.0.0"
 KEY_PANDAS_DATAFRAME = "pandas.DataFrame-0.0.0"
 KEY_PYARROW_TABLE = "pyarrow.Table-0.0.0"
 KEY_NUMPY_NDARRAY = "numpy.ndarray-0.0.0"
+
+# Microseconds since epoch, example of value: numpy.datetime64('2024-01-02T17:16:15.12345', 'us')
+KEY_NUMPY_DATETIME64 = "numpy.datetime64-0.0.0"
 KEY_UUID = "uuid.UUID-0.0.0"
 
 
@@ -177,6 +180,8 @@ def encode_magic_key(cls, obj: object) -> dict:
         buffer = BytesIO()
         np.save(buffer, obj, allow_pickle=False)
         return {KEY_MAGIC: KEY_NUMPY_NDARRAY, "value": ensure_bytes(buffer.getvalue())}
+    elif isinstance(obj, np.datetime64):
+        return {KEY_MAGIC: KEY_NUMPY_DATETIME64, "value": int(np.datetime64(obj, "us").astype(np.int64))}
     else:
         raise UnsupportedObjectType(f"{cls.__name__} does not support type {obj.__class__}")
 
@@ -208,6 +213,8 @@ def decode_magic_key(cls, obj: dict) -> object:
         memfile.write(obj["value"])
         memfile.seek(0)
         return np.load(memfile, allow_pickle=False)
+    elif obj[KEY_MAGIC] == KEY_NUMPY_DATETIME64:
+        return np.datetime64(obj["value"], "us")
     elif obj[KEY_MAGIC] == KEY_PYARROW_TABLE:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])

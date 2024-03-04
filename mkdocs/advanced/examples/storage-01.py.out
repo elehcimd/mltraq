@@ -36,4 +36,5 @@ COMPLEX_TYPES
   <class 'pandas.core.series.Series'>,
   <class 'pyarrow.lib.Table'>,
   <class 'numpy.ndarray'>,
+  <class 'numpy.datetime64'>,
   <class 'uuid.UUID'>]

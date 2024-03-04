@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import logging
 import random
+import uuid
 from contextlib import contextmanager
 from typing import Callable
 
@@ -138,11 +139,12 @@ class Experiment:
 
         return self
 
-    def add_run(self, **params) -> Experiment:
+    def add_run(self, **params) -> Run:
         """
         Add single run with a list of parameters.
         """
-        self.runs.add(Run(id_experiment=self.id_experiment, params=params))
+        run = Run(id_experiment=self.id_experiment, params=params)
+        self.runs.add(run)
         return self
 
     def get_tablename(self) -> str:
@@ -245,13 +247,15 @@ class Experiment:
         return Experiment.load(self.db, self.name, unsafe_pickle=unsafe_pickle)
 
     @classmethod
-    def load(cls, db: Database, name: str, unsafe_pickle: bool = False):
+    def load(
+        cls, db: Database, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
+    ):
         """
-        Load experiment `name` from `db`. If `pickle` is True, load
+        Load experiment `name` (or `id_experiment`) from `db`. If `pickle` is True, load
         it from its pickled Experiment object (unsafe).
         """
 
-        log.debug(f"Loading experiment '{name}'")
+        log.debug(f"Loading experiment id_experiment='{id_experiment}' name='{name}'")
 
         if unsafe_pickle:
             return cls.load_pickle(db, name)
@@ -266,7 +270,17 @@ class Experiment:
                 Experiment.model_cls.fields,
             ]
 
-            record = session.query(cls.model_cls).options(load_only(*columns)).filter_by(name=name).first()
+            if id_experiment:
+                record = (
+                    session.query(cls.model_cls)
+                    .options(load_only(*columns))
+                    .filter_by(id_experiment=id_experiment)
+                    .first()
+                )
+            elif name:
+                record = session.query(cls.model_cls).options(load_only(*columns)).filter_by(name=name).first()
+            else:
+                raise InvalidInput("You must provide either `name` or `id_experiment`")
 
             if record is None:
                 raise ExperimentNotFoundException(name)
@@ -308,6 +322,10 @@ class Experiment:
         - `backend` and `n_jobs` are passed to joblib.Parallel
         - `args_field` is the optional field name used to store/load both `Run.config` and `Run.params`
         """
+
+        if len(self.runs) == 0:
+            # No runs defined, add the default one.
+            self.add_run()
 
         self.runs.execute(steps=steps, config=config, backend=backend, n_jobs=n_jobs, args_field=args_field)
         return self

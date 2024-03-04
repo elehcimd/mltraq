@@ -1,17 +1,18 @@
 import inspect
+import logging
+import signal
 import sys
 import traceback
+from os.path import basename
+from types import FrameType
 from typing import Any, TypeVar
 
 from mltraq.opts import options
 
+log = logging.getLogger(__name__)
+
+
 T = TypeVar("T")
-
-
-class TypeValidationError(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
 
 
 class ExceptionWithMessage(Exception):
@@ -22,6 +23,18 @@ class ExceptionWithMessage(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+
+class FatalError(ExceptionWithMessage):
+    pass
+
+
+class TypeValidationError(ExceptionWithMessage):
+    pass
+
+
+class InvalidRequestError(ExceptionWithMessage):
+    pass
 
 
 class InvalidInput(ExceptionWithMessage):
@@ -45,6 +58,15 @@ def complete_exception_message() -> str:
     Returns a string with the complete stack trace report.
     """
     return traceback.format_exc()
+
+
+def codepos(self=None):
+    frame = inspect.getframeinfo(inspect.currentframe().f_back)
+    if self:
+        func = f"{self.__class__.__name__}.{frame.function}"
+    else:
+        func = frame.function
+    return f"[{basename(frame.filename)}:{frame.lineno}|{func}]"
 
 
 def compact_exception_message() -> str:
@@ -84,3 +106,14 @@ def validate_type(value: object, expected_type: T) -> Any:
         return value
     else:
         raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")
+
+
+class ServiceExit(Exception):
+    pass
+
+
+def service_shutdown(sig: int, frame: FrameType | None = None):
+    # Print a new line, to not break the logging line format with a "^C"
+    print("")
+    log.info(f"Received {signal.Signals(sig).name} signal, shutting down ...")
+    raise ServiceExit

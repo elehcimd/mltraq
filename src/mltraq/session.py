@@ -1,4 +1,6 @@
 import logging
+import uuid
+from contextlib import contextmanager
 
 import pandas as pd
 
@@ -15,16 +17,29 @@ class Session:
     Instantiate a new session handler.
     """
 
-    __slots__ = ("db",)
+    __slots__ = "db"
 
-    def __init__(self, url: str | None = None, ask_password: bool | None = None):
+    def __init__(self, url: str | None = None, ask_password: bool | None = None, db: Database | None = None):
         """
         Create a new session handler, with `url` as database URL and `ask_password`
         triggering the interactive input of the password if True.
         By default, an in-memory SQLite database is initialised.
+
+        Alternatively, an already instantiated `db` could be passed.
         """
 
-        self.db = Database(url, ask_password=ask_password)
+        self.db = db if db else Database(url, ask_password=ask_password)
+
+    @contextmanager
+    def datastream_server(self):
+        try:
+            from mltraq.storage.datastream import DataStreamServer
+
+            ds = DataStreamServer(self.db.copy())
+            ds.start()
+            yield ds
+        finally:
+            ds.stop()
 
     def __str__(self) -> str:
         """
@@ -60,15 +75,17 @@ class Session:
         """
         return Experiment.ls(self.db)
 
-    def load(self, name: str, unsafe_pickle: bool = False) -> Experiment:
+    def load(
+        self, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
+    ) -> Experiment:
         """
-        Loads a persisted experiment by `name`. If `pickle` is True, it will
+        Loads a persisted experiment by `name` or `id_experiment`. If `pickle` is True, it will
         attempt to reload the pickled Experiment object from database.
         Unpickling Experiment objects is unsafe, but powerful.
         Whenever possible, prefer the safe persistence of experiment states.
         """
 
-        return Experiment.load(self.db, name, unsafe_pickle=unsafe_pickle)
+        return Experiment.load(self.db, name=name, id_experiment=id_experiment, unsafe_pickle=unsafe_pickle)
 
     def persist(self, experiment: Experiment, name: str | None = None, if_exists: IfExists = "fail") -> Experiment:
         """
