@@ -5,7 +5,7 @@ import matplotlib.ticker as mtick
 import pandas as pd
 from scipy.stats import sem
 
-from mltraq import options
+from mltraq.opts import options
 
 
 def stderr(a):
@@ -34,6 +34,7 @@ def bar_plot(  # noqa
     y_logscale: bool = False,
     y_grid: bool = False,
     ax: Any | None = None,
+    hatches: bool = False,
 ):
     """
     Bar plot results of an experiment:
@@ -56,6 +57,7 @@ def bar_plot(  # noqa
     `y_logscale`: If true, set logscale for Y
     `y_grid`: If true, show grid on Y
     `ax`: If not none, use it as axis object to draw on
+    `hatches`: Show hatches on bars
     """
 
     x_label = x if not x_label else x_label
@@ -123,6 +125,11 @@ def bar_plot(  # noqa
         else:
             if y_grid:
                 ax.grid(axis="y", which="major")
+
+        if hatches:
+            hatches = ("./O\o*" * len(ax.patches))[: len(ax.patches)]
+            for idx, bar in enumerate(ax.patches):
+                bar.set_hatch(hatches[idx])
 
         if x_lim:
             ax.set_xlim(**x_lim)

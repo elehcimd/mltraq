@@ -38,6 +38,9 @@ class Bunch(OrderedDict):
     def __str__(self):
         return Bunch.bunch_to_dict_deep(self).__str__()
 
+    def __repr__(self):
+        return self.__str__()
+
     def _repr_html_(self):
         return self.__str__()
 

@@ -20,6 +20,14 @@ class Options(BaseOptions):
             "experiments_tablename": "experiments",
             "experiment_tableprefix": "experiment_",
         },
+        "datastream": {
+            "kind": "UNIX",
+            "srv_address": "mltraq.sock",
+            "cli_address": "mltraq.sock",
+            "cli_throttle_send": 0.01,
+            "srv_throttle_recv": 0.01,
+            "srv_throttle_persist": 1,
+        },
         "datastore": {"url": "file:///mltraq.datastore", "relative_path_prefix": "undefined"},
         "execution": {
             "exceptions": {"compact_message": False},
@@ -32,6 +40,10 @@ class Options(BaseOptions):
             "store_unsafe_pickle": False,
             "serializer": "DataPakSerializer",
             "compression": {"codec": "uncompressed"},
+        },
+        "cli": {
+            "logging": {"level": "INFO", "format": "%(levelname)-9s %(asctime)s  %(message)s"},
+            "tabulate": {"maxcolwidths": 70},
         },
         "app": {},
     }

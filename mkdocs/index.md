@@ -28,7 +28,7 @@ Track and Collaborate on AI Experiments.
 </h1>
 
 The open-source Python library for AI developers to design, execute and share experiments.
-Track anything, reproduce, collaborate, and resume the computation state anywhere.
+Track anything, stream, reproduce, collaborate, and resume the computation state anywhere.
 
 ---
 
@@ -44,7 +44,7 @@ Track anything, reproduce, collaborate, and resume the computation state anywher
 
 * **Extreme tracking and interoperability**: With native database types, [Numpy and PyArrow serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
-* **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or cloud SQL database](advanced/storage.md).
+* **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or remote SQL database](advanced/storage.md).
 
 * **Flexible and open**: Interact with your experiments using Python, Pandas, and SQL from Python scripts, Jupyter notebooks, and dashboards without vendor lock-in.
 
@@ -60,7 +60,6 @@ Track anything, reproduce, collaborate, and resume the computation state anywher
 
 * **Computation**: The (optional) chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`.
 * **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, `Numpy`, `Pandas` and `PyArrow` objects. For large objects, use the [Data store](./advanced/datastore.md) interface.
-* **Capabilities**: There is currently no streaming of tracking data and no web dashboard.
 
 
 ## Requirements

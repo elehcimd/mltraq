@@ -1,7 +1,9 @@
+from random import uniform
+
 import mltraq
 import numpy as np
 import pytest
-from mltraq import Run, options
+from mltraq import Run, create_experiment, options
 from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException
 from mltraq.runs import RunsException
@@ -224,6 +226,19 @@ def test_experiment_replace():
     assert s.load("test").runs.first().fields.a == 124
 
 
+def test_experiment_load_experimentid():
+    """
+    Test: We can load an experiment using its experiment ID.
+    """
+    session = mltraq.create_session()
+    experiment = session.create_experiment("test")
+    experiment.persist()
+    id_experiment = experiment.id_experiment
+    experiment = session.load(id_experiment=id_experiment)
+    assert experiment.id_experiment == id_experiment
+    assert experiment.name == "test"
+
+
 def test_experiment_overwrite():
     """
     Test: Verify that an experiment can be overwritten.
@@ -257,10 +272,7 @@ def test_copy():
 
 def test_experiment_exection_no_runs():
     """
-    Test that the execution fails if:
-    - No runs have been defined
-    - No runs added if no params passed to .add_runs(...)
-    - No steps have been defined
+    Test that the execution fails if no steps have been defined.
     """
     s = mltraq.create_session()
 
@@ -269,22 +281,16 @@ def test_experiment_exection_no_runs():
 
     e = s.create_experiment(name="test")
 
-    with pytest.raises(RunsException):
-        # No runs, fails
-        e.execute()
-
     with pytest.raises(InvalidInput):
         # No parameters, fails
         e.add_runs()
-
-    # Add a new run.
-    e.add_run()
 
     with pytest.raises(RunsException):
         # No steps, fails
         e.execute()
 
     # Execute expriment, ans make sure that there is exactly one run.
+    # No runs defined, default one is created.
     e.execute(steps=f)
 
     assert len(e.runs) == 1
@@ -432,3 +438,16 @@ def test_experiment_runs_reload_execution():
     e = s.load("test")
     e.execute(step_inc, args_field="args")
     assert e.runs.df()["A"].max() == 2000
+
+
+def test_experiment_parallel():
+    """
+    Test: We can execute 100 runs in parallel, aggregating their output.
+    """
+
+    def step(run: Run):
+        run.fields.v = uniform(0, 1)  # noqa
+
+    v_mean = create_experiment().add_runs(i=range(100)).execute(step).runs.df().v.mean()
+    # Without enough runs, it might be rather off from .5
+    assert v_mean > 0

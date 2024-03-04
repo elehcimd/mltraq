@@ -85,3 +85,11 @@ Listing the default values of the options. The generation of the documentation (
 * Options `"datastore.*"` define how objects are serialized outside the database. E.g., the filesystem.
     * `"datastore.url"` defines the storage location. Three slashes indicate a relative path.
     * `"datastore.relative_path_prefix"` is appended to `"datastore.url"` and defines the relative directory that should be used to store the file(s). `DataStore` objects manage it transparently, temporarily setting it to the experiment ID.
+
+* Options `"datastream.*"` handle all things streaming.
+    * `"datastream.cli_address"`: Address the client sends the messages to.
+    * `"datastream.cli_throttle_send"`: Delay (s) introduced after each sent message.
+    * `"datastream.kind"`: Type of socket, either `"UNIX"` or `"INET"`.
+    * `"datastream.srv_address"`: Address to listen to.
+    * `"datastream.srv_throttle_recv"`: Delay (s) introduced after each received message.
+    * `"datastream.srv_throttle_persist"`: Delay (s) introduced after persists to database.

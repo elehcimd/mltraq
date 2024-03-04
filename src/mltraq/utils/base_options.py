@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 import copy
+import logging
+from argparse import ArgumentParser
 from contextlib import contextmanager
+
+log = logging.getLogger(__name__)
+
+
+class InvalidOption(Exception):
+    pass
 
 
 class BaseOptions:
@@ -96,6 +104,35 @@ class BaseOptions:
         else:
             return self.get(path)
 
+    def set_argument_options(self, options: list[ArgumentOption] | None = None):
+        """
+        Given a list of Option objects, set them.
+        """
+
+        if not options:
+            return
+
+        for option in options:
+            log.info(f"Setting option {option.name}={option.value}")
+            self.set(option.name, option.value)
+
+    def flatten(self):
+        """
+        Return a dictionary of KEY:VALUE pairs, no nested dictionaries.
+        """
+
+        values = {}
+
+        def traverse(x, name=""):
+            if isinstance(x, dict):
+                for k, v in x.items():
+                    traverse(v, name=f"{name}.{k}")
+            else:
+                values[name[1:]] = x
+
+        traverse(self.values)
+        return values
+
     @contextmanager
     def ctx(self, options: dict):
         """
@@ -109,3 +146,46 @@ class BaseOptions:
             yield self
         finally:
             self.values = orig_options
+
+
+class ArgumentOption:
+    """
+    It represents an option passed as an argument,
+    used for input validation.
+    """
+
+    __slots__ = ("name", "value")
+
+    def __init__(self, option: str):
+        """
+        Given an `option` string in the format NAME=VALUE,
+        checks the validity of `name` and `value` and sets them.
+        """
+
+        if "=" not in option:
+            raise ValueError("'=' not present")
+        name, value = option.split(sep="=", maxsplit=1)
+        name = name.strip()
+        value = value.strip()
+        if len(name) == 0:
+            raise ValueError("Option name missing")
+        if len(value) == 0:
+            raise ValueError("Option value missing")
+        self.name = name
+        self.value = value
+
+
+def add_option_argument(parser: ArgumentParser):
+    """
+    Add option --option to cli parameters, to change the
+    value of package options via command line.
+    """
+
+    parser.add_argument(
+        "--option",
+        metavar="KEY=VALUE",
+        action="extend",
+        nargs="+",
+        help="Change the default package options.",
+        type=ArgumentOption,
+    )

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.119"
+version = "0.0.122"
 description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -16,6 +16,9 @@ include = [
     "LICENSE",
 ]
 
+[tool.poetry.scripts]
+mltraq = "mltraq.cli:main"
+
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.13.0"
 pandas = ">=1.5.3"
@@ -24,6 +27,8 @@ joblib = ">=1.3.2"
 sqlalchemy = ">=2.0.0" 
 cloudpickle = ">=2.2.0"
 tqdm = ">=4.64.1"
+tabulate = "^0.9.0"
+
 
 [tool.poetry.group.dev.dependencies]
 jupyterlab = "^4.0.10"
@@ -54,6 +59,8 @@ aim = "^3.18.1"
 neptune = "^1.9.1"
 comet-ml = "^3.38.0"
 wandb = "^0.16.3"
+fasttrackml = "0.5.0b2"
+
 
 [build-system]
 requires = ["poetry-core"]

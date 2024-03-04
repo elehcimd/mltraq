@@ -2,6 +2,7 @@ import tempfile
 import uuid
 from types import NoneType
 
+import numpy as np
 import pandas as pd
 import pyarrow
 import pytest
@@ -95,6 +96,17 @@ def test_serialization_datastore():
         assert obj2.a == 123
 
 
+def test_serialization_empty_sequence():
+    # Test: We can serialize an empty sequence (no rows).
+
+    s = Sequence()
+    s.flush()
+    data = DataPakSerializer.serialize(s)
+    s = DataPakSerializer.deserialize(data)
+    assert isinstance(s, Sequence)
+    assert len(s.df()) == 0
+
+
 def test_serialization_sequence():
     """
     Test: We can serialize/deserialize a Sequence.
@@ -104,8 +116,8 @@ def test_serialization_sequence():
     s.append(b=2)
     data = DataPakSerializer.serialize(s)
     s = DataPakSerializer.deserialize(data)
-    assert s.df().dtypes.astype(str).tolist() == ["datetime64[ns]", "float64", "float64"]
-    assert s.df().columns.tolist() == ["timestamp", "a", "b"]
+    assert s.df().dtypes.astype(str).tolist() == ["int64", "datetime64[ns]", "float64", "float64"]
+    assert s.df().columns.tolist() == ["idx", "timestamp", "a", "b"]
     assert s.df().iloc[0].a == 2
 
 
@@ -119,6 +131,40 @@ def test_serialization_int():
     obj2 = DataPakSerializer.deserialize(data)
     assert isinstance(obj2, int)
     assert obj2 == 123
+
+
+def test_serialization_datetime64():
+    """
+    Test: We can serialize/deserialize timestamps (datetime64).
+    """
+    obj = np.datetime64("2024-01-02T17:16:15.12345", "us")
+    data = DataPakSerializer.serialize(obj)
+    assert isinstance(data, bytes)
+    obj2 = DataPakSerializer.deserialize(data)
+    assert isinstance(obj2, np.datetime64)
+    assert str(obj2) == "2024-01-02T17:16:15.123450"
+
+
+def test_serialization_datetime64_s_ns():
+    """
+    Test: timestamps are persisted with microsecond precision.
+    """
+
+    # From lower to higher precision
+    obj = np.datetime64("2024-01-02T17:16:15", "s")
+    data = DataPakSerializer.serialize(obj)
+    assert isinstance(data, bytes)
+    obj2 = DataPakSerializer.deserialize(data)
+    assert isinstance(obj2, np.datetime64)
+    assert str(obj2) == "2024-01-02T17:16:15.000000"
+
+    # From higher to lower precision
+    obj = np.datetime64("2024-01-02T17:16:15.123456789", "ns")
+    data = DataPakSerializer.serialize(obj)
+    assert isinstance(data, bytes)
+    obj2 = DataPakSerializer.deserialize(data)
+    assert isinstance(obj2, np.datetime64)
+    assert str(obj2) == "2024-01-02T17:16:15.123456"
 
 
 def test_serialization_none():
