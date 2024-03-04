@@ -174,7 +174,7 @@ the resulting text in a single JSON-formatted file. Despite the more elaborate s
 Its better performance is due to its faster serialization strategy based on safe pickling and `NumPy` native code.
 See [Data store](../advanced/datastore.md) for more details.
 
-# Experiment 2: How long does tracking 1-10 arrays with length 10K-1M take?
+### Experiment 2: How long does tracking 1-10 arrays with length 10K-1M take?
 
 In this experiment, we assess the time required to track multiple arrays of varying sizes, up to 1M.
 
