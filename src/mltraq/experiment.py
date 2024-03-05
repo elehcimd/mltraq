@@ -139,7 +139,7 @@ class Experiment:
 
         return self
 
-    def add_run(self, **params) -> Run:
+    def add_run(self, **params) -> Experiment:
         """
         Add single run with a list of parameters.
         """

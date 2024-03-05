@@ -1,3 +1,4 @@
+**/*/tmp
 **/*.db-shm
 **/*.db-wal
 mltraq.datastore

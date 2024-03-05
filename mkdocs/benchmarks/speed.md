@@ -5,7 +5,7 @@
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions and MLtraq, highlighting their strengths and weaknesses.
 
 !!! Info "TL;DR"
-    Threading, filesystem, and database management are expensive. **MLtraq is the fastest experiment-tracking solution for workloads with hundreds of thousands of runs and arbitrarily large, complex Python objects.** 
+    Threading, filesystem, and database management are expensive and dominate the time cost. **MLtraq is the fastest experiment-tracking solution for workloads with hundreds of thousands of runs and arbitrarily large, complex Python objects.** 
 
 In this analysis, we compare the experiment tracking speed of:
 
@@ -17,9 +17,9 @@ In this analysis, we compare the experiment tracking speed of:
 * [Comet](https://www.comet.com/) (3.38.0)
 * [MLtraq](https://mltraq.com/) (0.0.118)
 
-Varying the number of experiments, runs, and values as defined in the [key concepts](../tutorial/index.md).
+We vary the number of runs and values as defined in the [key concepts](../tutorial/index.md).
 
-We benchmark the tracking speed of `float` values and 1D `NumPy` arrays of varying size, disabling everything else, such as logs, git, code, environment, and system properties.
+We benchmark the tracking speed of `float` values and 1D `NumPy` arrays of varying size, turning off everything else, such as logs, git, code, environment, and system properties.
 Experiments are executed offline with storage on the local filesystem. The system is a MacBook Pro (M2, 2022). The creation of directories and files is considered a performance cost.
 
 For each experiment, we report the time in seconds (s). The reported results are averaged on `10` independent runs running in the foreground without parallelization.
@@ -28,15 +28,18 @@ The plots report the performance varying the number of experiments, runs, and va
 References and instructions to reproduce the results, as well as more details on the setup, can be found in the notebooks [Benchmarks rev1](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks%20rev1.ipynb) (`float`) and [Benchmarks 2](https://github.com/elehcimd/mltraq/blob/fixes/notebooks/08%20Tracking%20speed%20-%20Benchmarks%202.ipynb) (`NumPy`).
 
 !!! Question "How can we improve this analysis?"
-    In comparative analyses, there are always many nuances and little details that can make a big difference. You can [open a discussion](https://github.com/elehcimd/mltraq/discussions) to ask questions or create a change request on the [issue tracker](https://github.com/elehcimd/mltraq/issues) if you find any issues. There might be ways to tune the methods to improve their performance that we missed or other solutions worth considering.
+    In comparative analyses, there are always many nuances and little details that can make a big difference. You can [open a discussion](https://github.com/elehcimd/mltraq/discussions) to ask questions or create a change request on the [issue tracker](https://github.com/elehcimd/mltraq/issues) if you find any issues. There might be ways to tune the methods to improve their performance that we missed or other solutions worth considering
+    we are not aware of.
 
-!!! Info
-    All solutions considered in this comparative analysis have positively impacted the industry and served as an inspiration to guide the design of MLtraq. The many references to W&B are a testament to their excellent community and documentation.
+!!! Warning
+    * All solutions considered in this comparative analysis have positively impacted the industry and served as an inspiration to guide the design of MLtraq. The many references to W&B are a testament to their excellent community and documentation.
+    * Mature and established solutions in the industry have needs beyond mere time performance and tend to prioritize backward compatibility, new features, and third-party integrations.
+
 
 ## Changelog
 
 * 2024.03.04 - Added FastTrackML, improved text and plots
-* 2023.02.26 - Initial publication
+* 2023.02.26 - Initial publication of results
 
 
 ## Why tracking speed matters
@@ -46,7 +49,9 @@ What makes fast-tracking so crucial? Let's explore its importance by examining t
 ### Initialization
 
 The initialization of the tracking component can take more than `1s`, in some cases increasing linearly with the number of `runs`. High initialization times severely impact your ability to experiment on hundreds of thousands of possible configurations.
-Furthermore, slow imports negatively impact development, CI/CD tests, and debugging speed. E.g., see this [W&B](https://github.com/wandb/wandb/issues/5440) ticket.
+Furthermore, slow imports negatively impact development, CI/CD tests, and debugging speed. E.g., see this [W&B](https://github.com/wandb/wandb/issues/5440) ticket:
+
+> [CLI]: wandb.init very slow #5440
 
 Wouldn't loading and starting tracking at nearly zero time be nice?
 
@@ -60,7 +65,7 @@ The fine-grained logging/debugging of complex algorithms (not necessarily AI/ML 
 
 Workarounds to handle too much information come at a completeness/accuracy cost, including downsampling, summarization, and histograms. 
 
-What if we can avoid the workarounds and track more efficiently?
+What if we can track more efficiently and avoid the workarounds?
 
 !!! Success "Tracking with less limitations is more powerful and robust."
 
@@ -70,13 +75,13 @@ Datasets, timeseries, forecasts, media files such as images, audio recordings, a
 
 You might want to log a set of images at every step to inspect visually how the quality of the model is progressing, the datasets used in cross-validation with different configurations and random seeds, forecasts and other metrics, and more. Generally, you can produce a large quantity of heterogeneous information while executing complex algorithms that include, but are not limited to, ML/AI model training.
 
-Most solutions have limited, primitive, and slow support for efficient serializing complex Python objects. What if you could track anything as frequently as you want?
+Most solutions have limited, primitive, and slow support for complex Python objects. What if you could track anything as frequently as you want?
 
 !!! Success "Efficient tracking arbitrarily large, complex Python objects makes tracking more powerful."
 
 ## Tracking `float` values
 
-In this set of experiments, we evaluate the tracking performance on `float` values varying the number of `experiments, `runs`, and `values`.
+In this set of experiments, we evaluate the tracking performance on `float` values varying the number of`runs` and `values`.
 
 ### Experiment 1 (Initialization time): How long does tracking a single value take?
 
@@ -88,34 +93,36 @@ We evaluate the time required to start a new experiment and track a single value
 
 Threading and database management dominate the cost:
 
-* WandB and MLflow are the worst performing, with threading and events management dominating time. Aim follows by spending most of the time creating and managing its embedded key-value store. They cost up to 400 times more than the other methods.
+* `WandB` and `MLflow` are the worst performing, with threading and events management. `Aim` follows by spending most of the time creating and managing its embedded key-value store. They cost up to 400 times more than the other methods.
 
-* FastTrackML is remarkably fast to create new runs, offering API compatibility with MLFlow. It is also fast because it requires a server running in the background, eliminating most of the database initialization cost.
+* `Comet` is next, with thread management dominating the cost.
 
-* Comet is next, with thread management dominating the cost. Writing to SQLite is the primary cost for MLtraq. **Comet **performs best with no threading, no SQLite **database, and simply writing the tracking data to files.**
+* `FastTrackML` is remarkably fast to create new runs, offering API compatibility with MLFlow. Its efficiency is also due to the required server running in the background, eliminating most of the database initialization cost.
 
-### Experiment 2: How much time does it take to track 100-10K values?
+*  Writing to SQLite is the primary cost for `MLtraq`. **Neptune performs best with no threading, no SQLite database, and simply writing the tracking data to files.**
+
+Lesson learned: The less you do, the faster you are!
+
+### Experiment 2 (High frequency): How much time does it take to track 100-10K values?
 
 An efficient experiment tracking initialization is essential, but monitoring many values fast is critical for any tracking solution.
-In this experiment, we assess the time required to track and store 1K values.
+In this experiment, we assess the time required to track and store up to 10,000 values.
 
 <p align="center">
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks/exp-2.svg" >
 </p>
 
-The speedup of FastTrackML is localized in the creation of new runs, but the insertion of new tracking records remains similarly expensive:
+* The speedup of `FastTrackML` is localized in the creation of new runs, but the insertion of new tracking records remains similarly expensive to `MLflow`. Their primary cost is due to their [entity-attribute-value](https://en.wikipedia.org/wiki/Entity–attribute–value_model) database model.
 
-* The time cost becomes prohibitively high for some methods, with MLflow and FastTrackML performing worst.
-The primary cost is due to its database model, based on the [Entity-attribute-value model](https://en.wikipedia.org/wiki/Entity–attribute–value_model).
+* `Aim` and `WandB` follow at a fraction of the cost.
 
-* Aim and WandB follow at a fraction of the cost of MLflow.
-
-* Neptune, Comet, and MLtraq form a cluster of higher-performing methods. **MLtraq is the best performing, 5x faster than Comet/Neptune and 90-700x faster than the others.**
+* `Neptune`, `Comet`, and `MLtraq` are the highest-performing methods, with **MLtraq being the fastest, 100 times faster than WandB.**
 
 !!! Tip
     The advantage of MLtraq is how the data is tracked and stored. It is hard to beat because it is very close to simply adding an element to an array and serializing it to an SQLite column value with the speedy [DATAPAK](../advanced/storage.md) serialization format.
 
 ### Experiment 3: How much time to track 10 runs?
+
 Evaluating different configurations (hyperparameters, etc.) maps to multiple runs and executing many runs is critical.
 This experiment compares how long it takes to execute `10` runs.
 
@@ -123,41 +130,41 @@ This experiment compares how long it takes to execute `10` runs.
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks/exp-3.svg" >
 </p>
 
-The cost of starting a new run for some methods is high and similar to starting a new experiment, scaling rather poorly.
-WandB and MLflow are the worst performing, followed by Aim at a fraction of the cost.
+* Creating new runs scales poorly for some methods.
+`WandB` and `MLflow` are the worst performing, followed by `Aim` at a fraction of the cost.
 
-Comet, FastTrackML, Neptune, and MLtraq are orders of magnitude faster than the methods in the first group. **MLtraq is the best-performing method in its group and is more than 300 times faster than the others.**
+* `Comet`, `FastTrackML`, `Neptune`, and `MLtraq` are the best-performing methods, with **MLtraq being the fastest.**
 
-!!! Info
-    Some methods lack an equivalent modeling of experiments, or they are defined as runs in this analysis. In general, the performance varying the number of runs is a good proxy for the time cost of changing the number of experiments.
 
 ### Experiment 4: How much time to track 100 runs?
 
-In this experiment, we repeated Experiment 4 with 100 runs, limiting the comparison to FastTrackML, Comet, Neptune, and MLtraq.
+In this experiment, we repeated Experiment 3 with `100` runs, limiting the comparison to `FastTrackML`, `Comet`, `Neptune`, and `MLtraq`.
 
 <p align="center">
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks/exp-4.svg" >
 </p>
 
-Comet is at least `20` times slower than the other methods. FastTrackML and Neptune follow.
-**MLtraq is the best performing, 13x faster than the others.**
+* `Comet` is at least `20` times slower than the other methods. `FastTrackML` and `Neptune` follow, with **MLtraq being 10 times faster than the others.**
+
 
 ### Experiment 5: How much time to track 1K runs and 1K values?
 
-The two standing methods are MLtraq and Neptune. Let's look at their performance as we increase both runs and values to 500 and 1K.
+The two standing methods are `MLtraq` and `Neptune`. Let's look at their performance as we increase runs and values.
 
 <p align="center">
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks/exp-5.svg" >
 </p>
 
-As we increase the number of tracked values or runs, MLtraq becomes more and more competitive. With no threading and no filesystem database bottleneck, it is the fastest method for realistic workloads.
-**MLtraq is the best performing, 23x faster than Neptune.**
+As we increase the number of tracked values and runs, the gap between `MLtraq` and `Neptune` increases.
+With no threading and no filesystem files to manage, it is the fastest method for realistic workloads.
+**MLtraq is the best performing, 23 times faster than Neptune.**
 
 ## Tracking `NumPy` arrays
 
 In this set of experiments, we evaluate the tracking performance on 1D `NumPy` arrays, varying the number of `arrays` and their `size`.
+Besides initialization and high frequency, we also want to store large objects efficiently.
 
-### Experiment 1: How long does tracking an array of length 1M take?
+### Experiment 1 (Large objects): How long does tracking an array of length 1M take?
 
 We evaluate the time required to start a new experiment and track a single array of length 1M (default dtype is `numpy.float64`), which is 8M bytes if written to disk. Most methods do not support the serialization of `NumPy` arrays, and the test procedures handle it explicitly.
 
@@ -165,13 +172,15 @@ We evaluate the time required to start a new experiment and track a single array
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks2/exp-1.svg" >
 </p>
 
-The database, the filesystem, and the threading dominated the duration of the experiment.
-FastTrackML and Comet have a similar performance, storing each tracked array in a separate file on the filesystem.
-Neptune encodes the arrays as images, [uuencoding](https://en.wikipedia.org/wiki/Uuencoding) them and embedding
-the resulting text in a single JSON-formatted file. Despite the more elaborate scheme, the fewer writes to filesystem make it competitive.
+* The `WandB` method is the worst performing, followed by `MLflow` and `Aim`.
 
-**MLtraq is the best-performing method, 3x faster than FastTrackML and 4x faster than Neptune**.
-Its better performance is due to its faster serialization strategy based on safe pickling and `NumPy` native code.
+* `Comet` and `Neptune` are next. `Neptune` encodes the arrays as images, [uuencoding](https://en.wikipedia.org/wiki/Uuencoding) them and embedding
+the resulting text in a single JSON-formatted file. `Comet` adopts a JSON-like format, creating a single ZIP file that adds extra cost.
+
+* `FastTrackML` is significantly faster than `MLflow` white, maintaining API compatibility, which is a remarkable result.
+
+* **MLtraq is the best-performing method, 3 times faster than FastTrackML and 4 times faster than Neptune**.
+Its higher performance is due to its speedier serialization strategy based on safe pickling and `NumPy` native binary serialization.
 See [Data store](../advanced/datastore.md) for more details.
 
 ### Experiment 2: How long does tracking 1-10 arrays with length 10K-1M take?
@@ -182,28 +191,29 @@ In this experiment, we assess the time required to track multiple arrays of vary
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks2/exp-2.svg" >
 </p>
 
-Trends remain similar to Experiment 1, except WandB whose time explodes. We suspect this is due to the threading communication.
+Trends remain similar to Experiment 1, except `WandB` whose time explodes. We suspect this is due to the threading communication and its internal JSON serializer.
 
 ### Experiment 3: How long does it take to track 1-10K arrays with a length of 1K?
 
 In this experiment, we assess the time required to track a large number of small-sized arrays.
+The analysis is limited to the best-performing methods.
 
 <p align="center">
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks2/exp-3.svg" >
 </p>
 
-Comet and FastTrackML perform similarly, with Neptune and MLtraq being 4x faster.
-**MLtraq is the best-performing method, being 5x faster than Neptune**.
+* `Comet` and `FastTrackML` perform similarly, followed by `Neptune`, which is `4`` times faster.
+* **MLtraq is the best-performing method, being 5 times faster than Neptune**.
 
 ## Conclusion
 
 * **MLtraq is the fastest experiment-tracking solution for workloads with hundreds of thousands of runs and arbitrarily large, complex Python objects**. 
-The primary goal of other solutions gravitates toward compatibility, dashboarding, streaming, third-party integrations, and complete model lifecycle management. Their support for rich modeling of experiments, runs, and complex Python objects is missing or limited. We believe these are essential capabilities in the experimentation phase worth optimizing.
+The primary goal of other solutions gravitates toward backward compatibility, third-party integrations, and complete model lifecycle management. Their support for rich modeling of experiments, runs, and complex Python objects is missing or limited. We believe these are essential capabilities in the experimentation phase worth optimizing.
 
 * **Relying solely on the filesystem as a database is a recipe for low performance**.
 As noted on the [SQLite website](https://www.sqlite.org/fasterthanfs.html), relying on a single file to store the local database copy could be
 35% faster than a filesystem-based solution. The higher initialization cost of having a proper database pays off in scalability and reliability.
-MLtraq provides the flexibility to choose where to store objects with the [Data store](../advanced/datastore.md) interface.
+`MLtraq` provides the flexibility to choose where to store objects with the [Data store](../advanced/datastore.md) interface.
 
-* **The solutions that adopt threading to incorporate streaming capabilities pay the hidden cost of IPC (Inter-Process Communication).** Further, the higher complexity results in more I/O errors and instability issues.
+* If not implemented carefully, **the solutions that adopt threading to incorporate streaming capabilities pay the hidden cost of IPC (Inter-Process Communication)**. Further, the higher complexity results in more I/O errors and reliability concerns.
 

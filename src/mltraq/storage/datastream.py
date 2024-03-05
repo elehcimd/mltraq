@@ -329,6 +329,11 @@ class DatabaseWriter:
         """
 
         delay = options().get("datastream.srv_throttle_persist")
+
+        # Introduce an initial delay to let the initial
+        # burst of messages to flow in, useful for demos/tests.
+        sleep(delay)
+
         while not self.terminate.is_set():
             try:
                 if not self.messages.empty():

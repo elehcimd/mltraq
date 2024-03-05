@@ -3,7 +3,7 @@ import tempfile
 import numpy as np
 from mltraq import Run, create_session, options
 from mltraq.cli import init_logging
-from mltraq.steps.create_sequences import create_sequences
+from mltraq.steps.init_sequences import init_sequences
 
 # Configure logging
 options().set("cli.logging.format", "[%(threadName)s] %(message)s")
@@ -22,7 +22,7 @@ with tempfile.TemporaryDirectory() as dirname:
     experiment = session.create_experiment("example")
 
     # Add a sequence "metrics" and persist experiment
-    experiment.execute(create_sequences("metrics"), n_jobs=1).persist(if_exists="replace")
+    experiment.execute(init_sequences("metrics"), n_jobs=1).persist(if_exists="replace")
 
     def track(run: Run):
         """
