@@ -10,7 +10,6 @@ NATIVE_DATABASE_TYPES
   <class 'datetime.time'>,
   <class 'datetime.datetime'>,
   <class 'datetime.date'>,
-  <class 'datetime.timedelta'>,
   <class 'uuid.UUID'>,
   <class 'bytes'>]
 --

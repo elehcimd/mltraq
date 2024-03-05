@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import random
-from typing import List
+from typing import Any, List
 
 import pandas as pd
 
@@ -53,6 +53,9 @@ class Runs(dict):
         Return a run, no guarantees on which one.
         """
         return self[next(iter(self))]
+
+    def apply(self, func: callable) -> Any:
+        return [func(run) for run in self.values()]
 
     def next(self) -> Run:
         """

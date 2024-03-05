@@ -1,22 +1,22 @@
 [MainThread] Logging level set to DEBUG
-[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmpj9okgxh0/mltraq.db'
+[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmp9jalmno0/mltraq.db'
 [MainThread] Executing 1 tasks on 1 workers (backend:loky)
 [MainThread] Persisting experiment (table name: experiment_example)
-[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmpj9okgxh0/mltraq.db'
+[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmp9jalmno0/mltraq.db'
 [MainThread] Listening on '127.0.0.1:9000' (INET)
 [DataStreamServer] DataStreamServer: Waiting for messages
 [MainThread] Executing 1 tasks on 1 workers (backend:loky)
 [MainThread] Streaming to '127.0.0.1:9000' (INET)
+[MainThread] DataStreamClient: Closing
+[MainThread] DataStreamClient: Stats: count_messages=10 rate=81.47 messages/s count_errors=0
 [DatabaseWriter] Loading experiment id_experiment='d65df69e-1175-44a5-be2f-2232765703b8' name='None'
 [DatabaseWriter] SQL: SELECT experiment_example.id_experiment, experiment_example.id_run, experiment_example.metrics 
 FROM experiment_example
 [DatabaseWriter] Persisting experiment (table name: experiment_example)
-[DatabaseWriter] DatabaseWriter: Processed 1 new messages for 1 experiments
-[MainThread] DataStreamClient: Closing
-[MainThread] DataStreamClient: Stats: count_messages=10 rate=71.66 messages/s count_errors=0
+[DatabaseWriter] DatabaseWriter: Processed 10 new messages for 1 experiments
 [MainThread] DataStreamServer: Requested termination ...
 [DataStreamServer] DataStreamServer: Cleanup ...
-[DataStreamServer] DataStreamServer: Stats: count_messages=9 rate=52.64 messages/s
+[DataStreamServer] DataStreamServer: Stats: count_messages=10 rate=9.44 messages/s
 [DataStreamServer] DatabaseWriter: Requested termination ...
 [DatabaseWriter] DatabaseWriter: No new messages to process
 [DataStreamServer] DatabaseWriter: Terminated
@@ -28,7 +28,16 @@ Streamed fields: ['metrics']
 
 Streamed metrics:
    idx                  timestamp    v
-0    0 2024-03-04 23:22:17.310210  0.0
+0    0 2024-03-05 14:20:26.354764  0.0
+1    1 2024-03-05 14:20:26.367457  1.0
+2    2 2024-03-05 14:20:26.378040  2.0
+3    3 2024-03-05 14:20:26.391524  3.0
+4    4 2024-03-05 14:20:26.404395  4.0
+5    5 2024-03-05 14:20:26.417271  5.0
+6    6 2024-03-05 14:20:26.430074  6.0
+7    7 2024-03-05 14:20:26.441431  7.0
+8    8 2024-03-05 14:20:26.451998  8.0
+9    9 2024-03-05 14:20:26.464538  9.0
 --
 
 Tracked fields: ['metrics', 'dataset']

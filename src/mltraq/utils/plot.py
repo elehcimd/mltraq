@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -6,6 +7,8 @@ import pandas as pd
 from scipy.stats import sem
 
 from mltraq.opts import options
+
+log = logging.getLogger(__name__)
 
 
 def stderr(a):
@@ -69,7 +72,7 @@ def bar_plot(  # noqa
     with plt.rc_context(rc), plt.style.context(style):
 
         if ax is None:
-            _, ax = plt.subplots(figsize=options().get("matplotlib.figsize"))
+            _, ax = plt.subplots(figsize=options().get("matplotlib.figsize", null_if_missing=True) or (5, 5))
 
         aggfunc = ["mean", "median", stderr]
 

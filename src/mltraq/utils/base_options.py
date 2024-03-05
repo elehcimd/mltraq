@@ -48,6 +48,7 @@ class BaseOptions:
         If `null_if_missing` is True, return NULL if the key is missing,
         otherwise fail.
         """
+
         steps = path.split(".")
         d = self.values
         for step in steps:

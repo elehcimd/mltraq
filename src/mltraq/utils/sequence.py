@@ -50,6 +50,12 @@ class Sequence:
 
         self.stream_send = None
 
+    def __len__(self):
+        """
+        Return the number of rows of the sequence.
+        """
+        return len(self.frame) + len(self.data)
+
     def set_stream(self, name, callback):
         if callback is None:
             self.stream_send = None
