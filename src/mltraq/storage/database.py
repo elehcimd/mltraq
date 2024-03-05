@@ -8,7 +8,7 @@ from typing import Callable, Iterator, List
 import pandas as pd
 from sqlalchemy import MetaData, Table, create_engine, inspect, sql
 from sqlalchemy.engine import make_url
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import DBAPIError, OperationalError
 from sqlalchemy.orm import Query, sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
@@ -179,7 +179,8 @@ class Database:
 
             try:
                 Table(name, meta).drop(bind=session.bind, checkfirst=False)
-            except OperationalError:
+            except (OperationalError, DBAPIError):
+                # See https://docs.sqlalchemy.org/en/20/core/exceptions.html#sqlalchemy.exc.DBAPIError
                 return 0
 
             session.commit()

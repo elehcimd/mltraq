@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.123"
+version = "0.0.124"
 description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -51,15 +51,16 @@ mypy = "^1.8.0"
 pandas-stubs = "^2.1.4.231227"
 pyinstrument = "^4.6.2"
 mkdocs-charts-plugin = "^0.0.10"
-asciinema = "^2.4.0"
 scikit-learn = "^1.4.0"
-psycopg-binary = "^3.1.18"
-mlflow = "^2.10.2"
-aim = "^3.18.1"
-neptune = "^1.9.1"
-comet-ml = "^3.38.0"
-wandb = "^0.16.3"
-fasttrackml = "0.5.0b2"
+psycopg2-binary = "^2.9.9"
+# asciinema = "^2.4.0"
+# mlflow = "^2.10.2"
+# aim = "^3.18.1"
+# neptune = "^1.9.1"
+# comet-ml = "^3.38.0"
+# wandb = "^0.16.3"
+# fasttrackml = "0.5.0b2"
+
 
 
 [build-system]
