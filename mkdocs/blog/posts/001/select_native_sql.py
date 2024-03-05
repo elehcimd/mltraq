@@ -1,0 +1,11 @@
+import datetime
+
+from mltraq import create_session
+from mltraq.steps.init_fields import init_fields
+
+session = create_session()
+experiment = session.create_experiment("example")
+now = datetime.datetime.strptime("05/03/2024 10:55:12", "%d/%m/%Y %H:%M:%S")
+experiment.execute(init_fields({"now": now, "one": 1, "two": 2})).persist()
+
+print(session.db.query("SELECT now, one + two FROM experiment_example"))
