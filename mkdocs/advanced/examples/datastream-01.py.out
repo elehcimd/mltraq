@@ -40,4 +40,4 @@ Streamed metrics:
 9    9 2024-03-05 22:35:30.122764  9.0
 --
 
-Tracked fields: ['metrics', 'dataset']
+Tracked fields: ['dataset', 'metrics']
