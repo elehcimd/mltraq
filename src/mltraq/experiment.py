@@ -383,6 +383,10 @@ class Experiment:
         # Generate metadata about experiment to persist.
         meta = self.get_metadata()
 
+        # If there are no runs, add the default one.
+        if len(self.runs) == 0:
+            self.add_run()
+
         # Insert row in "experiments" table.
         with self.db.session() as session:
             session.add(self.record(meta=meta, store_unsafe_pickle=store_unsafe_pickle))

@@ -20,11 +20,11 @@ from pyarrow.feather import read_feather, read_table, write_feather
 #     We limit aggressively the allowed opcodes to avoid security issues.
 #   - numpy/pyarrow/str to serialize: pd.DataFrame, pd.Series, pa.Table, np.ndarray, uuid.UUID
 
-# Semantic version of the format
-VERSION_SERIALIZER = "0.0.0"
+# Version of the DATAPAK serializer.
+VERSION_SERIALIZER = "0.0"
 
 
-# Types that are encoded with Pickle
+# Types that can be safely encoded with Pickle
 BASIC_TYPES = [
     bool,
     int,
@@ -35,28 +35,28 @@ BASIC_TYPES = [
 ]
 
 
-# Types that are encoded with Pickle. They can be nested.
+# Types that are safely encoded with Pickle. They can be nested.
 CONTAINER_TYPES = [tuple, list, set, dict]
 
 # Complex types that are encoded to `bytes``, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
 COMPLEX_TYPES = [Bunch, Sequence, DataStore, pd.DataFrame, pd.Series, pa.Table, np.ndarray, np.datetime64, uuid.UUID]
 
-# Magic dict key encoding types in the list COMPLEX_TYPES (see below), with semantic versioning
-KEY_MAGIC = f"datapak-type-{VERSION_SERIALIZER}"
+# Magic dict key encoding types in the list COMPLEX_TYPES (see below)
+KEY_MAGIC = "DATAPAK-0"
 
-# Key of dictionaries encoding complex types, with semantic versioning
-KEY_BUNCH = "mltraq.Bunch-0.0.0"
-KEY_SEQUENCE = "mltraq.Sequence-0.0.0"
-KEY_DATASTORE = "mltraq.DataStore-0.0.0"
-KEY_PANDAS_SERIES = "pandas.Series-0.0.0"
-KEY_PANDAS_DATAFRAME = "pandas.DataFrame-0.0.0"
-KEY_PYARROW_TABLE = "pyarrow.Table-0.0.0"
-KEY_NUMPY_NDARRAY = "numpy.ndarray-0.0.0"
+# Key of dictionaries encoding complex types
+KEY_BUNCH_0 = "mltraq.Bunch-0"
+KEY_SEQUENCE_0 = "mltraq.Sequence-0"
+KEY_DATASTORE_0 = "mltraq.DataStore-0"
+KEY_PANDAS_SERIES_0 = "pandas.Series-0"
+KEY_PANDAS_DATAFRAME_0 = "pandas.DataFrame-0"
+KEY_PYARROW_TABLE_0 = "pyarrow.Table-0"
+KEY_NUMPY_NDARRAY_0 = "numpy.ndarray-0"
 
 # Microseconds since epoch, example of value: numpy.datetime64('2024-01-02T17:16:15.12345', 'us')
-KEY_NUMPY_DATETIME64 = "numpy.datetime64-0.0.0"
-KEY_UUID = "uuid.UUID-0.0.0"
+KEY_NUMPY_DATETIME64_0 = "numpy.datetime64-0"
+KEY_UUID_0 = "uuid.UUID-0"
 
 
 # No other type is supported. If other types are encountered,
@@ -155,33 +155,33 @@ def encode_magic_key(cls, obj: object) -> dict:
     the dictionary as a serialized complex object.
     """
     if isinstance(obj, Sequence):
-        return {KEY_MAGIC: KEY_SEQUENCE, "value": cls.encode(obj.flush().frame)}
+        return {KEY_MAGIC: KEY_SEQUENCE_0, "value": cls.encode(obj.flush().frame)}
     elif isinstance(obj, DataStore):
-        return {KEY_MAGIC: KEY_DATASTORE, "value": obj.to_url()}
+        return {KEY_MAGIC: KEY_DATASTORE_0, "value": obj.to_url()}
     elif isinstance(obj, Bunch):
-        return {KEY_MAGIC: KEY_BUNCH, "value": cls.encode(dict(obj))}
+        return {KEY_MAGIC: KEY_BUNCH_0, "value": cls.encode(dict(obj))}
     elif isinstance(obj, uuid.UUID):
-        return {KEY_MAGIC: KEY_UUID, "value": obj.hex}
+        return {KEY_MAGIC: KEY_UUID_0, "value": obj.hex}
     elif isinstance(obj, pd.DataFrame):
         buffer = BytesIO()
         write_feather(obj, buffer, compression="uncompressed")
-        return {KEY_MAGIC: KEY_PANDAS_DATAFRAME, "value": ensure_bytes(buffer.getvalue())}
+        return {KEY_MAGIC: KEY_PANDAS_DATAFRAME_0, "value": ensure_bytes(buffer.getvalue())}
     elif isinstance(obj, pd.Series):
         buffer = BytesIO()
         write_feather(obj.to_frame(), buffer, compression="uncompressed")
-        return {KEY_MAGIC: KEY_PANDAS_SERIES, "value": ensure_bytes(buffer.getvalue())}
+        return {KEY_MAGIC: KEY_PANDAS_SERIES_0, "value": ensure_bytes(buffer.getvalue())}
     elif isinstance(obj, pa.Table):
         buffer = BytesIO()
         write_feather(obj, buffer, compression="uncompressed")
-        return {KEY_MAGIC: KEY_PYARROW_TABLE, "value": ensure_bytes(buffer.getvalue())}
+        return {KEY_MAGIC: KEY_PYARROW_TABLE_0, "value": ensure_bytes(buffer.getvalue())}
     elif isinstance(obj, np.ndarray):
         # Store in NPY format, a "simple format for saving numpy arrays to disk with the full information about them."
         # https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html
         buffer = BytesIO()
         np.save(buffer, obj, allow_pickle=False)
-        return {KEY_MAGIC: KEY_NUMPY_NDARRAY, "value": ensure_bytes(buffer.getvalue())}
+        return {KEY_MAGIC: KEY_NUMPY_NDARRAY_0, "value": ensure_bytes(buffer.getvalue())}
     elif isinstance(obj, np.datetime64):
-        return {KEY_MAGIC: KEY_NUMPY_DATETIME64, "value": int(np.datetime64(obj, "us").astype(np.int64))}
+        return {KEY_MAGIC: KEY_NUMPY_DATETIME64_0, "value": int(np.datetime64(obj, "us").astype(np.int64))}
     else:
         raise UnsupportedObjectType(f"{cls.__name__} does not support type {obj.__class__}")
 
@@ -192,30 +192,30 @@ def decode_magic_key(cls, obj: dict) -> object:
     where `k` is a predefined list of string values, and
     `v` is a bytes object that contains the serialized value.
     """
-    if obj[KEY_MAGIC] == KEY_SEQUENCE:
+    if obj[KEY_MAGIC] == KEY_SEQUENCE_0:
         return Sequence(frame=cls.decode(obj["value"]))
-    elif obj[KEY_MAGIC] == KEY_UUID:
+    elif obj[KEY_MAGIC] == KEY_UUID_0:
         return uuid.UUID(hex=obj["value"])
-    elif obj[KEY_MAGIC] == KEY_BUNCH:
+    elif obj[KEY_MAGIC] == KEY_BUNCH_0:
         return Bunch(cls.decode(obj["value"]))
-    elif obj[KEY_MAGIC] == KEY_DATASTORE:
+    elif obj[KEY_MAGIC] == KEY_DATASTORE_0:
         return DataStore.from_url(obj["value"])
-    elif obj[KEY_MAGIC] == KEY_PANDAS_DATAFRAME:
+    elif obj[KEY_MAGIC] == KEY_PANDAS_DATAFRAME_0:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])
         return read_feather(output_stream.getvalue())
-    elif obj[KEY_MAGIC] == KEY_PANDAS_SERIES:
+    elif obj[KEY_MAGIC] == KEY_PANDAS_SERIES_0:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])
         return read_feather(output_stream.getvalue())[0]
-    elif obj[KEY_MAGIC] == KEY_NUMPY_NDARRAY:
+    elif obj[KEY_MAGIC] == KEY_NUMPY_NDARRAY_0:
         memfile = BytesIO()
         memfile.write(obj["value"])
         memfile.seek(0)
         return np.load(memfile, allow_pickle=False)
-    elif obj[KEY_MAGIC] == KEY_NUMPY_DATETIME64:
+    elif obj[KEY_MAGIC] == KEY_NUMPY_DATETIME64_0:
         return np.datetime64(obj["value"], "us")
-    elif obj[KEY_MAGIC] == KEY_PYARROW_TABLE:
+    elif obj[KEY_MAGIC] == KEY_PYARROW_TABLE_0:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])
         return read_table(output_stream.getvalue())

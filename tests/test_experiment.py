@@ -7,6 +7,7 @@ from mltraq import Run, create_experiment, options
 from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException
 from mltraq.runs import RunsException
+from mltraq.steps.init_fields import init_fields
 from mltraq.utils.exceptions import InvalidInput
 
 
@@ -451,3 +452,29 @@ def test_experiment_parallel():
     v_mean = create_experiment().add_runs(i=range(100)).execute(step).runs.df().v.mean()
     # Without enough runs, it might be rather off from .5
     assert v_mean > 0
+
+
+def test_persist_experiment_no_runs():
+    """
+    Test: If we persist an experiment with no runs, a default one is added.
+    """
+    experiment = create_experiment()
+
+    assert len(experiment.runs) == 0
+
+    experiment.persist()
+
+    assert len(experiment.runs) == 1
+
+
+def test_execute_experiment_no_runs():
+    """
+    Test: If we execute an experiment with no runs, a default one is added.
+    """
+    experiment = create_experiment()
+
+    assert len(experiment.runs) == 0
+
+    experiment.execute(init_fields({"a": 1}))
+
+    assert len(experiment.runs) == 1
