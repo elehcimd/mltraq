@@ -1,6 +1,6 @@
 # Benchmarking experiment tracking frameworks
 
-*Latest update: 2023.03.04*
+*Latest update: 2023.03.06*
 
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions and MLtraq, highlighting their strengths and weaknesses.
 
@@ -10,12 +10,12 @@ This article overviews the advantages of fast experiment tracking and presents a
 In this analysis, we compare the experiment tracking speed of:
 
 * [Weights & Biases](https://wandb.ai/) (0.16.3)
-* [MLflow](https://mlflow.org/) (2.10.2)
+* [MLflow](https://mlflow.org/) (2.11.0)
 * [FastTrackML](https://github.com/G-Research/fasttrackml) (0.5.0b2)
 * [Neptune](https://neptune.ai/) (1.9.1)
 * [Aim](https://aimstack.io/) (3.18.1)
-* [Comet](https://www.comet.com/) (3.38.0)
-* [MLtraq](https://mltraq.com/) (0.0.118)
+* [Comet](https://www.comet.com/) (3.38.1)
+* [MLtraq](https://mltraq.com/) (0.0.125)
 
 We vary the number of runs and values as defined in the [key concepts](../tutorial/index.md).
 
@@ -25,7 +25,7 @@ Experiments are executed offline with storage on the local filesystem. The syste
 For each experiment, we report the time in seconds (s). The reported results are averaged on `10` independent runs running in the foreground without parallelization.
 The plots report the performance varying the number of experiments, runs, and values, with aggregates by method.
 
-References and instructions to reproduce the results, as well as more details on the setup, can be found in the notebooks [Benchmarks rev1](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks%20rev1.ipynb) (`float`) and [Benchmarks 2](https://github.com/elehcimd/mltraq/blob/fixes/notebooks/08%20Tracking%20speed%20-%20Benchmarks%202.ipynb) (`NumPy`).
+References and instructions to reproduce the results, as well as more details on the setup, can be found in the notebooks [Benchmarks rev1](https://github.com/elehcimd/mltraq/blob/devel/notebooks/07%20Tracking%20speed%20-%20Benchmarks%20rev1.ipynb) (`float` scalars) and [Benchmarks 2](https://github.com/elehcimd/mltraq/blob/fixes/notebooks/08%20Tracking%20speed%20-%20Benchmarks%202.ipynb) (`NumPy` arrays).
 
 !!! Question "How can we improve this analysis?"
     In comparative analyses, there are always many nuances and little details that can make a big difference. You can [open a discussion](https://github.com/elehcimd/mltraq/discussions) to ask questions or create a change request on the [issue tracker](https://github.com/elehcimd/mltraq/issues) if you find any issues. There might be ways to tune the methods to improve their performance that we missed or other solutions worth considering
@@ -38,6 +38,7 @@ References and instructions to reproduce the results, as well as more details on
 
 ## Changelog
 
+* 2024.03.06 - Improved conclusions and added acknowledgements
 * 2024.03.04 - Added FastTrackML, improved text and plots
 * 2023.02.26 - Initial publication of results
 
@@ -217,3 +218,12 @@ As noted on the [SQLite website](https://www.sqlite.org/fasterthanfs.html), rely
 
 * If not implemented carefully, **the solutions that adopt threading to incorporate streaming capabilities pay the hidden cost of IPC (Inter-Process Communication)**. Further, the higher complexity results in more I/O errors and reliability concerns.
 
+* The [entity-attribute-value](https://en.wikipedia.org/wiki/Entity–attribute–value_model) database model adopted by `MLflow` and `FastTrackML` requires **inserting a new record for every new tracked value**, making it painfully slow. Furthermore, the tracked value type is fixed to the SQL column type, resulting in limited flexibility.
+
+* Most methods implement the **serialization of arrays and other complex, non-scalar objects with custom text encodings**, relying on [uuencoding](https://en.wikipedia.org/wiki/Uuencoding) and JSON-like formats. Compression is either missing or handled by creating ZIP files of artifacts stored on the filesystem. The process is slow, and the support for complex types is limited or missing: floating point and timestamp precision are ignored, etc. Arrow IPC, native serialization, zero-copy writes, and safe pickling provide superior performance and portability, as proved by `MLtraq`.
+
+## Acknowledgements
+
+Thank You for the constructive conversations that helped improve this analysis:
+
+* Jonathan Giannuzzi and Alex Scammon from [FastTrackML](https://github.com/G-Research/fasttrackml) (a G-Research project)
