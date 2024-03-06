@@ -1,3 +1,26 @@
+[MainThread] Logging level set to DEBUG
+[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmpenpn05__/mltraq.db'
+[MainThread] Executing 1 tasks on 1 workers (backend:loky)
+[MainThread] Persisting experiment (table name: experiment_example)
+[MainThread] Created DB link: 'sqlite:////var/folders/2c/7zw87mvd2c386jc15bltj_qm0000gp/T/tmpenpn05__/mltraq.db'
+[MainThread] Listening on '127.0.0.1:9000' (INET)
+[DataStreamServer] DataStreamServer: Waiting for messages
+[MainThread] Executing 1 tasks on 1 workers (backend:loky)
+[MainThread] Streaming to '127.0.0.1:9000' (INET)
+[MainThread] DataStreamClient: Closing
+[MainThread] DataStreamClient: Stats: count_messages=10 rate=80.69 messages/s count_errors=0
+[DatabaseWriter] Loading experiment id_experiment='d65df69e-1175-44a5-be2f-2232765703b8' name='None'
+[DatabaseWriter] SQL: SELECT experiment_example.id_experiment, experiment_example.id_run, experiment_example.metrics 
+FROM experiment_example
+[DatabaseWriter] Persisting experiment (table name: experiment_example)
+[DatabaseWriter] DatabaseWriter: Processed 10 new messages for 1 experiments
+[MainThread] DataStreamServer: Requested termination ...
+[DataStreamServer] DataStreamServer: Cleanup ...
+[DataStreamServer] DataStreamServer: Stats: count_messages=10 rate=9.59 messages/s
+[DataStreamServer] DatabaseWriter: Requested termination ...
+[DatabaseWriter] DatabaseWriter: No new messages to process
+[DataStreamServer] DatabaseWriter: Terminated
+[MainThread] DataStreamServer: Terminated
 
 
 Streamed fields: ['metrics']
@@ -5,16 +28,16 @@ Streamed fields: ['metrics']
 
 Streamed metrics:
    idx                  timestamp    v
-0    0 2024-04-11 16:44:46.039699  0.0
-1    1 2024-04-11 16:44:46.040987  1.0
-2    2 2024-04-11 16:44:46.042361  2.0
-3    3 2024-04-11 16:44:46.043716  3.0
-4    4 2024-04-11 16:44:46.045057  4.0
-5    5 2024-04-11 16:44:46.046398  5.0
-6    6 2024-04-11 16:44:46.047741  6.0
-7    7 2024-04-11 16:44:46.049080  7.0
-8    8 2024-04-11 16:44:46.050428  8.0
-9    9 2024-04-11 16:44:46.051542  9.0
+0    0 2024-03-06 08:28:45.741500  0.0
+1    1 2024-03-06 08:28:45.753307  1.0
+2    2 2024-03-06 08:28:45.764805  2.0
+3    3 2024-03-06 08:28:45.777368  3.0
+4    4 2024-03-06 08:28:45.789883  4.0
+5    5 2024-03-06 08:28:45.802510  5.0
+6    6 2024-03-06 08:28:45.815133  6.0
+7    7 2024-03-06 08:28:45.827705  7.0
+8    8 2024-03-06 08:28:45.840266  8.0
+9    9 2024-03-06 08:28:45.852821  9.0
 --
 
 Tracked fields: ['metrics', 'dataset']
