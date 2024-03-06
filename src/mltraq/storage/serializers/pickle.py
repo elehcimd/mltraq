@@ -12,7 +12,7 @@ from mltraq.utils.exceptions import ExceptionWithMessage
 PICKLE_DEFAULT_PROTOCOL = 5
 
 # Version of the Pickle serializer
-VERSION_SERIALIZER = 0.0
+VERSION_SERIALIZER = "0.0"
 
 
 class UnsafePickle(ExceptionWithMessage):
