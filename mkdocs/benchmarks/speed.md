@@ -1,6 +1,6 @@
 # Benchmarking experiment tracking frameworks
 
-*Latest update: 2023.03.06*
+*Latest update: 2024.03.06*
 
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions and MLtraq, highlighting their strengths and weaknesses.
 
