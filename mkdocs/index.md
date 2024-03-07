@@ -50,16 +50,17 @@ Track anything, stream, reproduce, collaborate, and resume the computation state
 
 ## Key features
 
-* **Immediate**: Design and execute experiments with a few lines of code.
-* **Collaborative**: Backup, merge, share and reload experiments with their computation state anywhere.
-* **Interoperable**: Access your experiments with Python, Pandas and SQL with native database types and open formats － no vendor lock-in.
-* **Flexible**: Track native Python data types and structures, as well as Numpy, Pandas and PyArrow objects.
-* **Lightweight**: Thin layer with minimal dependencies that can run anywhere and can complement other components/services.
+* **Immediate**: Design and execute experiments with a few lines of code, stream your metrics.
+* **Collaborative**: Backup, merge, share, and reload experiments with their computation state anywhere.
+* **Interoperable**: Access your experiments with Python, Pandas, and SQL with native database types and open formats － no vendor lock-in.
+* **Flexible**: Track native Python data types and structures, as well as NumPy, Pandas, and PyArrow objects.
+* **Lightweight**: Thin layer with minimal dependencies that can run anywhere and complement other components/services.
 
-## Limitations
+## Design choices
 
-* **Computation**: The (optional) chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. Cluster-specific backends for Dask, Ray and Spark, as well as custom ones, can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`.
-* **Persistence**: By default, an in-memory SQLite database is used and its [default limits](https://sqlite.org/limits.html) do apply. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including: `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, `Numpy`, `Pandas` and `PyArrow` objects. For large objects, use the [Data store](./advanced/datastore.md) interface.
+* **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. The cluster-specific backends of Dask, Ray, Spark, and custom ones can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`. You can directly handle the evaluation of your runs without `joblib`, with less automation and more flexibility.
+
+* **Persistence**: The default database is SQLite, and its [limits](https://sqlite.org/limits.html) apply. You can connect to any SQL database supported by `SQLAlchemy`. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, `Numpy`, `Pandas` and `PyArrow` objects. The [Data store](./advanced/datastore.md) interface is designed to handle out-of-database large objects. Compression is available and disabled by default.
 
 
 ## Requirements
