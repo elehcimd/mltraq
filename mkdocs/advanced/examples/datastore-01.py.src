@@ -1,14 +1,11 @@
 import glob
-import tempfile
 
 import numpy as np
 import pandas as pd
-from mltraq import DataStore, create_experiment, options
+from mltraq import DataStore, create_experiment
+from mltraq.utils.fs import tmpdir_ctx
 
-with tempfile.TemporaryDirectory() as dirname:
-
-    # Set datastore directory to temporary location
-    options().set("datastore.url", f"file:///{dirname}")
+with tmpdir_ctx():
 
     # Create a new experiment and execute a run
     experiment = create_experiment()
@@ -30,9 +27,7 @@ with tempfile.TemporaryDirectory() as dirname:
 
     # List files in datastore directory
     print("Contents of datastore directory:\n")
-    for pathname in glob.glob(
-        "*/**", root_dir=f"{dirname}", recursive=True
-    ):
+    for pathname in glob.glob("*/**", recursive=True):
         print(pathname)
     print("--\n")
 

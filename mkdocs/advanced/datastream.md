@@ -12,11 +12,21 @@ If a message is lost, its corresponding `Sequence` will miss a row associated wi
 !!! Tip
     An experiment can be persisted after its execution, overwriting its partially streamed state, resolving any data loss due to lost messages, and storing all other fields that were not part of the streaming data.
 
-Streaming is possible for experiments already in the database, ensuring their consistency over time.
+Streaming is possible for experiments and runs already in the database, ensuring consistency over time.
+Only sequences that do exist before calling `experiment.execute(...)` are streamed.
+The factory step `init_sequences(...)` lets you initialize the sequences you want to stream in a preliminary execution.
 
-## Example: Streaming metrics
 
-The following example demonstrates how to track and store metrics in the database during the execution of an experiment:
+## Example: Streaming sequences
+
+This example shows how to stream sequences transparently:
+
+{{include_code("mkdocs/advanced/examples/datastream-02.py", title="Data stream example", drop_comments=False)}}
+
+## Example: Streaming metrics with explicit activation
+
+The following example demonstrates how to track and store metrics in the database during the execution of an experiment,
+enabling explicitly the datastream client.
 
 1. Configure a stream over the network, specifying the address to send the messages to, and the server address
 2. Create and persist an experiment with a `"metrics"` Sequence attribute using the parametrized step `create_sequences`

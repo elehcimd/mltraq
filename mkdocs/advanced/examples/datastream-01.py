@@ -1,24 +1,19 @@
-import tempfile
-
 import numpy as np
 from mltraq import Run, create_session, options
-from mltraq.cli import init_logging
 from mltraq.steps.init_sequences import init_sequences
+from mltraq.utils.fs import tmpdir_ctx
+from mltraq.utils.logging import logging_ctx
 
-# Configure logging
-options().set("cli.logging.format", "[%(threadName)s] %(message)s")
-
-init_logging("DEBUG")
-
-with tempfile.TemporaryDirectory() as dirname:
-
-    # Set datastore directory to temporary location
-    options().set("datastream.cli_address", "127.0.0.1:9000")
-    options().set("datastream.srv_address", "127.0.0.1:9000")
-    options().set("datastream.kind", "INET")
+with options().ctx(
+    {
+        "datastream.cli_address": "127.0.0.1:9000",
+        "datastream.srv_address": "127.0.0.1:9000",
+        "datastream.kind": "INET",
+    }
+), logging_ctx(level_name="DEBUG", log_format="[%(threadName)s] %(message)s"), tmpdir_ctx():
 
     # Create a new experiment
-    session = create_session(f"sqlite:///{dirname}/mltraq.db")
+    session = create_session("sqlite:///mltraq.db")
     experiment = session.create_experiment("example")
 
     # Add a sequence "metrics" and persist experiment
@@ -27,6 +22,9 @@ with tempfile.TemporaryDirectory() as dirname:
     def track(run: Run):
         """
         Add 10 values to the `metrics`, streaming them.
+
+        We track also a field `dataset`, which is not streamed
+        as its type is not `Sequence`.
         """
         with run.datastream_client():
             run.fields.dataset = np.zeros(100)
@@ -43,9 +41,6 @@ with tempfile.TemporaryDirectory() as dirname:
         # Make sure that the DatabaseWriter
         # processed at least one record.
         ds.dbw.received.wait()
-
-    # Reduce logging
-    init_logging("CRITICAL")
 
     print("\n")
 

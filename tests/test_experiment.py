@@ -464,7 +464,11 @@ def test_persist_experiment_no_runs():
 
     experiment.persist()
 
+    # If executed, we have one run.
     assert len(experiment.runs) == 1
+
+    # If reloaded, we have one run.
+    assert len(experiment.reload().runs) == 1
 
 
 def test_execute_experiment_no_runs():
@@ -475,6 +479,7 @@ def test_execute_experiment_no_runs():
 
     assert len(experiment.runs) == 0
 
-    experiment.execute(init_fields({"a": 1}))
+    experiment.execute(init_fields(a=1))
 
+    # If executed, we have one run.
     assert len(experiment.runs) == 1

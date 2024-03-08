@@ -14,7 +14,7 @@ def test_init_fields():
     experiment.add_run().execute(init_fields())
 
     # Add two fields to initialize
-    experiment.add_run().execute(init_fields({"a": Sequence(), "b": 123}))
+    experiment.add_run().execute(init_fields(a=Sequence(), b=123))
 
     assert isinstance(experiment.runs.first().fields.a, Sequence)
     assert experiment.runs.first().fields.b == 123

@@ -1,13 +1,13 @@
 import logging
 import random
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from functools import partial
 from typing import Any, Callable, List
 
 import numpy as np
 import pandas as pd
 
-from mltraq.opts import Options
+from mltraq.opts import Options, options
 from mltraq.opts import options as global_options
 from mltraq.storage.database import next_uuid
 from mltraq.utils.bunch import Bunch
@@ -99,6 +99,20 @@ class Run:
         self.steps = []
 
     @contextmanager
+    def sysmon(self) -> Any:
+        try:
+            # Importing here to avoid circular import error.
+            from mltraq.utils.sysmon import SystemMonitor
+
+            sequence = Sequence()
+            self.fields[options().get("sysmon.field_name")] = sequence
+            sm = SystemMonitor(sequence)
+            sm.start()
+            yield sm
+        finally:
+            sm.stop()
+
+    @contextmanager
     def datastream_client(self) -> Any:
         try:
             # Importing here to avoid circular import error.
@@ -107,6 +121,7 @@ class Run:
             ds = DataStreamClient(run=self)
             for key, value in self.fields.items():
                 if isinstance(value, Sequence):
+                    log.debug(f"Linking field '{key}' to datastream")
                     value.set_stream(key, ds.send_sequence)
             yield ds
         finally:
@@ -153,14 +168,24 @@ class Run:
         if options.get("reproducibility.sequential_uuids"):
             next_uuid(inc=(1 + self.id_run.int) * 10**9)
 
-        for step in self.steps:
-            try:
-                step(self)
-            except Exception:  # noqa
-                # We want to catch ALL exceptions triggered within steps,
-                # s.t. we can communicate them back to the driver process.
-                self.exception = RunException(exception_message())
-                break
+        # Start context managers, if not disabled.
+        #
+        # The datastream client requires fields to be defined before it starts, s.t. it has visibility on them,
+        # and it can link Sequence objects to the stream.
+        #
+        # This is why `cm_sysmon` must precede `cm_datastream_client`.
+        cm_datastream_client = nullcontext() if options.get("datastream.disable") else self.datastream_client()
+        cm_sysmon = nullcontext() if options.get("sysmon.disable") else self.sysmon()
+
+        with cm_sysmon, cm_datastream_client:
+            for step in self.steps:
+                try:
+                    step(self)
+                except Exception:  # noqa
+                    # We want to catch ALL exceptions triggered within steps,
+                    # s.t. we can communicate them back to the driver process.
+                    self.exception = RunException(exception_message())
+                    break
 
         self.clear_after_execution()
 

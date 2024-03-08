@@ -1,6 +1,5 @@
 import argparse
 import logging
-import sys
 
 import pandas as pd
 from tabulate import tabulate
@@ -11,6 +10,7 @@ from mltraq.opts import options
 from mltraq.storage.datastream import datastream_server
 from mltraq.utils.base_options import add_option_argument
 from mltraq.utils.exceptions import InvalidInput
+from mltraq.utils.logging import init_logging
 from mltraq.utils.sequence import Sequence
 
 log = logging.getLogger(__name__)
@@ -141,13 +141,3 @@ def experiment_stats(experiment: Experiment) -> pd.DataFrame:
     df = pd.Series(stats).rename("Value").to_frame()
     df.index.name = "Name"
     return df
-
-
-def init_logging(level_name: str | None = None):
-    """
-    Initialize the logging to stdout, setting it to `level_name` or the level specified in the options.
-    """
-    logging.basicConfig(stream=sys.stdout, format=options().get("cli.logging.format"), datefmt="%Y-%m-%d %H:%M:%S")
-    level_name = options().default_if_null(level_name, "cli.logging.level")
-    logging.getLogger().setLevel(logging.getLevelName(level_name))
-    log.debug(f"Logging level set to {level_name}")

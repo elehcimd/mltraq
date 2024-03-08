@@ -380,12 +380,14 @@ class Experiment:
         # Delete experiment from database/datastore.
         self.delete(if_exists)
 
-        # Generate metadata about experiment to persist.
-        meta = self.get_metadata()
-
         # If there are no runs, add the default one.
         if len(self.runs) == 0:
             self.add_run()
+
+        # Generate metadata about experiment to persist.
+        # We must count the number of runs, so important to
+        # call .get_metadata() AFTER adding the default run, if necessary.
+        meta = self.get_metadata()
 
         # Insert row in "experiments" table.
         with self.db.session() as session:

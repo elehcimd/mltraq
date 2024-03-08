@@ -3,7 +3,7 @@ from functools import partial
 from mltraq import Run
 
 
-def step_init_fields(run: Run, fields: dict | None = None):
+def step_init_fields(run: Run, **fields):
     """
     Initialize fields in the run.
     """
@@ -15,8 +15,8 @@ def step_init_fields(run: Run, fields: dict | None = None):
         run.fields[name] = value
 
 
-def init_fields(fields: dict | None = None) -> callable:
+def init_fields(**fields) -> callable:
     """
     It returns a callable step that initializes a set of fields.
     """
-    return partial(step_init_fields, fields=fields)
+    return partial(step_init_fields, **fields)

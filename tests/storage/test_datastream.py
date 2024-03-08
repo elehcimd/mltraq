@@ -1,11 +1,11 @@
 import glob
-import tempfile
 from unittest.mock import patch
 
 import mltraq
 from mltraq.opts import options
+from mltraq.steps.init_sequences import init_sequences
 from mltraq.storage.datastream import DatabaseWriter, DataStreamClient, DataStreamServer
-from mltraq.utils.sequence import Sequence
+from mltraq.utils.fs import tmpdir_ctx
 
 
 def print_directory_contents(dirname):
@@ -21,13 +21,8 @@ def print_directory_contents(dirname):
 
 def test_datastream_send_receive():
 
-    with patch.object(DatabaseWriter, "process_batch"), tempfile.TemporaryDirectory() as tmpdirname, options().ctx(
-        {
-            "datastream.kind": "UNIX",
-            "datastream.srv_address": f"{tmpdirname}/mltraq.sock",
-            "datastream.cli_address": f"{tmpdirname}/mltraq.sock",
-            "database.url": f"sqlite:///{tmpdirname}/mltraq.db",
-        }
+    with patch.object(DatabaseWriter, "process_batch"), tmpdir_ctx(), options().ctx(
+        {"database.url": "sqlite:///mltraq.db"}
     ):
 
         # process_batch will not consume the contents of .batch
@@ -48,14 +43,7 @@ def test_datastream_sequence():
     Test: We can stream sequence records, starting/stopping the streaming functionality.
     """
 
-    with tempfile.TemporaryDirectory() as tmpdirname, options().ctx(
-        {
-            "datastream.kind": "UNIX",
-            "datastream.srv_address": f"{tmpdirname}/mltraq.sock",
-            "datastream.cli_address": f"{tmpdirname}/mltraq.sock",
-            "database.url": f"sqlite:///{tmpdirname}/mltraq.db",
-        }
-    ):
+    with tmpdir_ctx(), options().ctx({"database.url": "sqlite:///mltraq.db"}):
 
         # Start data stream server
         srv = DataStreamServer().start()
@@ -65,14 +53,13 @@ def test_datastream_sequence():
         # Persist experiment
         session = mltraq.create_session()
         experiment = session.create_experiment("test")
-        with experiment.run() as run:
-            run.fields.seq = Sequence()
-        experiment.persist()
+        experiment.execute(init_sequences("seq")).persist()
 
         # Verify that experiment has been persisted, with no tracked values
         assert len(session.load(name="test").runs.first().fields.seq.df()) == 0
 
         # Tracking without streaming.
+        run = experiment.runs.first()
         run.fields.seq.append(a=100, b=200)
 
         # Tracking with streaming.

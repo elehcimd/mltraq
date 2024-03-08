@@ -366,9 +366,13 @@ class DatabaseWriter:
                     self.experiments[message["id_experiment"]] = self.session.load(
                         id_experiment=message["id_experiment"]
                     )
-                sequence: Sequence = (
-                    self.experiments[message["id_experiment"]].runs[message["id_run"]].fields[message["field_name"]]
-                )
+                run = self.experiments[message["id_experiment"]].runs[message["id_run"]]
+
+                # If the sequence with field_name doesn't exist, add it.
+                if message["field_name"] not in run.fields:
+                    run.fields[message["field_name"]] = Sequence()
+                sequence: Sequence = run.fields[message["field_name"]]
+
             except (ExperimentNotFoundException, AttributeError, KeyError):
                 # We received a message that cannot be matched to an existing experiment/run/field, ignore it.
                 log.error(
@@ -377,8 +381,11 @@ class DatabaseWriter:
                 )
                 continue
 
-            id_experiments.add(message["id_experiment"])
+            # Add the record to the sequence
             sequence.stream_recv(message["record"])
+
+            # Keep track of seen experiment IDs
+            id_experiments.add(message["id_experiment"])
 
         # Persist only experiments that received new records.
         for id_experiment in id_experiments:

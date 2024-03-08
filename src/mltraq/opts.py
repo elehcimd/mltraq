@@ -1,3 +1,5 @@
+from os import sep
+
 from joblib.parallel import DEFAULT_BACKEND
 
 from mltraq.utils.base_options import BaseOptions
@@ -21,11 +23,12 @@ class Options(BaseOptions):
             "experiment_tableprefix": "experiment_",
         },
         "datastream": {
+            "disable": True,
             "kind": "UNIX",
             "srv_address": "mltraq.sock",
             "cli_address": "mltraq.sock",
-            "cli_throttle_send": 0.01,
-            "srv_throttle_recv": 0.01,
+            "cli_throttle_send": 0.001,
+            "srv_throttle_recv": 0.0001,
             "srv_throttle_persist": 1,
         },
         "datastore": {"url": "file:///mltraq.datastore", "relative_path_prefix": "undefined"},
@@ -44,6 +47,13 @@ class Options(BaseOptions):
         "cli": {
             "logging": {"level": "INFO", "format": "%(levelname)-9s %(asctime)s  %(message)s"},
             "tabulate": {"maxcolwidths": 70},
+        },
+        "sysmon": {
+            "disable": True,
+            "interval": 1,
+            "percpu": False,
+            "path": sep,
+            "field_name": "sysmon",
         },
         "app": {},
     }
