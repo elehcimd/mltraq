@@ -1,6 +1,6 @@
 # Benchmarking experiment tracking frameworks
 
-*Latest update: 2023.03.06*
+*Latest update: 2024.03.06*
 
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions and MLtraq, highlighting their strengths and weaknesses.
 
@@ -38,9 +38,9 @@ References and instructions to reproduce the results, as well as more details on
 
 ## Changelog
 
-* 2024.03.06 - Improved conclusions and added acknowledgements
+* 2024.03.06 - Improved conclusions and added acknowledgments
 * 2024.03.04 - Added FastTrackML, improved text and plots
-* 2023.02.26 - Initial publication of results
+* 2024.02.26 - Initial publication of results
 
 
 ## Why tracking speed matters
@@ -222,7 +222,7 @@ As noted on the [SQLite website](https://www.sqlite.org/fasterthanfs.html), rely
 
 * Most methods implement the **serialization of arrays and other complex, non-scalar objects with custom text encodings**, relying on [uuencoding](https://en.wikipedia.org/wiki/Uuencoding) and JSON-like formats. Compression is either missing or handled by creating ZIP files of artifacts stored on the filesystem. The process is slow, and the support for complex types is limited or missing: floating point and timestamp precision are ignored, etc. Arrow IPC, native serialization, zero-copy writes, and safe pickling provide superior performance and portability, as proved by `MLtraq`.
 
-## Acknowledgements
+## Acknowledgments
 
 Thank You for the constructive conversations that helped improve this analysis:
 

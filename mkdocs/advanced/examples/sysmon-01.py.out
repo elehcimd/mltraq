@@ -1,6 +1,12 @@
-   idx                  timestamp  ...  net_recv_kbs  net_sent_kbs
-0    0 2024-03-08 14:56:53.244630  ...         10.24          0.00
-1    1 2024-03-08 14:56:53.350124  ...          0.00          0.00
-2    2 2024-03-08 14:56:53.451711  ...       1003.52       1013.76
-
-[3 rows x 11 columns]
+idx                                       0
+timestamp        2024-03-08 15:48:24.700171
+cpu_pct                                17.2
+disk_free_gb                         110.71
+disk_total_gb                        494.38
+disk_used_pct                         77.61
+mem_free_gb                            7.33
+mem_total_gb                          25.77
+mem_used_pct                           71.6
+net_recv_kbs                            0.0
+net_sent_kbs                            0.0
+Name: 0, dtype: object
