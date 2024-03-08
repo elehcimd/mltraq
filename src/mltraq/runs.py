@@ -5,6 +5,7 @@ import random
 from typing import Any, List
 
 import pandas as pd
+from joblib.parallel import DEFAULT_BACKEND
 
 from mltraq.job import Job
 from mltraq.opts import options
@@ -119,6 +120,17 @@ class Runs(dict):
         args_field = options().default_if_null(args_field, "execution.args_field")
         if args_field:
             config = self.handle_args_field(args_field, config)
+
+        if options().get("execution.backend") == DEFAULT_BACKEND:
+            # Make sure that the workers' current directory is aligned
+            # with the main process current directory, this ensures
+            # that using `tmpdir_ctx` in examples and tests doesn't fail,
+            # without having to deal with this explicitly.
+            # This makes sense only with the loky backend, the default one.
+            # See https://github.com/joblib/joblib/issues/945.
+            from mltraq.steps.chdir import chdir
+
+            steps = [chdir()] + steps
 
         # List of functions to execute.
         task_funcs = [run.execute_func(steps=steps, config=config, options=options()) for run in self.values()]

@@ -1,4 +1,3 @@
-import tempfile
 import uuid
 from types import NoneType
 
@@ -11,6 +10,7 @@ from mltraq.storage.database import next_uuid
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
 from mltraq.utils.bunch import Bunch
+from mltraq.utils.fs import tmpdir_ctx
 
 
 def test_serialization_dict():
@@ -85,9 +85,7 @@ def test_serialization_datastore():
     Test: We can serialize/deserialize a Datastore(Bunch).
     """
 
-    with tempfile.TemporaryDirectory() as tmpdirname, options().ctx(
-        {"datastore.url": f"file:///{tmpdirname}", "datastore.relative_path_prefix": "abc"}
-    ):
+    with tmpdir_ctx(), options().ctx({"datastore.relative_path_prefix": "abc"}):
         obj = DataStore({"a": 123})
         data = DataPakSerializer.serialize(obj)
         assert isinstance(data, bytes)

@@ -37,6 +37,7 @@ def local_python(pathname: str) -> str:
             data = f.readlines()
             func_code = "\n".join([f"\t{line}" for line in data])
             data_f = f"def local_python_func():\n{func_code}\nlocal_python_func()"
+
         f = io.StringIO()
         with redirect_stdout(f):
             exec(data_f)  # noqa

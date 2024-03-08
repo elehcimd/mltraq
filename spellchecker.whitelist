@@ -1,3 +1,6 @@
+sysmon
+cpu
+init_fields
 scammon
 jonathan
 encodings
@@ -200,6 +203,7 @@ temporarydirectory
 hexdigest
 os
 dd
+init_sequences
 linspace
 add_run
 skorch

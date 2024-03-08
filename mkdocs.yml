@@ -85,6 +85,7 @@ nav:
     - advanced/options.md
     - advanced/datastore.md
     - advanced/datastream.md
+    - advanced/sysmon.md
   - Benchmarks:
     - benchmarks/speed.md
   - FAQ:
