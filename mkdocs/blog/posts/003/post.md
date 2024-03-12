@@ -4,7 +4,7 @@ categories:
   - examples
 ---
 
-# Merging experiments
+# Merging experiment runs
 
 You don't always know all the parameters and variants you will evaluate upfront,
 or executing each run takes so much time you prefer to split the experiment into smaller ones.
