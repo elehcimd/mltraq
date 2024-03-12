@@ -13,7 +13,7 @@ FROM experiment_example
 [DatabaseWriter] DatabaseWriter: Processed 1 new messages for 1 experiments
 [MainThread] DataStreamServer: Requested termination ...
 [DataStreamServer] DataStreamServer: Cleanup ...
-[DataStreamServer] DataStreamServer: Stats: count_messages=1 rate=0.98 messages/s
+[DataStreamServer] DataStreamServer: Stats: count_messages=1 rate=0.97 messages/s
 [DataStreamServer] DatabaseWriter: Requested termination ...
 [DatabaseWriter] DatabaseWriter: No new messages to process
 [DataStreamServer] DatabaseWriter: Terminated
@@ -25,4 +25,4 @@ FROM experiment_example
 --
 Streamed metrics:
    idx                  timestamp      v
-0    0 2024-03-08 14:56:54.205824  123.0
+0    0 2024-03-12 18:55:44.506072  123.0
