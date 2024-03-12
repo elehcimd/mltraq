@@ -139,6 +139,13 @@ class Experiment:
 
         return self
 
+    def merge_runs(self, runs) -> Experiment:
+        """
+        Given a list of `runs`, merge them into the experiment.
+        """
+        self.runs |= runs
+        return self
+
     def add_run(self, **params) -> Experiment:
         """
         Add single run with a list of parameters.

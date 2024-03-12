@@ -49,6 +49,12 @@ class Runs(dict):
         runs = normalize_runs(runs)
         self.update({run.id_run: run for run in runs})
 
+    def __or__(self, runs: RunsListType | Runs) -> Runs:
+        return Runs(dict(self) | dict(runs))
+
+    def __ior__(self, runs: RunsListType | Runs) -> Runs:
+        return self.__or__(runs)
+
     def first(self) -> Run:
         """
         Return a run, no guarantees on which one.
@@ -175,6 +181,8 @@ def normalize_runs(runs: RunsListType | Runs) -> list[Run]:
         return runs.values()
     elif isinstance(runs, list):
         return runs
+    elif isinstance(runs, dict):
+        return runs.values()
     elif isinstance(runs, tuple) and len(runs) == 1:
         # Passed as sole parameter of *args. E.g., in Runs.add(...).
         return normalize_runs(runs[0])

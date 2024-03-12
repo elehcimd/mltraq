@@ -1,0 +1,8 @@
+Experiment runs:
+Runs(keys(2)=["d65df69e-1175-44a5-be2f-2232765703b9", "d65df69e-1175-44a5-be2f-2232765703bb"])
+--
+
+Run fields:
+                                 id_run    a    b   c
+0  d65df69e-1175-44a5-be2f-2232765703b9  1.0  NaN  10
+1  d65df69e-1175-44a5-be2f-2232765703bb  NaN  2.0  20

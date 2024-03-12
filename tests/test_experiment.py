@@ -483,3 +483,24 @@ def test_execute_experiment_no_runs():
 
     # If executed, we have one run.
     assert len(experiment.runs) == 1
+
+
+def test_runs_or():
+    """
+    Test: We can add runs to an experiment from multiple experiments with "|" and "|="
+    """
+    e1 = create_experiment().execute(init_fields(a=1))
+    e2 = create_experiment().execute(init_fields(b=2))
+
+    e = create_experiment()
+    e.runs = e1.runs | e2.runs
+    assert len(e.runs) == 2
+
+    e = create_experiment()
+    e.runs = e1.runs
+    e.runs |= e2.runs
+    assert len(e.runs) == 2
+
+    e = create_experiment()
+    e.merge_runs(e1.runs | e2.runs)
+    assert len(e.runs) == 2
