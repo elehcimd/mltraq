@@ -485,22 +485,47 @@ def test_execute_experiment_no_runs():
     assert len(experiment.runs) == 1
 
 
-def test_runs_or():
+def test_runs_or_ior():
+    """
+    Test: We can add runs to an experiment from multiple experiment runs with "|" and "|="
+    """
+    e1 = create_experiment().execute(init_fields(a=1))
+    e2 = create_experiment().execute(init_fields(b=2))
+
+    # We can union two Runs
+    e = create_experiment()
+    e.runs = e1.runs | e2.runs
+    assert len(e.runs) == 2
+
+    # We can add Runs to Runs
+    e = create_experiment()
+    e.runs = e1.runs
+    e.runs |= e2.runs
+    assert len(e.runs) == 2
+
+    # Same as "|=" without operator overloading
+    e = create_experiment()
+    e.merge_runs(e1.runs | e2.runs)
+    assert len(e.runs) == 2
+
+
+def test_experiment_or_ior():
     """
     Test: We can add runs to an experiment from multiple experiments with "|" and "|="
     """
     e1 = create_experiment().execute(init_fields(a=1))
     e2 = create_experiment().execute(init_fields(b=2))
 
-    e = create_experiment()
-    e.runs = e1.runs | e2.runs
+    # The union of experiments is the union of their runs.
+    e = e1 | e2
     assert len(e.runs) == 2
 
-    e = create_experiment()
-    e.runs = e1.runs
-    e.runs |= e2.runs
+    # We can add the runs from e2 to e1 with the ior operator.
+    e1 |= e2
     assert len(e.runs) == 2
 
-    e = create_experiment()
-    e.merge_runs(e1.runs | e2.runs)
+    # Adding a run that is already part of the experiment does not
+    # change the experiment.
+    e1 |= e2
+    e1 |= e2
     assert len(e.runs) == 2

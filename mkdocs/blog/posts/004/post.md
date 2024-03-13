@@ -7,7 +7,8 @@ categories:
 # Logging the code of steps
 
 You can log the code and the parameters of the executed `steps` by turning on the `codelog` feature.
-In the example below, we execute and log the code, location, and runtime parameters of a step function `init_fields`.
+In the example below, we execute and log the code, location, and runtime parameters of the step function factory 
+`init_fields`.
 
 {{include_code("mkdocs/blog/posts/004/codelog.py", title="Tracking steps code", drop_comments=False)}}
 
