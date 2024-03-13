@@ -2,7 +2,7 @@ Name                                                         Stmts   Miss  Cover
 --------------------------------------------------------------------------------
 src/mltraq/__init__.py                                          10      0   100%
 src/mltraq/cli.py                                               88     88     0%
-src/mltraq/experiment.py                                       180      8    96%
+src/mltraq/experiment.py                                       186      8    96%
 src/mltraq/job.py                                               50     11    78%
 src/mltraq/opts.py                                               6      0   100%
 src/mltraq/run.py                                              108      8    93%
@@ -39,4 +39,4 @@ src/mltraq/utils/sysmon.py                                      47      2    96%
 src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1833    278    85%
+TOTAL                                                         1839    278    85%

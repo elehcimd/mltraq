@@ -313,6 +313,14 @@ class Experiment:
         """
         return self.execute(*args, **kwargs)
 
+    def __or__(self, experiment: Experiment) -> Experiment:
+        new_experiment = Experiment(db=self.db)
+        new_experiment.runs |= self.runs | experiment.runs
+        return new_experiment
+
+    def __ior__(self, experiment: Experiment) -> Experiment:
+        return self.__or__(experiment)
+
     def execute(
         self,
         steps: Callable | list[Callable] | None = None,
