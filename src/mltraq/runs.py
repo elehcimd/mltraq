@@ -127,7 +127,7 @@ class Runs(dict):
         if args_field:
             config = self.handle_args_field(args_field, config)
 
-        if options().get("execution.backend") == DEFAULT_BACKEND:
+        if options().get("execution.backend") == DEFAULT_BACKEND and options().get("execution.loky_chdir"):
             # Make sure that the workers' current directory is aligned
             # with the main process current directory, this ensures
             # that using `tmpdir_ctx` in examples and tests doesn't fail,
@@ -137,6 +137,11 @@ class Runs(dict):
             from mltraq.steps.chdir import chdir
 
             steps = [chdir()] + steps
+
+        if not options().get("codelog.disable"):
+            from mltraq.steps.codelog import codelog
+
+            steps = [codelog(steps)] + steps
 
         # List of functions to execute.
         task_funcs = [run.execute_func(steps=steps, config=config, options=options()) for run in self.values()]
