@@ -1,0 +1,29 @@
+Step 0: src/mltraq/steps/chdir.py:7 @ step_chdir(*[], **{'path': '/Users/michele/dev/mltraq'})
+
+--
+def step_chdir(run: Run, path: str | None = None):
+    """
+    Change current directory to `path`.
+    """
+
+    if path:
+        os.chdir(path)
+
+--
+
+Step 1: src/mltraq/steps/init_fields.py:6 @ step_init_fields(*[], **{'a': 1})
+
+--
+def step_init_fields(run: Run, **fields):
+    """
+    Initialize fields in the run.
+    """
+
+    if fields is None:
+        fields = {}
+
+    for name, value in fields.items():
+        run.fields[name] = value
+
+--
+

@@ -4,12 +4,13 @@ src/mltraq/__init__.py                                          10      0   100%
 src/mltraq/cli.py                                               88     88     0%
 src/mltraq/experiment.py                                       180      8    96%
 src/mltraq/job.py                                               50     11    78%
-src/mltraq/opts.py                                               7      0   100%
+src/mltraq/opts.py                                               6      0   100%
 src/mltraq/run.py                                              108      8    93%
-src/mltraq/runs.py                                              89      6    93%
+src/mltraq/runs.py                                              92      6    93%
 src/mltraq/session.py                                           39      0   100%
 src/mltraq/steps/__init__.py                                     0      0   100%
 src/mltraq/steps/chdir.py                                       10      0   100%
+src/mltraq/steps/codelog.py                                     32      2    94%
 src/mltraq/steps/init_fields.py                                  9      1    89%
 src/mltraq/steps/init_sequences.py                              11      1    91%
 src/mltraq/steps/sleep.py                                        7      0   100%
@@ -25,7 +26,7 @@ src/mltraq/storage/serializers/pickle_opcodes_whitelist.py       2      0   100%
 src/mltraq/storage/serializers/serializer.py                    45     11    76%
 src/mltraq/utils/__init__.py                                     0      0   100%
 src/mltraq/utils/base_options.py                                89     21    76%
-src/mltraq/utils/bunch.py                                       40      1    98%
+src/mltraq/utils/bunch.py                                       40      0   100%
 src/mltraq/utils/enums.py                                       10      1    90%
 src/mltraq/utils/exceptions.py                                  51     13    75%
 src/mltraq/utils/frames.py                                       5      0   100%
@@ -38,4 +39,4 @@ src/mltraq/utils/sysmon.py                                      47      2    96%
 src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1799    277    85%
+TOTAL                                                         1833    278    85%
