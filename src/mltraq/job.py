@@ -95,16 +95,26 @@ class Job:
             except ImportError as e:
                 raise MissingDependency("Dask backend requested but not installed, aborting.") from e
             client = get_client()
-            log.debug(f"Using backend: {self.backend}")
             log.debug(f"Scheduler: {client.scheduler.address}")
             log.info(f"Dask dashboard: {client.dashboard_link}")
             if self.n_jobs == -1:
                 # Adjust n_jobs considering the number of workers available in Dask.
                 n_jobs = len(client.scheduler_info()["workers"])
+        elif self.backend == "ray":
+            try:
+                from ray import init as init_ray
+                from ray import is_initialized as ray_is_initialized
+                from ray.util.joblib import register_ray
+            except ImportError as e:
+                raise MissingDependency("Ray backend requested but not installed, aborting.") from e
+            if not ray_is_initialized():
+                register_ray()
+                init_ray(**options().get("execution.backend_params"))
         elif self.backend == joblib.parallel.DEFAULT_BACKEND:
             if self.n_jobs < 0:
                 n_jobs = joblib.cpu_count() + 1 - self.n_jobs
-
+        
+        log.debug(f"Using backend: {self.backend}")                
         with joblib.parallel_backend(self.backend):
             log.debug(f"Executing {len(self.tasks)} tasks on {n_jobs} workers (backend:{self.backend})")
             executed_tasks = parallel(self.tasks, n_jobs=n_jobs)

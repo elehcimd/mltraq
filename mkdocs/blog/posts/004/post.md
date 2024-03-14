@@ -10,7 +10,7 @@ You can log the code and the parameters of the executed `steps` by turning on th
 In the example below, we execute and log the code, location, and runtime parameters of the step function factory 
 `init_fields`.
 
-{{include_code("mkdocs/blog/posts/004/codelog.py", title="Tracking steps code", drop_comments=False)}}
+{{include_code("mkdocs/blog/posts/004/codelog.py", title="Logging the code of steps", drop_comments=False)}}
 
 !!! Question "Why are two steps being logged, and not just one?"
     The `MLtraq` executor implicitly calls the function `step_chdir` at step `#0` if the joblib backend is `loky`, to ensure 

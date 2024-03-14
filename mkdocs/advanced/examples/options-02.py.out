@@ -23,6 +23,7 @@
                 'srv_throttle_recv': 0.0001},
  'execution': {'args_field': False,
                'backend': 'loky',
+               'backend_params': {},
                'exceptions': {'compact_message': False},
                'loky_chdir': True,
                'n_jobs': -1},
