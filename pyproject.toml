@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.0.129"
+version = "0.0.130"
 description = "Track and Collaborate on AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -53,6 +53,7 @@ pyinstrument = "^4.6.2"
 mkdocs-charts-plugin = "^0.0.10"
 scikit-learn = "^1.4.0"
 psycopg2-binary = "^2.9.9"
+ray = {extras = ["default"], version = "^2.9.3"}
 # asciinema = "^2.4.0"
 # mlflow = "^2.10.2"
 # aim = "^3.18.1"

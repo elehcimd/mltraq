@@ -26,7 +26,7 @@ def print_df(df: pd.DataFrame):
         maxcolwidths = options().get("cli.tabulate.maxcolwidths")
     else:
         maxcolwidths = None
-    print(tabulate(df, maxcolwidths=maxcolwidths, headers="keys", tablefmt="rounded_grid"))
+    print(tabulate(df, maxcolwidths=maxcolwidths, headers="keys", tablefmt="rounded_grid", showindex=False))
 
 
 def main():

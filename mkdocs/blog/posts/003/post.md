@@ -18,8 +18,8 @@ That's what we do in this example, merging experiments `e1` and `e2` into `e12`.
     You are in charge of managing these differences.
    
 !!! Tip
-    The `runs` attribute of `Experiment` objects is a specialized dictionary with run IDs as keys and `Run` objects as 
+    * The `runs` attribute of `Experiment` objects is a specialized dictionary with run IDs as keys and `Run` objects as 
     values. You can iterate, add, and remove runs with regular `dict` operations.
-
+    * You can use the `|` and `|=` operators directly on experiments to merge them: `e = e1 | e2`.
 
 {{include_code("mkdocs/blog/posts/003/merge_runs.py", title="Union of runs", drop_comments=False)}}

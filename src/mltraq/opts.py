@@ -1,5 +1,7 @@
 from os import sep
 
+from joblib.parallel import DEFAULT_BACKEND
+
 from mltraq.utils.base_options import BaseOptions
 
 
@@ -32,10 +34,11 @@ class Options(BaseOptions):
         "datastore": {"url": "file:///mltraq.datastore", "relative_path_prefix": "undefined"},
         "execution": {
             "exceptions": {"compact_message": False},
-            "backend": "loky",
+            "backend": DEFAULT_BACKEND,
             "n_jobs": -1,
             "args_field": False,
             "loky_chdir": True,
+            "backend_params": {},
         },
         "codelog": {"disable": True, "field_name": "codelog"},
         "tqdm": {"disable": False, "delay": 0.5, "leave": False},
