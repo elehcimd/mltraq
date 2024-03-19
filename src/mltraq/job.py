@@ -96,7 +96,7 @@ class Job:
                 raise MissingDependency("Dask backend requested but not installed, aborting.") from e
             client = get_client()
             log.debug(f"Scheduler: {client.scheduler.address}")
-            log.info(f"Dask dashboard: {client.dashboard_link}")
+            log.debug(f"Dask dashboard: {client.dashboard_link}")
             if self.n_jobs == -1:
                 # Adjust n_jobs considering the number of workers available in Dask.
                 n_jobs = len(client.scheduler_info()["workers"])
@@ -113,9 +113,9 @@ class Job:
         elif self.backend == joblib.parallel.DEFAULT_BACKEND:
             if self.n_jobs < 0:
                 n_jobs = joblib.cpu_count() + 1 - self.n_jobs
-        
-        log.debug(f"Using backend: {self.backend}")                
-        with joblib.parallel_backend(self.backend):
+
+        log.debug(f"Using backend: {self.backend}")
+        with joblib.parallel_config(self.backend):
             log.debug(f"Executing {len(self.tasks)} tasks on {n_jobs} workers (backend:{self.backend})")
             executed_tasks = parallel(self.tasks, n_jobs=n_jobs)
             return executed_tasks

@@ -5,6 +5,7 @@ from types import NoneType
 import numpy as np
 import pandas as pd
 import pyarrow as pa
+from mltraq.storage.archivestore import ArchiveStore
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.pickle import PickleSerializer
 from mltraq.storage.serializers.serializer import Serializer
@@ -40,7 +41,18 @@ CONTAINER_TYPES = [tuple, list, set, dict]
 
 # Complex types that are encoded to `bytes``, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
-COMPLEX_TYPES = [Bunch, Sequence, DataStore, pd.DataFrame, pd.Series, pa.Table, np.ndarray, np.datetime64, uuid.UUID]
+COMPLEX_TYPES = [
+    Bunch,
+    Sequence,
+    DataStore,
+    ArchiveStore,
+    pd.DataFrame,
+    pd.Series,
+    pa.Table,
+    np.ndarray,
+    np.datetime64,
+    uuid.UUID,
+]
 
 # Magic dict key encoding types in the list COMPLEX_TYPES (see below)
 KEY_MAGIC = "DATAPAK-0"
@@ -49,6 +61,7 @@ KEY_MAGIC = "DATAPAK-0"
 KEY_BUNCH_0 = "mltraq.Bunch-0"
 KEY_SEQUENCE_0 = "mltraq.Sequence-0"
 KEY_DATASTORE_0 = "mltraq.DataStore-0"
+KEY_ARCHIVESTORE_0 = "mltraq.ArchiveStore-0"
 KEY_PANDAS_SERIES_0 = "pandas.Series-0"
 KEY_PANDAS_DATAFRAME_0 = "pandas.DataFrame-0"
 KEY_PYARROW_TABLE_0 = "pyarrow.Table-0"
@@ -149,7 +162,7 @@ class DataPakSerializer(Serializer):
             raise UnsupportedObjectType(f"{cls.__class__} is unable to deserialize type {obj.__class__}")
 
 
-def encode_magic_key(cls, obj: object) -> dict:
+def encode_magic_key(cls, obj: object) -> dict:  # NOQA C901
     """
     Encode the complex object, using as key MAGIC_KEY to identify
     the dictionary as a serialized complex object.
@@ -158,6 +171,8 @@ def encode_magic_key(cls, obj: object) -> dict:
         return {KEY_MAGIC: KEY_SEQUENCE_0, "value": cls.encode(obj.flush().frame)}
     elif isinstance(obj, DataStore):
         return {KEY_MAGIC: KEY_DATASTORE_0, "value": obj.to_url()}
+    elif isinstance(obj, ArchiveStore):
+        return {KEY_MAGIC: KEY_ARCHIVESTORE_0, "value": obj.to_url()}
     elif isinstance(obj, Bunch):
         return {KEY_MAGIC: KEY_BUNCH_0, "value": cls.encode(dict(obj))}
     elif isinstance(obj, uuid.UUID):
@@ -186,7 +201,7 @@ def encode_magic_key(cls, obj: object) -> dict:
         raise UnsupportedObjectType(f"{cls.__name__} does not support type {obj.__class__}")
 
 
-def decode_magic_key(cls, obj: dict) -> object:
+def decode_magic_key(cls, obj: dict) -> object:  # NOQA C901
     """
     Decode a complex object, encoded as a dictionary {k:v}
     where `k` is a predefined list of string values, and
@@ -200,6 +215,8 @@ def decode_magic_key(cls, obj: dict) -> object:
         return Bunch(cls.decode(obj["value"]))
     elif obj[KEY_MAGIC] == KEY_DATASTORE_0:
         return DataStore.from_url(obj["value"])
+    elif obj[KEY_MAGIC] == KEY_ARCHIVESTORE_0:
+        return ArchiveStore.from_url(obj["value"])
     elif obj[KEY_MAGIC] == KEY_PANDAS_DATAFRAME_0:
         output_stream = pa.BufferOutputStream()
         output_stream.write(obj["value"])

@@ -1,3 +1,4 @@
+import tarfile
 from os import sep
 
 from joblib.parallel import DEFAULT_BACKEND
@@ -32,6 +33,12 @@ class Options(BaseOptions):
             "srv_throttle_persist": 1,
         },
         "datastore": {"url": "file:///mltraq.datastore", "relative_path_prefix": "undefined"},
+        "archivestore": {
+            "url": "file:///mltraq.archivestore",
+            "relative_path_prefix": "undefined",
+            "mode": "w",
+            "format": tarfile.GNU_FORMAT,
+        },
         "execution": {
             "exceptions": {"compact_message": False},
             "backend": DEFAULT_BACKEND,

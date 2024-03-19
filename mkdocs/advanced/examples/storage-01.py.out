@@ -31,6 +31,7 @@ COMPLEX_TYPES
 [ <class 'mltraq.utils.bunch.Bunch'>,
   <class 'mltraq.utils.sequence.Sequence'>,
   <class 'mltraq.storage.datastore.DataStore'>,
+  <class 'mltraq.storage.archivestore.ArchiveStore'>,
   <class 'pandas.core.frame.DataFrame'>,
   <class 'pandas.core.series.Series'>,
   <class 'pyarrow.lib.Table'>,
