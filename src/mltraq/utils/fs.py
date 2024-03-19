@@ -25,7 +25,7 @@ def tmpdir_ctx():
 
 
 @contextmanager
-def chdir(dirname):
+def chdir_ctx(dirname):
     """
     Enter `dirname` directory, and leave it
     as the context returns.

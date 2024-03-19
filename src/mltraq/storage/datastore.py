@@ -79,10 +79,15 @@ class DataStoreIO:
         return cls.write(data, relative_path_prefix=relative_path_prefix)
 
     @classmethod
-    def write(cls, data: bytes, relative_path_prefix: str | None = None) -> DataStoreIO:
+    def get_pathname_from_url(cls, url):
+        pathdir = cls.get_filepath(options().get("datastore.url"))
+        pathname = pathdir + os.sep + cls.get_filepath(url)
+        return pathname
+
+    @classmethod
+    def get_next_pathname_url(cls, relative_path_prefix: str | None = None):
         """
-        Create a new linked object "/.../optional relative path prefix/..., write to it,
-        and return a DataStore instance.
+        Generate the next pathname and url to store a new resource.
         """
 
         relative_path_prefix = options().default_if_null(relative_path_prefix, "datastore.relative_path_prefix")
@@ -91,6 +96,16 @@ class DataStoreIO:
         basename = next_uuid().hex
         pathname = pathdir + os.sep + basename
         url = "file:///" + relative_path_prefix + os.sep + basename
+        return pathname, url
+
+    @classmethod
+    def write(cls, data: bytes, relative_path_prefix: str | None = None) -> DataStoreIO:
+        """
+        Create a new linked object "/.../optional relative path prefix/..., write to it,
+        and return a DataStore instance.
+        """
+
+        pathname, url = cls.get_next_pathname_url(relative_path_prefix)
         with open(pathname, "wb") as f:
             f.write(data)
         return DataStoreIO(url)
@@ -100,8 +115,7 @@ class DataStoreIO:
         Return the contents of the linked object.
         """
 
-        pathdir = self.get_filepath(options().get("datastore.url"))
-        pathname = pathdir + os.sep + self.get_filepath(self.url)
+        pathname = self.get_pathname_from_url(self.url)
         with open(pathname, "rb") as f:
             return f.read()
 

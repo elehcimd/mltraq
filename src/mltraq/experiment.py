@@ -14,6 +14,7 @@ from mltraq.opts import options
 from mltraq.run import Run
 from mltraq.runs import Runs
 from mltraq.storage import models, serialization
+from mltraq.storage.archivestore import ArchiveStoreIO
 from mltraq.storage.database import Database, hash_uuid, next_uuid, pandas_query, sanitize_table_name
 from mltraq.storage.datastore import DataStoreIO
 from mltraq.utils.bunch import Bunch
@@ -292,20 +293,24 @@ class Experiment:
             if record is None:
                 raise ExperimentNotFoundException(name)
 
-            # Create Experiment object from loaded columns.
-            experiment = Experiment(
-                db=db,
-                id_experiment=record.id_experiment,
-                name=record.name,
-                fields=serialization.deserialize(record.fields),
-            )
+            with options().ctx({"archivestore.relative_path_prefix": str(record.id_experiment)}):
+                # We set "relative_path_prefix" s.t. ArchiveStore files
+                # can be unarchived in the directory associated to the experiment ID.
 
-            # Deserialize "meta" column, required to load runs.
-            meta = serialization.deserialize(record.meta)
-            if meta.runs.count > 0:
-                experiment.load_runs(meta=meta)
+                # Create Experiment object from loaded columns.
+                experiment = Experiment(
+                    db=db,
+                    id_experiment=record.id_experiment,
+                    name=record.name,
+                    fields=serialization.deserialize(record.fields),
+                )
 
-            return experiment
+                # Deserialize "meta" column, required to load runs.
+                meta = serialization.deserialize(record.meta)
+                if meta.runs.count > 0:
+                    experiment.load_runs(meta=meta)
+
+                return experiment
 
     def __call__(self, *args, **kwargs) -> Experiment:
         """
@@ -404,14 +409,26 @@ class Experiment:
         # call .get_metadata() AFTER adding the default run, if necessary.
         meta = self.get_metadata()
 
-        # Insert row in "experiments" table.
-        with self.db.session() as session:
-            session.add(self.record(meta=meta, store_unsafe_pickle=store_unsafe_pickle))
-            session.commit()
+        with options().ctx(
+            {
+                "datastore.relative_path_prefix": str(self.id_experiment),
+                "archivestore.relative_path_prefix": str(self.id_experiment),
+            }
+        ):
+            # We set "relative_path_prefix" s.t. DataStore and ArchiveStore files
+            # are associated to the experiment ID, and can be deleted accordingly.
+            #
+            # self.record(...) serializes experiment.fields
+            # serialization.runs_to_sql(...) serializes run.fields
 
-        # Create and insert rows in "experiment_..." table.
-        df_runs, dtype = serialization.runs_to_sql(self.id_experiment, meta, self.runs)
-        self.db.pandas_to_sql(df_runs, meta.runs.table_name, if_exists.name, dtype=dtype)
+            # Insert row in "experiments" table.
+            with self.db.session() as session:
+                session.add(self.record(meta=meta, store_unsafe_pickle=store_unsafe_pickle))
+                session.commit()
+
+            # Create and insert rows in "experiment_..." table.
+            df_runs, dtype = serialization.runs_to_sql(self.id_experiment, meta, self.runs)
+            self.db.pandas_to_sql(df_runs, meta.runs.table_name, if_exists.name, dtype=dtype)
 
         return self
 
@@ -439,8 +456,9 @@ class Experiment:
         # Drop also the entire "experiment_..." table.
         self.db.drop_table(self.get_tablename())
 
-        # Drop datastore documents of experiment, if any.
+        # Drop datastore and archivestore documents of experiment, if any.
         DataStoreIO.delete(relative_path_prefix=str(self.id_experiment))
+        ArchiveStoreIO.delete(relative_path_prefix=str(self.id_experiment))
 
     def df(self, max_level=0) -> pd.DataFrame:
         """

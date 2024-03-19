@@ -123,9 +123,8 @@ def runs_to_sql(id_experiment: uuid.UUID, meta: dict, runs: Runs) -> tuple[pd.Da
 
         if len(meta.runs.columns.serialized) > 0:
             # If there are columns to serialize, handle them.
-            with options().ctx({"datastore.relative_path_prefix": str(id_experiment)}):
-                for col_name in meta.runs.columns.serialized:
-                    df_runs[col_name] = df_runs[col_name].map(lambda v: serialize(v))
+            for col_name in meta.runs.columns.serialized:
+                df_runs[col_name] = df_runs[col_name].map(lambda v: serialize(v))
 
     else:
         df_runs = pd.DataFrame(columns=["id_experiment", "id_run"])

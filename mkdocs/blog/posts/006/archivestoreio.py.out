@@ -1,0 +1,12 @@
+Contents of current directory:
+[ 0] datasets
+[ 1] datasets/first.csv
+[ 2] datasets/second.csv
+[ 3] mltraq.archivestore
+[ 4] mltraq.archivestore/all
+[ 5] mltraq.archivestore/all/assets
+[ 6] mltraq.archivestore/all/assets/first.csv
+[ 7] mltraq.archivestore/all/assets/second.csv
+[ 8] mltraq.datastore
+[ 9] mltraq.datastore/archives
+[10] mltraq.datastore/archives/d65df69e117544a5be2f2232765703b8
