@@ -4,7 +4,7 @@ categories:
   - examples
 ---
 
-# Archiving directories
+# Archive files
 
 
 ## ArchiveStore

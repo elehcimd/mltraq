@@ -11,6 +11,7 @@ from shutil import rmtree
 from mltraq.opts import options
 from mltraq.storage.datastore import DataStoreIO
 from mltraq.utils.bunch import Bunch
+from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +43,9 @@ class ArchiveStoreIO:
         """
         Creates and stores the archive, returning its `url`.
         """
+
+        if not os.path.isdir(src_dir):                
+            raise InvalidInput(f"Source directory '{src_dir}' does not exist")
 
         pathname, url = DataStoreIO.get_next_pathname_url()
         # We use GNU format for increased portability, including tar on macos that
@@ -86,6 +90,14 @@ class ArchiveStoreIO:
 
     @classmethod
     def get_target(cls, target: str | None = None):
+        """
+        Get the target directory for the uncompressed TAR. If `target` is passed as
+        a parameter, it is returned with no changes. If missing, it defaults to the
+        concatenation of defaults for archivesture URL and relative path prefix.
+
+        The target directory is passed as first argument to Tarfile.extractall(...).
+        """
+
         if not target:
             target = (
                 DataStoreIO.get_filepath(options().get("archivestore.url"))
@@ -96,7 +108,7 @@ class ArchiveStoreIO:
 
     def extract(self, target: str | None = None, members: list[str] | None = None) -> ArchiveStoreIO:
         """
-        Extracts the archive to `target`.
+        Extracts the archive to `target` directory.
         """
 
         target = ArchiveStoreIO.get_target(target)
@@ -109,12 +121,19 @@ class ArchiveStoreIO:
 
         return self
 
-    def getnames(self, target: str | None = None):
+    def getnames(self, target: str | None = None) ->list[str]:
+        """
+        Load archive and return a list with its archived file names.
+        """
+
         target = ArchiveStoreIO.get_target(target)
         with self.open() as archive:
             return [normpath(target + os.sep + name) for name in archive.getnames()]
 
     def open(self):
+        """
+        Return the Tarfile object pointing to the archive URL.
+        """
         return tarfile.open(DataStoreIO.get_pathname_from_url(self.url), mode="r")
 
     @classmethod
