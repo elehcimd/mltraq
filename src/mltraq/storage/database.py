@@ -21,6 +21,7 @@ from mltraq.storage.models import Base
 from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists
 from mltraq.utils.exceptions import InvalidInput
+from mltraq.utils.web import fetch
 
 QueryType = Query | str | Select | TextClause
 
@@ -47,6 +48,7 @@ class Database:
         ask_password: bool | None = None,
         echo: bool | None = None,
         pool_pre_ping: bool | None = None,
+        create_tables: bool = True,
     ):
         """
         Initialize connection to a new database, with connection `url`,
@@ -74,8 +76,8 @@ class Database:
         # Session factory
         self.session = sessionmaker(self.engine)
 
-        # create tables if missing
-        Base.metadata.create_all(self.engine)
+        if create_tables:
+            Base.metadata.create_all(self.engine)
 
     def copy(self):
         """
@@ -99,6 +101,18 @@ class Database:
         if url.startswith("postgres://"):
             # Re-introduce support for the deprecated and then dropped "postgres://" prefix
             url = url.replace("postgres://", "postgresql://")
+
+        if url.startswith("sqlite:///http://") or url.startswith("sqlite:///https://"):
+            # fetch the URL starting after "sqlite:///"
+            meta = fetch(url[10:])
+            url = "sqlite:///file://" + meta.pathname + "?mode=ro&uri=true"
+            log.debug(f"Using url {url}")
+
+        if url.startswith("http://") or url.startswith("https://"):
+            # If http* URL encountered, assume SQLite database file
+            meta = fetch(url)
+            url = "sqlite:///file://" + meta.pathname + "?mode=ro&uri=true"
+            log.debug(f"Using url {url}")
 
         self.url = make_url(url)
         if ask_password:
@@ -389,7 +403,7 @@ def query_count(query: QueryType, session: Session):
     """
 
     query = normalize_query(query)
-    return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # noqa
+    return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # NOQA S608
 
 
 def normalize_query(query: QueryType):

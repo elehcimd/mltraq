@@ -21,8 +21,8 @@ CompressionCodec = Enum("CompressionCodec", ["uncompressed", "zlib"])
 
 # Compression prefixes.
 MAGIC_COMPRESSION_PREFIX = {
-    CompressionCodec.uncompressed: b"C0",
-    CompressionCodec.zlib: b"C1",
+    CompressionCodec.uncompressed: b"C00",
+    CompressionCodec.zlib: b"C01",
 }
 
 # Inverse map, used for lookups at decompression.

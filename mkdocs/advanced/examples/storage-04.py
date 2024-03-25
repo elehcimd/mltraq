@@ -26,7 +26,7 @@ print("Compression codec magic prefix:")
 pprint(serialized[:2], width=70)
 print("\n--")
 
-decompressed = zlib.decompress(serialized[2:])
+decompressed = zlib.decompress(serialized[3:])
 
 print("Decompressed:")
 pprint(decompressed, width=70)
