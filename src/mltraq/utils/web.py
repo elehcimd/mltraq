@@ -12,12 +12,6 @@ log = logging.getLogger(__name__)
 
 
 def fetch(url: str, pathname: str | None = None) -> Bunch:
-    """
-    Fetch URL with requests, saving it to `pathname` or a random one if not provided.
-    The function returns a Bunch with attributes `url` with the input URL,
-    `name` with the guessed name of the file, and `pathname` with the local saved copy pathname.
-    """
-
     meta = Bunch()
     meta.url = url
     meta.name = url.split("/")[-1] if "/" in url else None
