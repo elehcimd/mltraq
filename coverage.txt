@@ -15,8 +15,8 @@ src/mltraq/steps/init_fields.py                                  9      1    89%
 src/mltraq/steps/init_sequences.py                              11      1    91%
 src/mltraq/steps/sleep.py                                        7      0   100%
 src/mltraq/storage/__init__.py                                   0      0   100%
-src/mltraq/storage/archivestore.py                              78      0   100%
-src/mltraq/storage/database.py                                 174     21    88%
+src/mltraq/storage/archivestore.py                              81      1    99%
+src/mltraq/storage/database.py                                 184     27    85%
 src/mltraq/storage/datastore.py                                 73      6    92%
 src/mltraq/storage/datastream.py                               223     27    88%
 src/mltraq/storage/models.py                                    12      0   100%
@@ -38,6 +38,7 @@ src/mltraq/utils/plot.py                                        63     19    70%
 src/mltraq/utils/sequence.py                                    68      4    94%
 src/mltraq/utils/sysmon.py                                      47      2    96%
 src/mltraq/utils/text.py                                        19      1    95%
+src/mltraq/utils/web.py                                         27     18    33%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         1946    279    86%
+TOTAL                                                         1986    304    85%

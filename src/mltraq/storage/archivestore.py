@@ -44,7 +44,7 @@ class ArchiveStoreIO:
         Creates and stores the archive, returning its `url`.
         """
 
-        if not os.path.isdir(src_dir):                
+        if not os.path.isdir(src_dir):
             raise InvalidInput(f"Source directory '{src_dir}' does not exist")
 
         pathname, url = DataStoreIO.get_next_pathname_url()
@@ -121,7 +121,7 @@ class ArchiveStoreIO:
 
         return self
 
-    def getnames(self, target: str | None = None) ->list[str]:
+    def getnames(self, target: str | None = None) -> list[str]:
         """
         Load archive and return a list with its archived file names.
         """

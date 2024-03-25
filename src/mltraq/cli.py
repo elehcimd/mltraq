@@ -16,7 +16,7 @@ from mltraq.utils.sequence import Sequence
 log = logging.getLogger(__name__)
 
 
-def print_df(df: pd.DataFrame):
+def print_df(df: pd.DataFrame, showindex=False):
     """
     Pretty prints a `df` Pandas DataFrame using tabulate.
     """
@@ -26,7 +26,7 @@ def print_df(df: pd.DataFrame):
         maxcolwidths = options().get("cli.tabulate.maxcolwidths")
     else:
         maxcolwidths = None
-    print(tabulate(df, maxcolwidths=maxcolwidths, headers="keys", tablefmt="rounded_grid", showindex=False))
+    print(tabulate(df, maxcolwidths=maxcolwidths, headers="keys", tablefmt="rounded_grid", showindex=showindex))
 
 
 def main():
@@ -98,7 +98,7 @@ def main():
         df = experiment_stats(experiment)
         if args.stat_name:
             df = df[df.index == args.stat_name]
-        print_df(df)
+        print_df(df, showindex=True)
     else:
         raise InvalidInput(f"Unknown command '{args.cmd}'")
 
