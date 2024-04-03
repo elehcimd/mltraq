@@ -25,8 +25,8 @@ class Sequence:
     - Rows are not guaranteed to be in ascending `idx` order
     """
 
-    __slots__ = ["data", "frame", "next_idx", "stream_send"]
-    __state__ = ["data", "frame", "next_idx"]
+    __slots__ = ("data", "frame", "next_idx", "stream_send")
+    __state__ = ("data", "frame", "next_idx")
 
     def __init__(self, frame: pd.DataFrame | None = None):
         """

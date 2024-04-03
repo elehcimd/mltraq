@@ -1,3 +1,4 @@
+import os
 import uuid
 from types import NoneType
 
@@ -6,6 +7,7 @@ import pandas as pd
 import pyarrow
 import pytest
 from mltraq import Sequence, options
+from mltraq.storage.archivestore import Archive
 from mltraq.storage.database import next_uuid
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
@@ -271,3 +273,22 @@ def test_serialization_pyarrow_table():
     obj2 = DataPakSerializer.deserialize(data)
     assert isinstance(obj2, pyarrow.Table)
     assert obj2.column_names == ["a", "b"]
+
+
+def test_archive():
+    """
+    Test: We can serialize Archive objects.
+    """
+
+    with tmpdir_ctx():
+        os.makedirs("test/a")
+        with open("test/a/x.y", "w") as f:
+            f.write("sample-file")
+
+        obj = Archive.create("test")
+        data = DataPakSerializer.serialize(obj)
+        assert isinstance(data, bytes)
+        obj2 = DataPakSerializer.deserialize(data)
+        assert isinstance(obj2, Archive)
+        obj2.extract("test2")
+        assert os.path.isfile("test2/a/x.y")

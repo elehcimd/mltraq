@@ -17,7 +17,7 @@ class Session:
     Instantiate a new session handler.
     """
 
-    __slots__ = "db"
+    __slots__ = ("db",)
 
     def __init__(self, url: str | None = None, ask_password: bool | None = None, db: Database | None = None):
         """

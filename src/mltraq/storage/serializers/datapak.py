@@ -5,7 +5,7 @@ from types import NoneType
 import numpy as np
 import pandas as pd
 import pyarrow as pa
-from mltraq.storage.archivestore import ArchiveStore
+from mltraq.storage.archivestore import Archive, ArchiveStore
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.pickle import PickleSerializer
 from mltraq.storage.serializers.serializer import Serializer
@@ -46,6 +46,7 @@ COMPLEX_TYPES = [
     Sequence,
     DataStore,
     ArchiveStore,
+    Archive,
     pd.DataFrame,
     pd.Series,
     pa.Table,
@@ -61,6 +62,7 @@ KEY_MAGIC = "DATAPAK-0"
 KEY_BUNCH_0 = "mltraq.Bunch-0"
 KEY_SEQUENCE_0 = "mltraq.Sequence-0"
 KEY_DATASTORE_0 = "mltraq.DataStore-0"
+KEY_ARCHIVE_0 = "mltraq.Archive-0"
 KEY_ARCHIVESTORE_0 = "mltraq.ArchiveStore-0"
 KEY_PANDAS_SERIES_0 = "pandas.Series-0"
 KEY_PANDAS_DATAFRAME_0 = "pandas.DataFrame-0"
@@ -169,6 +171,8 @@ def encode_magic_key(cls, obj: object) -> dict:  # NOQA C901
     """
     if isinstance(obj, Sequence):
         return {KEY_MAGIC: KEY_SEQUENCE_0, "value": cls.encode(obj.flush().frame)}
+    elif isinstance(obj, Archive):
+        return {KEY_MAGIC: KEY_ARCHIVE_0, "value": obj.to_bytes()}
     elif isinstance(obj, DataStore):
         return {KEY_MAGIC: KEY_DATASTORE_0, "value": obj.to_url()}
     elif isinstance(obj, ArchiveStore):
@@ -213,6 +217,8 @@ def decode_magic_key(cls, obj: dict) -> object:  # NOQA C901
         return uuid.UUID(hex=obj["value"])
     elif obj[KEY_MAGIC] == KEY_BUNCH_0:
         return Bunch(cls.decode(obj["value"]))
+    elif obj[KEY_MAGIC] == KEY_ARCHIVE_0:
+        return Archive.from_bytes(obj["value"])
     elif obj[KEY_MAGIC] == KEY_DATASTORE_0:
         return DataStore.from_url(obj["value"])
     elif obj[KEY_MAGIC] == KEY_ARCHIVESTORE_0:
