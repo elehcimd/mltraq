@@ -1,10 +1,15 @@
+import fnmatch
+import glob
 import logging
 import os
 from contextlib import contextmanager
 from shutil import rmtree
 from tempfile import mkdtemp
+from types import NoneType
 
 from joblib.externals.loky import get_reusable_executor
+
+from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
 
@@ -54,3 +59,43 @@ def chdir_ctx(dirname):
         yield dirname
     finally:
         os.chdir(old_dirname)
+
+
+def globs(src_dir, include="**/*", exclude=None, recursive=True, include_hidden=False):
+    """
+    Enumerate files matching the glob patterns in the `include` string list, excluding
+    matches in `exclude` string list, inside directory `src_dir`.
+    """
+
+    if not os.path.isdir(src_dir):
+        raise InvalidInput(f"Source directory '{src_dir}' does not exist")
+
+    # Normalise include/exclude type to list of patterns
+    if isinstance(include, str):
+        include = [include]
+    if isinstance(exclude, str):
+        exclude = [exclude]
+    if isinstance(exclude, NoneType):
+        exclude = []
+
+    candidates = []
+
+    for pattern in include:
+        candidates += glob.glob(pattern, root_dir=src_dir, recursive=recursive, include_hidden=include_hidden)
+
+    # Drop duplicates
+    candidates = set(candidates)
+
+    # Let's identify matches we should drop accordingly to `excludes` patterns (or, if not a regular file).
+    dropped = []
+    for name in candidates:
+        if not os.path.isfile(src_dir + os.sep + name):
+            dropped.append(name)
+        else:
+            for pattern in exclude:
+                if fnmatch.fnmatch(name, pattern):
+                    dropped.append(name)
+                    break
+
+    matches = list(candidates - set(dropped))
+    return matches

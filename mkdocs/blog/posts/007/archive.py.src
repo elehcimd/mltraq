@@ -27,7 +27,7 @@ with tmpdir_ctx():
     e = s.load("test")
 
     # Extract the contents of the archive
-    Archive.extract(e.fields.src)
+    e.fields.src.extract()
 
     # Print contents of current directory
     print("Contents of current directory:")

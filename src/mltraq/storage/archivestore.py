@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import fnmatch
-import glob
 import logging
 import os
 import tarfile
@@ -13,7 +11,7 @@ from typing import BinaryIO
 from mltraq.opts import options
 from mltraq.storage.datastore import DataStoreIO
 from mltraq.utils.bunch import Bunch
-from mltraq.utils.exceptions import InvalidInput
+from mltraq.utils.fs import globs
 
 log = logging.getLogger(__name__)
 
@@ -23,17 +21,35 @@ class Archive:
     Creation of binary TAR binary blob archives and extraction to filesystem.
     """
 
+    __slots__ = ("data",)
+    __state__ = ("data",)
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Archive:
+        """
+        Given a binary blob, create a new Archive instance binded to it.
+        """
+        archive = Archive()
+        archive.data = data
+        return archive
+
+    def to_bytes(self) -> bytes:
+        """
+        Return the binary blob representing the TAR file.
+        """
+        return self.data
+
     @classmethod
     def create(
         cls,
         src_dir: str,
         arc_dir: str = ".",
-        include: str = "**",
-        exclude: str | None = None,
+        include: str | list[str] = "**",
+        exclude: str | list[str] | None = None,
         include_hidden=False,
-    ) -> bytes:
+    ) -> Archive:
         """
-        Return a binary blob representing a TAR file.
+        Return an in-memory TAR archive.
         """
 
         buffer = BytesIO()
@@ -47,18 +63,17 @@ class Archive:
             include_hidden=include_hidden,
         )
 
-        return buffer.getvalue()
+        return Archive.from_bytes(buffer.getvalue())
 
-    @classmethod
-    def extract(cls, data: bytes, target: str = ".", members: list[str] | None = None):
+    def extract(self, target: str = ".", members: list[str] | None = None):
         """
-        Extracts the archive from the `data` binary blob to `target` directory.
+        Extracts the archive to `target` directory.
         """
 
         log.debug(f"Extracting archive to '{target}' ...")
 
         buffer = BytesIO()
-        buffer.write(data)
+        buffer.write(self.data)
         buffer.seek(0)
 
         with tarfile.open(fileobj=buffer, mode="r") as archive:
@@ -71,7 +86,7 @@ class ArchiveStoreIO:
     """
 
     # Attributes to store and serialize.
-    __slots__ = "url"
+    __slots__ = ("url",)
     __state__ = ("url",)
 
     def __init__(self, url: str):
@@ -86,8 +101,8 @@ class ArchiveStoreIO:
         fileobj: BinaryIO,
         src_dir: str,
         arc_dir: str = ".",
-        include: str = "**",
-        exclude: str | None = None,
+        include: str | list[str] = "**",
+        exclude: str | list[str] | None = None,
         include_hidden=False,
     ):
         """
@@ -95,32 +110,17 @@ class ArchiveStoreIO:
         including glob pattern `include`, excluding glob pattern `exclude`, honoring `include_hidden`.
         """
 
-        if not os.path.isdir(src_dir):
-            raise InvalidInput(f"Source directory '{src_dir}' does not exist")
-
         with tarfile.open(
             fileobj=fileobj, mode=options().get("archivestore.mode"), format=options().get("archivestore.format")
         ) as archive:
 
             for idx, glob_name in enumerate(
-                glob.glob(include, root_dir=src_dir, recursive=True, include_hidden=include_hidden)
+                globs(src_dir, include=include, exclude=exclude, include_hidden=include_hidden)
             ):
                 name = normpath(src_dir + os.sep + glob_name)
                 arcname = normpath(arc_dir + os.sep + glob_name)
-                include_file = True
-
-                if exclude is not None and fnmatch.fnmatch(name, exclude):
-                    include_file = False
 
                 info = archive.gettarinfo(name=name, arcname=arcname)
-                if not info or not info.isreg():
-                    # Not a regular file, skipping
-                    include_file = False
-
-                if not include_file:
-                    log.debug(f"{cls.__name__}: [{idx}] Excluding {name}")
-                    continue
-
                 log.debug(f"{cls.__name__}: [{idx}] Adding {name} -> .../{arcname}")
 
                 info.uid = 0

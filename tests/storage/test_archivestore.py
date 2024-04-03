@@ -31,10 +31,10 @@ def test_archive_cls():
         create_test_dir()
 
         # Create ZIP
-        data = Archive.create("test")
+        archive = Archive.create("test")
 
         # Extract ZIP to ./test2/
-        Archive.extract(data, "test2")
+        Archive.from_bytes(archive.to_bytes()).extract("test2")
 
         # Check presence or not of files
         assert os.path.isfile("test2/a/a1.x")
