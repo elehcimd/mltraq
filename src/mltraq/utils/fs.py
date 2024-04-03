@@ -1,9 +1,12 @@
+import logging
 import os
 from contextlib import contextmanager
 from shutil import rmtree
 from tempfile import mkdtemp
 
 from joblib.externals.loky import get_reusable_executor
+
+log = logging.getLogger(__name__)
 
 
 @contextmanager

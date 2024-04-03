@@ -1,7 +1,7 @@
 import os
 
 from mltraq import create_experiment
-from mltraq.storage.archivestore import ArchiveStore, ArchiveStoreIO
+from mltraq.storage.archivestore import Archive, ArchiveStore, ArchiveStoreIO
 from mltraq.utils.fs import tmpdir_ctx
 
 
@@ -20,6 +20,25 @@ def create_test_dir():
     create_test_file("test/b/c1.z")
     create_test_file("test/b/d")
     create_test_file("test/.hidden/h1.x")
+
+
+def test_archive_cls():
+    """
+    Test: We can create and extract TAR binary blobs.
+    """
+
+    with tmpdir_ctx():
+        create_test_dir()
+
+        # Create ZIP
+        data = Archive.create("test")
+
+        # Extract ZIP to ./test2/
+        Archive.extract(data, "test2")
+
+        # Check presence or not of files
+        assert os.path.isfile("test2/a/a1.x")
+        assert not os.path.isfile("test2/.hidden/h1.x")
 
 
 def test_archive_arcdir():
