@@ -5,8 +5,10 @@ import glob
 import logging
 import os
 import tarfile
+from io import BytesIO
 from os.path import normpath
 from shutil import rmtree
+from typing import BinaryIO
 
 from mltraq.opts import options
 from mltraq.storage.datastore import DataStoreIO
@@ -14,6 +16,53 @@ from mltraq.utils.bunch import Bunch
 from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
+
+
+class Archive:
+    """
+    Creation of binary TAR binary blob archives and extraction to filesystem.
+    """
+
+    @classmethod
+    def create(
+        cls,
+        src_dir: str,
+        arc_dir: str = ".",
+        include: str = "**",
+        exclude: str | None = None,
+        include_hidden=False,
+    ) -> bytes:
+        """
+        Return a binary blob representing a TAR file.
+        """
+
+        buffer = BytesIO()
+
+        ArchiveStoreIO.add_files(
+            fileobj=buffer,
+            src_dir=src_dir,
+            arc_dir=arc_dir,
+            include=include,
+            exclude=exclude,
+            include_hidden=include_hidden,
+        )
+
+        return buffer.getvalue()
+
+    @classmethod
+    def extract(cls, data: bytes, target: str = ".", members: list[str] | None = None):
+        """
+        Extracts the archive from the `data` binary blob to `target` directory.
+        """
+
+        log.debug(f"Extracting archive to '{target}' ...")
+
+        buffer = BytesIO()
+        buffer.write(data)
+        buffer.seek(0)
+
+        with tarfile.open(fileobj=buffer, mode="r") as archive:
+            archive.extractall(target, members=members, filter="data")
 
 
 class ArchiveStoreIO:
@@ -32,29 +81,25 @@ class ArchiveStoreIO:
         self.url = url
 
     @classmethod
-    def create(
+    def add_files(
         cls,
+        fileobj: BinaryIO,
         src_dir: str,
         arc_dir: str = ".",
         include: str = "**",
         exclude: str | None = None,
         include_hidden=False,
-    ) -> ArchiveStoreIO:
+    ):
         """
-        Creates and stores the archive, returning its `url`.
+        Add files to an open archive file `fileobj`, from directory `src_dir`, using archive directory `arc_dir`,
+        including glob pattern `include`, excluding glob pattern `exclude`, honoring `include_hidden`.
         """
 
         if not os.path.isdir(src_dir):
             raise InvalidInput(f"Source directory '{src_dir}' does not exist")
 
-        pathname, url = DataStoreIO.get_next_pathname_url()
-        # We use GNU format for increased portability, including tar on macos that
-        # fails with the PAX default format.
-
-        log.debug(f"{cls.__name__}: Creating archive {pathname}")
-
         with tarfile.open(
-            pathname, mode=options().get("archivestore.mode"), format=options().get("archivestore.format")
+            fileobj=fileobj, mode=options().get("archivestore.mode"), format=options().get("archivestore.format")
         ) as archive:
 
             for idx, glob_name in enumerate(
@@ -85,6 +130,34 @@ class ArchiveStoreIO:
 
                 with open(name, "rb") as f:
                     archive.addfile(info, f)
+
+    @classmethod
+    def create(
+        cls,
+        src_dir: str,
+        arc_dir: str = ".",
+        include: str = "**",
+        exclude: str | None = None,
+        include_hidden=False,
+    ) -> ArchiveStoreIO:
+        """
+        Creates and stores the archive, returning its ArchiveStoreIO representation.
+        """
+
+        pathname, url = DataStoreIO.get_next_pathname_url()
+        # We use GNU format for increased portability, including tar on macos that
+        # fails with the PAX default format.
+
+        log.debug(f"{cls.__name__}: Creating archive {pathname}")
+        with open(pathname, "xb") as f:
+            cls.add_files(
+                fileobj=f,
+                src_dir=src_dir,
+                arc_dir=arc_dir,
+                include=include,
+                exclude=exclude,
+                include_hidden=include_hidden,
+            )
 
         return ArchiveStoreIO(url)
 

@@ -36,7 +36,7 @@ class Options(BaseOptions):
         "archivestore": {
             "url": "file:///mltraq.archivestore",
             "relative_path_prefix": "undefined",
-            "mode": "w",
+            "mode": "x",
             "format": tarfile.GNU_FORMAT,
         },
         "execution": {

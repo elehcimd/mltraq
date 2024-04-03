@@ -91,7 +91,6 @@ pip install mltraq --upgrade
 
 {{include_code("mkdocs/examples/001.py", title="Parameter grids, parallel and resumed execution", drop_comments=False)}}
 
-
 ## Example 3: IRIS Flowers Classification
 
 {{include_code("mkdocs/examples/002.py", title="IRIS Flowers Classification", drop_comments=False)}}

@@ -1,6 +1,6 @@
 {'app': {},
  'archivestore': {'format': 1,
-                  'mode': 'w',
+                  'mode': 'x',
                   'relative_path_prefix': 'undefined',
                   'url': 'file:///mltraq.archivestore'},
  'cli': {'logging': {'format': '%(levelname)-9s '
