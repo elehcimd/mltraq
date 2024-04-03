@@ -1,7 +1,7 @@
-from functools import partial
-
-import joblib
 from mltraq.job import ProgressParallel
+import joblib
+from functools import partial
+import time
 
 
 def test_parallel():
