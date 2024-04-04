@@ -61,7 +61,7 @@ def chdir_ctx(dirname):
         os.chdir(old_dirname)
 
 
-def globs(src_dir, include="**/*", exclude=None, recursive=True, include_hidden=False):
+def globs(src_dir, include="**/*", exclude=None, recursive=True):
     """
     Enumerate files matching the glob patterns in the `include` string list, excluding
     matches in `exclude` string list, inside directory `src_dir`.
@@ -81,7 +81,7 @@ def globs(src_dir, include="**/*", exclude=None, recursive=True, include_hidden=
     candidates = []
 
     for pattern in include:
-        candidates += glob.glob(pattern, root_dir=src_dir, recursive=recursive, include_hidden=include_hidden)
+        candidates += glob.glob(pattern, root_dir=src_dir, recursive=recursive)
 
     # Drop duplicates
     candidates = set(candidates)

@@ -41,12 +41,7 @@ class Archive:
 
     @classmethod
     def create(
-        cls,
-        src_dir: str,
-        arc_dir: str = ".",
-        include: str | list[str] = "**",
-        exclude: str | list[str] | None = None,
-        include_hidden=False,
+        cls, src_dir: str, arc_dir: str = ".", include: str | list[str] = "**", exclude: str | list[str] | None = None
     ) -> Archive:
         """
         Return an in-memory TAR archive.
@@ -54,14 +49,7 @@ class Archive:
 
         buffer = BytesIO()
 
-        ArchiveStoreIO.add_files(
-            fileobj=buffer,
-            src_dir=src_dir,
-            arc_dir=arc_dir,
-            include=include,
-            exclude=exclude,
-            include_hidden=include_hidden,
-        )
+        ArchiveStoreIO.add_files(fileobj=buffer, src_dir=src_dir, arc_dir=arc_dir, include=include, exclude=exclude)
 
         return Archive.from_bytes(buffer.getvalue())
 
@@ -103,20 +91,17 @@ class ArchiveStoreIO:
         arc_dir: str = ".",
         include: str | list[str] = "**",
         exclude: str | list[str] | None = None,
-        include_hidden=False,
     ):
         """
         Add files to an open archive file `fileobj`, from directory `src_dir`, using archive directory `arc_dir`,
-        including glob pattern `include`, excluding glob pattern `exclude`, honoring `include_hidden`.
+        including glob pattern `include`, excluding glob pattern `exclude`.
         """
 
         with tarfile.open(
             fileobj=fileobj, mode=options().get("archivestore.mode"), format=options().get("archivestore.format")
         ) as archive:
 
-            for idx, glob_name in enumerate(
-                globs(src_dir, include=include, exclude=exclude, include_hidden=include_hidden)
-            ):
+            for idx, glob_name in enumerate(globs(src_dir, include=include, exclude=exclude)):
                 name = normpath(src_dir + os.sep + glob_name)
                 arcname = normpath(arc_dir + os.sep + glob_name)
 
@@ -138,7 +123,6 @@ class ArchiveStoreIO:
         arc_dir: str = ".",
         include: str = "**",
         exclude: str | None = None,
-        include_hidden=False,
     ) -> ArchiveStoreIO:
         """
         Creates and stores the archive, returning its ArchiveStoreIO representation.
@@ -150,14 +134,7 @@ class ArchiveStoreIO:
 
         log.debug(f"{cls.__name__}: Creating archive {pathname}")
         with open(pathname, "xb") as f:
-            cls.add_files(
-                fileobj=f,
-                src_dir=src_dir,
-                arc_dir=arc_dir,
-                include=include,
-                exclude=exclude,
-                include_hidden=include_hidden,
-            )
+            cls.add_files(fileobj=f, src_dir=src_dir, arc_dir=arc_dir, include=include, exclude=exclude)
 
         return ArchiveStoreIO(url)
 
@@ -223,16 +200,12 @@ class ArchiveStore:
 
     __slot__ = ("params",)
 
-    def __init__(
-        self, src_dir: str, arc_dir: str = ".", include: str = "**", exclude: str | None = None, include_hidden=False
-    ):
+    def __init__(self, src_dir: str, arc_dir: str = ".", include: str = "**", exclude: str | None = None):
         """
         Lazily define an archive, without creating it.
         """
 
-        self.params = Bunch(
-            src_dir=src_dir, arc_dir=arc_dir, include=include, exclude=exclude, include_hidden=include_hidden
-        )
+        self.params = Bunch(src_dir=src_dir, arc_dir=arc_dir, include=include, exclude=exclude)
 
     def to_url(self) -> str:
         """
@@ -245,7 +218,6 @@ class ArchiveStore:
             arc_dir=self.params.arc_dir,
             include=self.params.include,
             exclude=self.params.exclude,
-            include_hidden=self.params.include_hidden,
         )
         return archive.url
 

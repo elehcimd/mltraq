@@ -80,20 +80,6 @@ def test_archive_exclude():
         assert "mltraq.archivestore/undefined/a/a1.x" not in names
 
 
-def test_archive_include_hidden():
-    """
-    Test: We can include hidden files.
-    """
-
-    with tmpdir_ctx():
-        create_test_dir()
-        a = ArchiveStoreIO.create(src_dir="test", include_hidden=True)
-
-        names = set(a.getnames())
-
-        assert "mltraq.archivestore/undefined/.hidden/h1.x" in names
-
-
 def test_archive_simple():
     """
     Test: We can include all files, excluding hidden ones by default.
