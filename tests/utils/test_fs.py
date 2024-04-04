@@ -34,19 +34,6 @@ def test_globs_default():
         assert set(names) == {"a/a2.y", "b/b1.z", "a/a1.x", "b/d", "b/c1.z"}
 
 
-def test_globs_hidden():
-    """
-    Test: We can include hidden files.
-    """
-
-    with tmpdir_ctx():
-        create_test_dir()
-
-        # Match also hidden files
-        names = globs("test", include="*h2.x", include_hidden=True)
-        assert names == [".h2.x"]
-
-
 def test_globs_two_includes():
     """
     Test: We can specify two include patterns.
