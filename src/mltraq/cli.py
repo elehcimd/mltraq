@@ -80,11 +80,11 @@ def main():
         print_df(session.ls())
     elif args.cmd == "exp":
         session = mltraq.create_session()
-        experiment = session.load(name=args.experiment_name, id_experiment=args.experiment_uuid)
+        experiment = session.load_experiment(name=args.experiment_name, id_experiment=args.experiment_uuid)
         print_df(experiment.df())
     elif args.cmd == "runs":
         session = mltraq.create_session()
-        experiment = session.load(name=args.experiment_name, id_experiment=args.experiment_uuid)
+        experiment = session.load_experiment(name=args.experiment_name, id_experiment=args.experiment_uuid)
         print_df(experiment.runs.df())
     elif args.cmd == "options":
         df = pd.Series(options().flatten(), name="Value").to_frame()
@@ -94,7 +94,7 @@ def main():
         print_df(df)
     elif args.cmd == "stats":
         session = mltraq.create_session()
-        experiment = session.load(name=args.experiment_name, id_experiment=args.experiment_uuid)
+        experiment = session.load_experiment(name=args.experiment_name, id_experiment=args.experiment_uuid)
         df = experiment_stats(experiment)
         if args.stat_name:
             df = df[df.index == args.stat_name]

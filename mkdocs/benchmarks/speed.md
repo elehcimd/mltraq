@@ -1,6 +1,6 @@
 # Benchmarking experiment tracking frameworks
 
-*Latest update: 2024.03.06*
+*Latest update: 2024.04.11*
 
 This article overviews the advantages of fast experiment tracking and presents a comparative analysis of the most widely adopted solutions and MLtraq, highlighting their strengths and weaknesses.
 
@@ -35,9 +35,15 @@ References and instructions to reproduce the results, as well as more details on
     * All solutions considered in this comparative analysis have positively impacted the industry and served as an inspiration to guide the design of MLtraq. The many references to W&B are a testament to their excellent community and documentation.
     * Mature and established solutions in the industry have needs beyond mere time performance and tend to prioritize backward compatibility, new features, and third-party integrations.
 
+!!! Tip "Slides presenting some of the results"
+    The slides from my talk at the Munich MLOps meetup on  "MLtraq: Track your AI experiments at hyperspeed" are available
+    [here](../assets/pdf/2024.04.11%20mltraq_tracking_at_hyperspeed.pdf).
+    
+
 
 ## Changelog
 
+* 2024.04.11 - Added slides from Munich MLOps Community Meetup #7 alk "MLtraq: Track your AI experiments at hyperspeed"
 * 2024.03.06 - Improved conclusions and added acknowledgments
 * 2024.03.04 - Added FastTrackML, improved text and plots
 * 2024.02.26 - Initial publication of results

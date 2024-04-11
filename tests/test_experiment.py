@@ -24,7 +24,7 @@ def test_unpickle():
         run.state.b = 200
 
     experiment.persist(store_unsafe_pickle=True)
-    experiment = session.load(name="test", unsafe_pickle=True)
+    experiment = session.load_experiment(name="test", unsafe_pickle=True)
 
     unpickled_run = experiment.runs.first()
     assert unpickled_run.fields.a == 100
@@ -44,7 +44,7 @@ def test_load():
         run.state.b = 200
 
     experiment.persist()
-    experiment = session.load(name="test")
+    experiment = session.load_experiment(name="test")
     loaded_run = experiment.runs.first()
 
     assert loaded_run.fields.a == 100
@@ -107,7 +107,7 @@ def test_experiment_empty_with_field_attribute_persist():
     e = s.create_experiment("test")
     e.fields.a = 100
     e.persist()
-    e = s.load("test")
+    e = s.load_experiment("test")
     assert e.fields.a == 100
 
 
@@ -214,7 +214,7 @@ def test_experiment_replace():
     e.add_runs(data=range(10))
 
     e.execute(steps=f, config={"a": 123}).persist()
-    assert s.load("test").runs.first().fields.a == 123
+    assert s.load_experiment("test").runs.first().fields.a == 123
 
     # By default, we cannot overwrite a persisted experiment.
     with pytest.raises(ExperimentAlreadyExists):
@@ -224,7 +224,7 @@ def test_experiment_replace():
     # We are setting a new config, so setting `args_field` to False to prevent
     # an attempt to overwrite `run.fields.args`, which would fail and trigger an exception.
     e.execute(steps=f, config={"a": 124}).persist(if_exists="replace")
-    assert s.load("test").runs.first().fields.a == 124
+    assert s.load_experiment("test").runs.first().fields.a == 124
 
 
 def test_experiment_load_experimentid():
@@ -235,7 +235,7 @@ def test_experiment_load_experimentid():
     experiment = session.create_experiment("test")
     experiment.persist()
     id_experiment = experiment.id_experiment
-    experiment = session.load(id_experiment=id_experiment)
+    experiment = session.load_experiment(id_experiment=id_experiment)
     assert experiment.id_experiment == id_experiment
     assert experiment.name == "test"
 
@@ -412,7 +412,7 @@ def test_ExperimentNotFoundException():
     experiment.persist(store_unsafe_pickle=False)
 
     with pytest.raises(PickleNotFoundException):
-        experiment = session.load(name="test", unsafe_pickle=True)
+        experiment = session.load_experiment(name="test", unsafe_pickle=True)
 
 
 def test_experiment_runs_reload_execution():
@@ -436,7 +436,7 @@ def test_experiment_runs_reload_execution():
     assert e.runs.df()["A"].max() == 1000
 
     e.persist()
-    e = s.load("test")
+    e = s.load_experiment("test")
     e.execute(step_inc, args_field="args")
     assert e.runs.df()["A"].max() == 2000
 

@@ -32,12 +32,12 @@ def test_copy_experiment():
     e.persist()
 
     # Persist a copy of the experiment on s2
-    s2.persist(e)
+    s2.persist_experiment(e)
 
     # The two experiments have equal names and distinct IDs.
     # We can demonstrate this by reloading and comparing them.
-    e1 = s1.load("test")
-    e2 = s2.load("test")
+    e1 = s1.load_experiment("test")
+    e2 = s2.load_experiment("test")
     assert e1.name == e2.name
     assert e1.name == "test"
     assert e1.id_experiment.hex != e2.id_experiment.hex

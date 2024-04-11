@@ -56,7 +56,7 @@ def test_datastream_sequence():
         experiment.execute(init_sequences("seq")).persist()
 
         # Verify that experiment has been persisted, with no tracked values
-        assert len(session.load(name="test").runs.first().fields.seq.df()) == 0
+        assert len(session.load_experiment(name="test").runs.first().fields.seq.df()) == 0
 
         # Tracking without streaming.
         run = experiment.runs.first()
@@ -80,7 +80,7 @@ def test_datastream_sequence():
 
         # Verify that record has been tracked, without a .persist(...).
         session = mltraq.create_session()
-        df = session.load(name="test").runs.first().fields.seq.df()
+        df = session.load_experiment(name="test").runs.first().fields.seq.df()
         assert len(df) == 1
         assert df.iloc[0]["a"] == 300
         assert df.iloc[0]["b"] == 400
@@ -89,7 +89,7 @@ def test_datastream_sequence():
         experiment.persist(if_exists="replace")
 
         # Verify presence of three records with idx [0,1,2]
-        df = session.load(name="test").runs.first().fields.seq.df().sort_values(by="idx")
+        df = session.load_experiment(name="test").runs.first().fields.seq.df().sort_values(by="idx")
         assert len(df) == 3
         assert df.iloc[0]["idx"] == 0
         assert df.iloc[0]["a"] == 100

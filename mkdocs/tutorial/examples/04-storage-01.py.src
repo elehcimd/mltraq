@@ -21,7 +21,7 @@ with experiment.run() as run:
 experiment.persist()
 
 # Load the experiment from database
-experiment = session.load("example")
+experiment = session.load_experiment("example")
 print("Experiment:")
 print(experiment.df())
 print("\n--")

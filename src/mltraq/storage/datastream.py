@@ -363,7 +363,7 @@ class DatabaseWriter:
             try:
                 # The experiment and run must already exist in the db.
                 if message["id_experiment"] not in self.experiments:
-                    self.experiments[message["id_experiment"]] = self.session.load(
+                    self.experiments[message["id_experiment"]] = self.session.load_experiment(
                         id_experiment=message["id_experiment"]
                     )
                 run = self.experiments[message["id_experiment"]].runs[message["id_run"]]

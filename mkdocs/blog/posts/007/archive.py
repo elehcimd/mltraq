@@ -24,7 +24,7 @@ with tmpdir_ctx():
     e.persist()
 
     # Load the experiment
-    e = s.load("test")
+    e = s.load_experiment("test")
 
     # Extract the contents of the archive
     e.fields.src.extract()

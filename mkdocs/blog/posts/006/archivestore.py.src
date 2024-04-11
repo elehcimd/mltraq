@@ -25,7 +25,7 @@ with tmpdir_ctx():
     e.persist()
 
     # Load the experiment, unarchiving the tar file
-    e = s.load("test")
+    e = s.load_experiment("test")
 
     print(f"Destination directory: '{e.fields.archived.get_target()}'")
 
