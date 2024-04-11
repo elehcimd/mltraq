@@ -21,4 +21,4 @@ with experiment.run() as run:
 experiment.persist(store_unsafe_pickle=True)
 
 print("Reloading the pickled experiment from database")
-experiment = session.load("example", unsafe_pickle=True)
+experiment = session.load_experiment("example", unsafe_pickle=True)

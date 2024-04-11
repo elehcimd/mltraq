@@ -1,5 +1,12 @@
 # Recent changes
 
+## 0.1.136
+
+* Added slides from Munich MLOps Community Meetup #7, linked in the benchmarks/speed page
+* Added notebooks/11 to experiment with the performance of different data storage options
+* Added blog post on upstreaming experimental results (blog/posts/008)
+* Renamed `session.load` to `session.load_experiment` and `session.persist` to `session.persist_experiment` for consistency
+
 ## 0.1.135
 
 * Dropped `include_hidden` option support for archives, not supported by`glob.glob` in Python 3.10

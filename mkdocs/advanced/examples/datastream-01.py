@@ -48,7 +48,7 @@ with options().ctx(
     # the streamed records have been tracked to database.
 
     # Load experiment, showing the contents of the metrics Sequence.
-    streamed_experiment = session.load("example")
+    streamed_experiment = session.load_experiment("example")
 
     # Show tracked fields. Only "metrics" is present,
     # `run.fields.dataset` is not a Sequence and therefore not streamed.
@@ -63,4 +63,4 @@ with options().ctx(
     # The copy with the streamed data is replaced by the complete experiment.
     experiment.persist(if_exists="replace")
 
-    print("Tracked fields:", list(session.load("example").runs.first().fields.keys()))
+    print("Tracked fields:", list(session.load_experiment("example").runs.first().fields.keys()))

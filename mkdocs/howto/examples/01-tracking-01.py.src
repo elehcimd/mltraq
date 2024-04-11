@@ -57,7 +57,7 @@ experiment.execute([step] * 3, args_field="args")
 experiment.persist()
 
 # Reload the experiment from database.
-experiment = session.load("example")
+experiment = session.load_experiment("example")
 
 # Execute the step one more time, reaching 7 evaluations per run.
 experiment.execute([step], args_field="args")

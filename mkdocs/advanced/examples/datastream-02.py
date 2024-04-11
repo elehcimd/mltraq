@@ -35,7 +35,7 @@ with options().ctx({"datastream.disable": False}), logging_ctx(
     # the streamed records have been tracked to database.
 
     # Load experiment, showing the contents of the metrics Sequence.
-    streamed_experiment = session.load("example")
+    streamed_experiment = session.load_experiment("example")
 
     print("\n--\nStreamed metrics:")
     print(streamed_experiment.runs.first().fields.metrics.df())

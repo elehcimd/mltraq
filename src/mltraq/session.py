@@ -75,7 +75,7 @@ class Session:
         """
         return Experiment.ls(self.db)
 
-    def load(
+    def load_experiment(
         self, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
     ) -> Experiment:
         """
@@ -87,7 +87,9 @@ class Session:
 
         return Experiment.load(self.db, name=name, id_experiment=id_experiment, unsafe_pickle=unsafe_pickle)
 
-    def persist(self, experiment: Experiment, name: str | None = None, if_exists: IfExists = "fail") -> Experiment:
+    def persist_experiment(
+        self, experiment: Experiment, name: str | None = None, if_exists: IfExists = "fail"
+    ) -> Experiment:
         """
         Persist the experiment on the database linked by the session (as a copy), and return it.
         The database considered is the one of the session, allowing us to copy experiments

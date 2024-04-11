@@ -14,7 +14,7 @@ experiment.add_run()
 experiment.execute(step)
 experiment.persist()
 
-experiment = session.load("example")
+experiment = session.load_experiment("example")
 run = experiment.runs.first()
 
 print("run.vars", run.vars)
