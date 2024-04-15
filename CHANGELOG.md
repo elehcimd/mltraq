@@ -1,5 +1,12 @@
 # Recent changes
 
+## 0.1.137
+
+* Fixed some quoting typos in the docs and code
+* Added blog post on serializing a bunch of things experimental results(blog/posts/009)
+* Cleanup visibility of class methods and attributes (`_` and `__` prefix)
+* Added PNG logo files with transparency for talks etc.
+
 ## 0.1.136
 
 * Added slides from Munich MLOps Community Meetup #7, linked in the benchmarks/speed page

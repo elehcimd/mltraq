@@ -18,7 +18,7 @@ organized similarly to `mltraq.datastore` by experiment ID.
 !!! Warning
     Persisting an experiment is equivalent to removing and saving it, triggering the deletion
     and recreation of its associated datastore assets, including its archives.
-    You can implement different behaviors with `ArchiveStoreIO`` and `DataStoreIO`.
+    You can implement different behaviors with `ArchiveStoreIO` and `DataStoreIO`.
 
 {{include_code("mkdocs/blog/posts/006/archivestore.py", title="ArchiveStore example", drop_comments=False)}}
 

@@ -295,7 +295,7 @@ def pandas_query(
         tqdm_total = query_count(query, session)
 
     # With SQLALchemy 2.0, we need to pass session.connection() instead of session.bind.
-    # `df_chunks`` is an iterator where `chunksize` is the number of rows to include in each chunk.
+    # `df_chunks` is an iterator where `chunksize` is the number of rows to include in each chunk.
     df_chunks_iterator = pd.read_sql_query(
         sql=query, con=session.connection(), chunksize=options().get("database.query_read_chunk_size")
     )

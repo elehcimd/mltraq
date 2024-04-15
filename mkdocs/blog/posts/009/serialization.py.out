@@ -1,0 +1,2 @@
+Serialized b'\x80\x05\x95\xfe\x00\x00\x00\x00\x00\x00\x00}\x94(\x8c\tDATAPAK-0\x94\x8c\x0eml'
+Deserialized {'a': array([1, 2, 3]), 'b': 'something', 'c': 456}

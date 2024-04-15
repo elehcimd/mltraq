@@ -209,7 +209,7 @@ The analysis is limited to the best-performing methods.
   <img height="100%" width="100%" style="border-radius: 5px; border: 5px solid white;" src="/assets/img/benchmarks2/exp-3.svg" >
 </p>
 
-* `Comet` and `FastTrackML` perform similarly, followed by `Neptune`, which is `4`` times faster.
+* `Comet` and `FastTrackML` perform similarly, followed by `Neptune`, which is `4` times faster.
 * **MLtraq is the best-performing method, being 5 times faster than Neptune**.
 
 ## Conclusion

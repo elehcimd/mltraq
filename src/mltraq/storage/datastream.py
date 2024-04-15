@@ -107,7 +107,7 @@ class DataStreamServer:
                 self.received.set()
             except BlockingIOError:
                 # Nothing to read! loop, s.t. we can check the state
-                # of `self.terminate``.
+                # of `self.terminate`.
                 sleep(delay)
                 continue
             self.stats.count_messages += 1
@@ -338,7 +338,7 @@ class DatabaseWriter:
             try:
                 if not self.messages.empty():
                     n_messages = self.messages.qsize()
-                    # Process `n_messages`` messages, that are guaranteed to exist without blocking.
+                    # Process `n_messages` messages, that are guaranteed to exist without blocking.
                     for _ in range(n_messages):
                         self.batch.append(self.messages.get())
                     self.process_batch()

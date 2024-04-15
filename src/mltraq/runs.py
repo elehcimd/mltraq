@@ -17,7 +17,7 @@ from mltraq.utils.text import stringify
 
 log = logging.getLogger(__name__)
 
-# `Runs`` cannot be added as not yet defined
+# `Runs` cannot be added as not yet defined
 RunsListType = Run | List[Run] | tuple[Run] | None
 
 

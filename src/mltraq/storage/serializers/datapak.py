@@ -39,7 +39,7 @@ BASIC_TYPES = [
 # Types that are safely encoded with Pickle. They can be nested.
 CONTAINER_TYPES = [tuple, list, set, dict]
 
-# Complex types that are encoded to `bytes``, before being serialized with Pickle.
+# Complex types that are encoded to `bytes`, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
 COMPLEX_TYPES = [
     Bunch,
