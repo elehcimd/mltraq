@@ -1,6 +1,6 @@
-import numpy as np
+from mltraq.storage.serialization import serialize, deserialize
 from mltraq import Bunch
-from mltraq.storage.serialization import deserialize, serialize
+import numpy as np
 
 # Build a dictionary whose elements can be accessed as object attributes.
 bunch = Bunch(a=np.array([1, 2, 3]), b="something")
