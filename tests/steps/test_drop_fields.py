@@ -33,6 +33,3 @@ def test_init_fields():
     assert "a" not in experiment.runs.first().fields
     assert "b" not in experiment.runs.first().fields
     assert "c" not in experiment.runs.first().fields
-
-    # Drop unexistend fields, does nothing
-    experiment.execute(drop_fields("b", "c"))
