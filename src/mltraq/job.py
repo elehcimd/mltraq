@@ -52,9 +52,11 @@ def parallel(tasks: List[Callable], n_jobs: int | None = None) -> List[object]:
 
     # Instantiate the (parallel) executor. The execution of runs is not threads-safe.
     # You must parallelize the execution with processes (prefer='processes', loky by default).
-    p = ProgressParallel(n_jobs=n_jobs, total=len(tasks), prefer="processes")
+    p = ProgressParallel(
+        n_jobs=n_jobs, total=len(tasks), prefer="processes", return_as=options().get("execution.return_as")
+    )
 
-    # Get the reeturn values, and return them as a list.
+    # Get the ret values, and return them as a list.
     # This function completes once all tasks return.
     rets = p(joblib.delayed(func)() for func in tasks)
     return rets
@@ -115,7 +117,7 @@ class Job:
                 n_jobs = joblib.cpu_count() + 1 - self.n_jobs
 
         log.debug(f"Using backend: {self.backend}")
-        with joblib.parallel_config(self.backend):
+        with joblib.parallel_config(backend=self.backend):
             log.debug(f"Executing {len(self.tasks)} tasks on {n_jobs} workers (backend:{self.backend})")
-            executed_tasks = parallel(self.tasks, n_jobs=n_jobs)
+            executed_tasks = parallel(tasks=self.tasks, n_jobs=n_jobs)
             return executed_tasks

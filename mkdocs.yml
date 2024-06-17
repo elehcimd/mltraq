@@ -1,5 +1,5 @@
 site_name: MLtraq
-site_description: Track and Collaborate on AI Experiments.
+site_description: Track and Collaborate on ML/AI Experiments.
 site_url: https://mltraq.com
 docs_dir: mkdocs/
 site_dir: dist/docs

@@ -11,7 +11,7 @@ Feel free to drop your thoughts and questions in the [Discussions](https://githu
 To get started, follow these steps:
 
 1. Fork the [mltraq](https://github.com/elehcimd/mltraq) repository and clone it to your local machine.
-2. Install  [poetry](https://python-poetry.org/docs/#installation) to manage dependencies and packaging.
+2. Install [poetry](https://python-poetry.org/docs/#installation) to manage dependencies and packaging.
 3. Install virtual environment and dependencies:
 
     ```
@@ -39,8 +39,8 @@ When you're ready to contribute, follow these steps:
 
 We use `devel` (which is our default Github branch) to prepare a next release of `mltraq`. We accept all regular contributions there (including most of the bugfixes).
 
-We use `master` branch for hot fixes (including documentation) that needs to be released out of normal schedule.
+We use `main` branch for hot fixes (including documentation) that needs to be released out of normal schedule.
 
-On the release day, `devel` branch is merged into `master`. All releases of `mltraq` happen only from the `master`.
+On the release day, `devel` branch is merged into `main`. All releases of `mltraq` happen only from the `main`.
 
 

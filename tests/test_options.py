@@ -51,7 +51,7 @@ def test_option_context_parallel():
             # the context is recreated using the defaults, ignoring the
             # options set by the context manager.
             # The correct behaviour is implemented transparently by the
-            # logic of runs execution, passing an `options`` parameter
+            # logic of runs execution, passing an `options` parameter
             # that doesn't interfere with the exposed interface.
             assert options().get("reproducibility.random_seed") == 124
 

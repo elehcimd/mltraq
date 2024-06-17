@@ -3,6 +3,7 @@ from random import uniform
 import mltraq
 import numpy as np
 import pytest
+from joblib.externals.loky import get_reusable_executor
 from mltraq import Run, create_experiment, options
 from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException
@@ -198,7 +199,7 @@ def test_experiment_many():
     e.persist()
 
     prefix = options().get("database.experiment_tableprefix")
-    assert s.db.query(f"select count(*) as count_rows from {prefix}test").count_rows.iloc[0] == 2001  # noqa
+    assert s.db.query(f"select count(*) as count_rows from {prefix}test").count_rows.iloc[0] == 2001  # noqa: S608
 
 
 def test_experiment_replace():
@@ -447,7 +448,7 @@ def test_experiment_parallel():
     """
 
     def step(run: Run):
-        run.fields.v = uniform(0, 1)  # noqa
+        run.fields.v = uniform(0, 1)
 
     v_mean = create_experiment().add_runs(i=range(100)).execute(step).runs.df().v.mean()
     # Without enough runs, it might be rather off from .5
@@ -529,3 +530,42 @@ def test_experiment_or_ior():
     e1 |= e2
     e1 |= e2
     assert len(e.runs) == 2
+
+
+def _test_experiment_fast_fail():
+    """
+    Test: If a run execution fails, the experiment execution fails immediately
+    if return_as is set to "generator_unordered".
+
+    This test breaks joblib (due to its switching to return_as="generator_unordered",
+    which leaves the workers in an inconsistent state, and joblib is not able to recover.
+    There is still value in being able to run experiments and interrupt early, at the
+    price of restarting the kernel. We exclude this test from the automated tests.
+    """
+
+    class TestException(Exception):
+        pass
+
+    def faulty_step(run: mltraq.Run):
+        if run.params.a == 50:
+            raise TestException("test error")
+        run.fields.executed = 1
+
+    s = mltraq.create_session()
+    e = s.create_experiment("test")
+    e.add_runs(a=range(100))
+
+    e.execute(init_fields(executed=False))
+
+    with options().ctx({"execution.return_as": "generator_unordered"}):
+        with pytest.raises(RunException):
+            e.execute(faulty_step)
+            # The early interruption will result in joblib warnings and thread failures:
+            # "[...] You could benefit from adjusting the input task
+            #   iterator to limit unnecessary computation time.""
+
+    # Experiment failed, state remains consistent as before fauly step.
+    assert e.runs.first().fields.executed is False
+
+    # Terminate executors
+    get_reusable_executor().shutdown(wait=True)

@@ -39,7 +39,7 @@ BASIC_TYPES = [
 # Types that are safely encoded with Pickle. They can be nested.
 CONTAINER_TYPES = [tuple, list, set, dict]
 
-# Complex types that are encoded to `bytes``, before being serialized with Pickle.
+# Complex types that are encoded to `bytes`, before being serialized with Pickle.
 # Complex types are encoded as dictionaries with the special key MAGIC_KEY.
 COMPLEX_TYPES = [
     Bunch,
@@ -164,7 +164,7 @@ class DataPakSerializer(Serializer):
             raise UnsupportedObjectType(f"{cls.__class__} is unable to deserialize type {obj.__class__}")
 
 
-def encode_magic_key(cls, obj: object) -> dict:  # NOQA C901
+def encode_magic_key(cls, obj: object) -> dict:  # noqa: C901
     """
     Encode the complex object, using as key MAGIC_KEY to identify
     the dictionary as a serialized complex object.
@@ -205,7 +205,7 @@ def encode_magic_key(cls, obj: object) -> dict:  # NOQA C901
         raise UnsupportedObjectType(f"{cls.__name__} does not support type {obj.__class__}")
 
 
-def decode_magic_key(cls, obj: dict) -> object:  # NOQA C901
+def decode_magic_key(cls, obj: dict) -> object:  # noqa: C901
     """
     Decode a complex object, encoded as a dictionary {k:v}
     where `k` is a predefined list of string values, and

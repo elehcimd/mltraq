@@ -181,7 +181,7 @@ class Run:
             for step in self.steps:
                 try:
                     step(self)
-                except Exception:  # NOQA BLE001
+                except Exception:  # noqa: BLE001
                     # We want to catch ALL exceptions triggered within steps,
                     # s.t. we can communicate them back to the driver process.
                     self.exception = RunException(exception_message())

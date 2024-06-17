@@ -24,10 +24,10 @@ hide:
 
 ---
 <h1 align="center">
-Track and Collaborate on AI Experiments.
+Track and Collaborate on ML/AI Experiments.
 </h1>
 
-The open-source Python library for AI developers to design, execute and share experiments.
+The open-source Python library for ML/AI developers to design, execute and share experiments.
 Track anything, stream, reproduce, collaborate, and resume the computation state anywhere.
 
 ---

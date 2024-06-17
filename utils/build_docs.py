@@ -74,7 +74,7 @@ def main(argv):
 
     check_usage(py_files)
 
-    print("Executing examples")
+    print("Executing examples ...")
     for idx, py_file in enumerate(py_files):
         print(f"[{idx+1}/{len(py_files)}] Executing {py_file}")
         out = local_python(py_file)
