@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import logging
 from argparse import ArgumentParser
 from contextlib import contextmanager
@@ -41,6 +42,12 @@ class BaseOptions:
             # We work on a copy, to allow option resets.
             cls._instance.values = copy.deepcopy(cls.default_values)
         return cls._instance
+
+    def print(self):
+        """
+        Pretty print the values tree.
+        """
+        print(json.dumps(self.values, sort_keys=True, indent=4))
 
     def get(self, path: str, null_if_missing: bool = False) -> object:
         """

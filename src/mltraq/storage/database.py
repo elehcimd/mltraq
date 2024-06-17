@@ -403,7 +403,7 @@ def query_count(query: QueryType, session: Session):
     """
 
     query = normalize_query(query)
-    return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # NOQA S608
+    return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # noqa: S608
 
 
 def normalize_query(query: QueryType):

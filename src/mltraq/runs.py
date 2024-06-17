@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 import random
-from typing import Any, List
+from types import GeneratorType
+from typing import Any, Generator, List
 
 import pandas as pd
 from joblib.parallel import DEFAULT_BACKEND
@@ -101,7 +102,7 @@ class Runs(dict):
                 run.params = run.fields[name].params
         return ret_config
 
-    def execute(
+    def execute(  # noqa: C901
         self,
         steps: StepsType,
         config: dict | None = None,
@@ -151,11 +152,25 @@ class Runs(dict):
         random.Random(options().get("reproducibility.random_seed")).shuffle(task_funcs)
 
         # Execute runs.
-        executed_runs: list[Run] = Job(task_funcs, n_jobs=n_jobs, backend=backend).execute()
+        executed_runs: Generator[Run, None, None] | list[Run] = Job(
+            task_funcs, n_jobs=n_jobs, backend=backend
+        ).execute()
 
-        # TODO: raise exception as soon as it's encountered, without waiting for all
-        # parallel jobs to return. (joblib can return an iterator, this is likely how
-        # we can achieve this.)
+        if isinstance(executed_runs, GeneratorType):
+            # If joblib returned a generator, we handle it, checking for errors and interrupting as soon as possible.
+            executed_runs_iter = executed_runs
+            executed_runs = []
+
+            while True:
+                try:
+                    run = next(executed_runs_iter)
+                    executed_runs.append(run)
+                    if run.exception is not None:
+                        # A step failed, interrupt
+                        break
+                except StopIteration:
+                    # No more tasks, interrupt
+                    break
 
         # Check for exceptions, and raise first one encountered.
         for run in executed_runs:

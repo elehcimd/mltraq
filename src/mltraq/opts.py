@@ -43,6 +43,7 @@ class Options(BaseOptions):
             "exceptions": {"compact_message": False},
             "backend": DEFAULT_BACKEND,
             "n_jobs": -1,
+            "return_as": "list",
             "args_field": False,
             "loky_chdir": True,
             "backend_params": {},
