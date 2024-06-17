@@ -10,7 +10,8 @@ def step_drop_fields(run: Run, fields=None):
 
     if fields:
         for name in fields:
-            del run.fields[name]
+            if name in run.fields:
+                del run.fields[name]
 
 
 def drop_fields(*fields) -> callable:

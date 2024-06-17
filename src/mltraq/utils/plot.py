@@ -15,7 +15,7 @@ def stderr(a):
         return sem(a, nan_policy="omit")
 
 
-def bar_plot(  # noqa
+def bar_plot(  # noqa: C901
     df: pd.DataFrame,
     x: str,
     y: str,

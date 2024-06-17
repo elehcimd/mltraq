@@ -43,6 +43,12 @@ class BaseOptions:
             cls._instance.values = copy.deepcopy(cls.default_values)
         return cls._instance
 
+    def print(self):
+        """
+        Pretty print the values tree.
+        """
+        print(json.dumps(self.values, sort_keys=True, indent=4))
+
     def get(self, path: str, null_if_missing: bool = False) -> object:
         """
         Returns option or dictionary representing the subtree at `path`.
