@@ -11,6 +11,7 @@ src/mltraq/session.py                                           39      0   100%
 src/mltraq/steps/__init__.py                                     0      0   100%
 src/mltraq/steps/chdir.py                                       10      0   100%
 src/mltraq/steps/codelog.py                                     32      2    94%
+src/mltraq/steps/drop_fields.py                                  8      0   100%
 src/mltraq/steps/init_fields.py                                  9      1    89%
 src/mltraq/steps/init_sequences.py                              11      0   100%
 src/mltraq/steps/sleep.py                                        7      0   100%
@@ -41,4 +42,4 @@ src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/utils/web.py                                         27     18    33%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         2036    297    85%
+TOTAL                                                         2044    297    85%
