@@ -1,5 +1,9 @@
 # Recent changes
 
+## 0.1.140
+* Fixed some typos in tests and docs
+* Added blog post on `BunchEvent` (blog/posts/010)
+
 ## 0.1.139
 * Added `BunchEvent` type, a Bunch with function triggers for setters and getters
 
@@ -9,7 +13,7 @@
 ## 0.1.137
 
 * Fixed some quoting typos in the docs and code
-* Added blog post on serializing a bunch of things experimental results(blog/posts/009)
+* Added blog post on serializing a bunch of things experimental results (blog/posts/009)
 * Cleanup visibility of class methods and attributes (`_` and `__` prefix)
 * Added PNG logo files with transparency for talks etc.
 
