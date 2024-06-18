@@ -1,9 +1,10 @@
 # Recent changes
 
 ## 0.1.139
-* Added `BunchEvent` type, a Bunch with event handlers for setters and getters (blog/posts/010)
+* Added `BunchEvent` type, a Bunch with function triggers for setters and getters
+
+## 0.1.138
 * Added utility steps `drop_fields` and `nothing`
-* Added support for `return_as="generator_unordered"` for executing experiments to reduce time-to-failure
 
 ## 0.1.137
 

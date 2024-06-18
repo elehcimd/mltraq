@@ -1,3 +1,4 @@
+hyperspeed
 upstreaming
 alk
 pdf
@@ -15,7 +16,6 @@ loky_chdir
 codelog
 chdir
 versa
-bunchevent
 merge_runs
 e12
 sysmon
@@ -226,7 +226,6 @@ dd
 init_sequences
 linspace
 add_run
->>>>>>> d1652dc (Added example on BunchEvent)
 skorch
 incapsulation
 pytorch
@@ -459,4 +458,4 @@ xfh
 xyz
 zlib
 zlip
-hyperspeed
+bunchevent

@@ -35,14 +35,16 @@ Track anything, stream, reproduce, collaborate, and resume the computation state
 * **Documentation**: [https://www.mltraq.com](https://www.mltraq.com/)
 * **Source code**: [https://github.com/elehcimd/mltraq](https://github.com/elehcimd/mltraq) (License: [BSD 3-Clause](https://mltraq.com/license/))
 * **Discussions**: [Ask questions, share ideas, engage](https://github.com/elehcimd/mltraq/discussions)
-* **Funding**: You can [sponsor](https://mltraq.com/sponsor/), [cite](https://mltraq.com/cite/), [star](https://github.com/elehcimd/mltraq) the project, and [hire me](https://www.linkedin.com/in/dallachiesa/) for DS/ML/AI work
+* **Funding**: You can [star](https://github.com/elehcimd/mltraq) the project on GitHub and [hire me](https://www.linkedin.com/in/dallachiesa/) to make your experiments run faster
 
 
 ## Motivations & benefits
 
+* **Blazing fast**: The [fastest](./benchmarks/speed.md) experiment tracking solution in the industry.
+
 * **Extreme tracking and interoperability**: With native database types, [Numpy and PyArrow serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
-* **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or cloud SQL database](advanced/storage.md).
+* **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or remote SQL database](advanced/storage.md).
 
 * **Flexible and open**: Interact with your experiments using Python, Pandas, and SQL from Python scripts, Jupyter notebooks, and dashboards without vendor lock-in.
 

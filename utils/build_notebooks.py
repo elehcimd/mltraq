@@ -18,7 +18,7 @@ def main(argv):
 
     for notebook_pathname in notebook_pathnames:
         print(f"Processing {notebook_pathname}")
-        execute(f"ruff notebooks --fix '{notebook_pathname}'")
+        execute(f"ruff check notebooks --fix '{notebook_pathname}'")
         execute(f"black --line-length 75 '{notebook_pathname}'")
         execute(
             "PYDEVD_DISABLE_FILE_VALIDATION=1 jupyter nbconvert "
