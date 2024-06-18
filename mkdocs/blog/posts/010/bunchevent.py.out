@@ -1,0 +1,8 @@
+Happy path
+All good! key=predictions contains only finite values: [0 1 2]
+--
+
+Issue
+Warning! key=predictions contains non-finite values: [ 0. nan  2.]
+--
+

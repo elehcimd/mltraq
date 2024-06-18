@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.1.138"
+version = "0.1.140"
 description = "Track and Collaborate on ML/AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"

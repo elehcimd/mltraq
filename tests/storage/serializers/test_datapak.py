@@ -11,7 +11,7 @@ from mltraq.storage.archivestore import Archive
 from mltraq.storage.database import next_uuid
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
-from mltraq.utils.bunch import Bunch
+from mltraq.utils.bunch import Bunch, BunchEvent
 from mltraq.utils.fs import tmpdir_ctx
 
 
@@ -80,6 +80,28 @@ def test_serialization_bunch():
     obj2 = DataPakSerializer.deserialize(data)
     assert isinstance(obj2, Bunch)
     assert obj2.a == 123
+
+
+def test_serialization_bunch_event():
+    """
+    Test: We can serialize/deserialize a BunchEvent
+    (deserialization as Bunch), as soon as there are
+    no registered triggers.
+    """
+    obj = BunchEvent({"a": 123})
+
+    # Set trigger
+    obj.on_setattr("a", lambda x: x)
+
+    # Clear all triggers, DATAPAK cannot serialize functions.
+    obj.clear_triggers()
+
+    data = DataPakSerializer.serialize(obj)
+    assert isinstance(data, bytes)
+    obj2 = DataPakSerializer.deserialize(data)
+    assert isinstance(obj2, Bunch)
+    assert obj2.a == 123
+    print(obj2)
 
 
 def test_serialization_datastore():

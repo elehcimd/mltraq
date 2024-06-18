@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import pytest
-from mltraq.utils.bunch import Bunch
+from mltraq.utils.bunch import Bunch, BunchEvent
 
 
 def test_order():
@@ -99,3 +99,48 @@ def test_empty():
     """
     assert Bunch(None) == Bunch()
     assert Bunch() == Bunch({})
+
+
+def test_bunch_event_setattr():
+    bunch = BunchEvent()
+
+    state = []
+
+    def f(key, value):
+        print("on_setattr", key, value)
+        state.append(value)
+
+    print()
+    bunch.on_setattr("a", f)
+
+    bunch.a = 1  # tracked
+    bunch["a"] = 2  # tracked
+    bunch.b = 3  # not tracked
+    bunch["b"] = 4  # not tracked
+
+    assert state == [1, 2]
+
+
+def test_bunch_event_getattr():
+    bunch = BunchEvent()
+
+    state = []
+
+    def f(key, value):
+        print("on_getattr", key, value)
+        state.append(value)
+
+    print()
+    bunch.on_getattr("a", f)
+
+    bunch.a = 1
+    bunch.a  # tracked # noqa B018
+
+    bunch.a = 2
+    bunch["a"]  # tracked
+
+    bunch.b = 3
+    bunch.b  # not tracked # noqa B018
+    bunch["b"]  # not tracked
+
+    assert state == [1, 2]
