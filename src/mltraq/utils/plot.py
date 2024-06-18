@@ -61,13 +61,13 @@ def bar_plot(  # noqa: C901
     x_label = x if not x_label else x_label
     y_label = y if not y_label else y_label
 
-    rc = options.get("matplotlib.rc", null_if_missing=True)
-    style = options.get("matplotlib.style", null_if_missing=True) or "default"
+    rc = options().get("matplotlib.rc", null_if_missing=True)
+    style = options().get("matplotlib.style", null_if_missing=True) or "default"
 
     with plt.rc_context(rc), plt.style.context(style):
 
         if ax is None:
-            _, ax = plt.subplots(figsize=options.get("matplotlib.figsize"))
+            _, ax = plt.subplots(figsize=options().get("matplotlib.figsize", null_if_missing=True) or (5, 5))
 
         aggfunc = ["mean", "median", stderr]
 
