@@ -78,8 +78,6 @@ nav:
   - HOWTO:
     - howto/01-tracking.md
     - howto/02-artifacts-storage.md
-  - FAQ:
-    - faq.md    
   - Advanced topics:
     - advanced/computation-model.md
     - advanced/state.md

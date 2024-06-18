@@ -102,6 +102,10 @@ def test_empty():
 
 
 def test_bunch_event_setattr():
+    """
+    Test: an event handler can be linket to __setitem__.
+    """
+
     bunch = BunchEvent()
 
     state = []
@@ -122,6 +126,10 @@ def test_bunch_event_setattr():
 
 
 def test_bunch_event_getattr():
+    """
+    Test: an event handler can be linket to __getitem__.
+    """
+
     bunch = BunchEvent()
 
     state = []
