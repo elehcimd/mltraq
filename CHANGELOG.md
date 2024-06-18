@@ -13,7 +13,7 @@
 ## 0.1.137
 
 * Fixed some quoting typos in the docs and code
-* Added blog post on serializing a bunch of things experimental results (blog/posts/009)
+* Added blog post on serializing a `Bunch` of things (blog/posts/009)
 * Cleanup visibility of class methods and attributes (`_` and `__` prefix)
 * Added PNG logo files with transparency for talks etc.
 
