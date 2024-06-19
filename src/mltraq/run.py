@@ -151,7 +151,7 @@ class Run:
         global_options().copy_from(options.values)
 
         # Determine random seed for this run, combining the UUID of the run and the
-        # value of "reproducibility.random_seed". We initialise both Numpy and Random seeds.
+        # value of "reproducibility.random_seed". We initialise both NumPy and Random seeds.
         # This needs to be _after_ we update `global_options`, to reflect its correct values.
         random_seed = (hash(self.id_run) + global_options().get("reproducibility.random_seed")) % 2**32 - 1
         np.random.seed(random_seed)

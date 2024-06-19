@@ -43,6 +43,6 @@ memfile.write(depickled["value"])
 memfile.seek(0)
 array = np.load(memfile, allow_pickle=False)
 
-print("Numpy array:")
+print("NumPy array:")
 pprint(array, width=70)
 print("\n--")

@@ -24,10 +24,10 @@ hide:
 
 ---
 <h1 align="center">
-Track and Collaborate on ML/AI Experiments.
+Track and Collaborate on ML & AI Experiments.
 </h1>
 
-The open-source Python library for ML/AI developers to design, execute and share experiments.
+The open-source Python library for ML & AI developers to design, execute and share experiments.
 Track anything, stream, reproduce, collaborate, and resume the computation state anywhere.
 
 ---
@@ -42,7 +42,7 @@ Track anything, stream, reproduce, collaborate, and resume the computation state
 
 * **Blazing fast**: The [fastest](./benchmarks/speed.md) experiment tracking solution in the industry.
 
-* **Extreme tracking and interoperability**: With native database types, [Numpy and PyArrow serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
+* **Extreme tracking and interoperability**: With native database types, [NumPy and PyArrow serialization, and a safe subset of opcodes for Python pickles](./advanced/storage.md#the-datapak-format).
 
 * **Promoting collaboration**: Work seamlessly with your team by creating, storing, reloading, mixing, resuming, and sharing experiments using [any local or remote SQL database](advanced/storage.md).
 
@@ -60,7 +60,7 @@ Track anything, stream, reproduce, collaborate, and resume the computation state
 
 * **Computation**: The chained execution of `steps` is implemented with [joblib.Parallel](https://joblib.readthedocs.io/en/latest/parallel.html) using process-based parallelism. The cluster-specific backends of Dask, Ray, Spark, and custom ones can be used. The `step` functions and `run` objects must be serializable with `cloudpickle`. You can directly handle the evaluation of your runs without `joblib`, with less automation and more flexibility.
 
-* **Persistence**: The default database is SQLite, and its [limits](https://sqlite.org/limits.html) apply. You can connect to any SQL database supported by `SQLAlchemy`. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, `Numpy`, `Pandas` and `PyArrow` objects. The [Data store](./advanced/datastore.md) interface is designed to handle out-of-database large objects. Compression is available and disabled by default.
+* **Persistence**: The default database is SQLite, and its [limits](https://sqlite.org/limits.html) do apply. You can connect to any SQL database supported by `SQLAlchemy`. Database persistence [supports a wide range of types](./advanced/storage.md#list-of-supported-types), including `bool`, `int`, `float`, `string`, `UUID.uuid`, `bytes`, `dict`, `list`, `tuple`, `set`, `NumPy`, `Pandas` and `PyArrow` objects. The [Data store](./advanced/datastore.md) interface is designed to handle out-of-database large objects. Compression is available and disabled by default.
 
 
 ## Requirements
