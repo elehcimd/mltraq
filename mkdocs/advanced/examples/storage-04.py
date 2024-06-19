@@ -32,7 +32,7 @@ print("Decompressed:")
 pprint(decompressed, width=70)
 print("\n--")
 
-depickled = pickle.loads(decompressed)  # noqa
+depickled = pickle.loads(decompressed)  # noqa: S301
 
 print("Depickled:")
 pprint(depickled, width=70)

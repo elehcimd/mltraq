@@ -1,5 +1,6 @@
 import inspect
 import logging
+import os
 import signal
 import sys
 import traceback
@@ -60,6 +61,19 @@ def complete_exception_message() -> str:
     return traceback.format_exc()
 
 
+def report_filename(pathname: str) -> str:
+    """
+    Return the filename, limiting it to the basename if requested.
+    Used to anonymize experiment outputs, minimizing disclosures.
+    Impacting only compact exception messages.
+    """
+
+    if options().get("execution.exceptions.report_basenames"):
+        return os.path.basename(pathname)
+    else:
+        return pathname
+
+
 def codepos(self=None):
     frame = inspect.getframeinfo(inspect.currentframe().f_back)
     if self:
@@ -85,11 +99,11 @@ def compact_exception_message() -> str:
     )
 
     details = {
-        "file": "<unknown>" if not exc_traceback else exc_traceback.tb_frame.f_code.co_filename,
+        "file": "<unknown>" if not exc_traceback else report_filename(exc_traceback.tb_frame.f_code.co_filename),
         "lineno": "<unknown>" if not exc_traceback else exc_traceback.tb_lineno,
         "type": "<unkown>" if not exc_type else exc_type.__name__,
         "message": str(exc_value),
-        "trace": f'{frame.filename}:{frame.lineno}::{frame.function} "{code}"',
+        "trace": f'{report_filename(frame.filename)}:{frame.lineno}::{frame.function} "{code}"',
     }
 
     return f'{details["type"]} at {details["trace"]}: {details["message"]}'

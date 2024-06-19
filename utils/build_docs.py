@@ -16,7 +16,7 @@ project_name = os.path.basename(project_dir)
 
 def local(args) -> str:
     cmd = " ".join(args) if isinstance(args, list) else args
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa
+    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa: S602
 
 
 def local_python(pathname: str) -> str:
@@ -40,7 +40,7 @@ def local_python(pathname: str) -> str:
 
         f = io.StringIO()
         with redirect_stdout(f):
-            exec(data_f)  # noqa
+            exec(data_f)  # noqa: S102
         return f.getvalue()
 
 
