@@ -80,7 +80,7 @@ What if we can track more efficiently and avoid the workarounds?
 
 Datasets, timeseries, forecasts, media files such as images, audio recordings, and videos can be categorized as "large, complex objects".
 
-You might want to log a set of images at every step to inspect visually how the quality of the model is progressing, the datasets used in cross-validation with different configurations and random seeds, forecasts and other metrics, and more. Generally, you can produce a large quantity of heterogeneous information while executing complex algorithms that include, but are not limited to, ML/AI model training.
+You might want to log a set of images at every step to inspect visually how the quality of the model is progressing, the datasets used in cross-validation with different configurations and random seeds, forecasts and other metrics, and more. Generally, you can produce a large quantity of heterogeneous information while executing complex algorithms that include, but are not limited to, ML & AI model training.
 
 Most solutions have limited, primitive, and slow support for complex Python objects. What if you could track anything as frequently as you want?
 

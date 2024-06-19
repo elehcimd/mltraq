@@ -43,7 +43,7 @@ We will then persist and reload the experiment, looking into its reloaded intern
 Only `run.steps` is accessible, as expected by design.
 
 !!! Tip
-    In `run.steps`, you can store Numpy arrays, Pandas and Pyarrow objects, as well as lists, dictionaries and more.
+    In `run.steps`, you can store NumPy arrays, Pandas and Pyarrow objects, as well as lists, dictionaries and more.
 
 
 !!! Success "Congratulations!"

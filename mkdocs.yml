@@ -78,6 +78,8 @@ nav:
   - HOWTO:
     - howto/01-tracking.md
     - howto/02-artifacts-storage.md
+  - FAQ:
+    - faq.md    
   - Advanced topics:
     - advanced/computation-model.md
     - advanced/state.md
@@ -88,8 +90,7 @@ nav:
     - advanced/sysmon.md
   - Benchmarks:
     - benchmarks/speed.md
-  - FAQ:
-    - faq.md    
+
   - Blog: blog/index.md
   - Become a sponsor: sponsor.md
   - License: license.md

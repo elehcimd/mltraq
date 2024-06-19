@@ -175,6 +175,14 @@ class Runs(dict):
         # Check for exceptions, and raise first one encountered.
         for run in executed_runs:
             if run.exception is not None:
+                n_tasks = len(task_funcs)
+                n_executed = len(executed_runs)
+                ratio_executed = n_executed / n_tasks
+                log.debug("Encountered exception in task, propagating to main process")
+                log.debug(
+                    f"Executed {n_executed} of {n_tasks} tasks ({int(ratio_executed*100)}%) "
+                    f"with return_as={options().get('execution.return_as')}"
+                )
                 raise run.exception
 
         # Point the runs to new instances that contain the result of the execution.

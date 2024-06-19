@@ -31,11 +31,11 @@ def step(run: Run):
      1. the number of times we call it in `N`
      2. A sequential log of Fibonacci numbers generated at each execution in `sequence`
      3. A constant scalar in `score`
-     4. A constant Numpy array in `predictions`
+     4. A constant NumPy array in `predictions`
     """
 
     # Dictionary `run.fields` can use it to track a rich set of object types, including:
-    # dict, list, set, tuple, int, float, str, and Numpy arrays,
+    # dict, list, set, tuple, int, float, str, and NumPy arrays,
     # Pandas series/frames, PyArrow tables.
     run.fields.X = run.params.X
     run.fields.N = run.fields.get("N", 0)
