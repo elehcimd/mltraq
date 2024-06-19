@@ -1,12 +1,12 @@
 idx                                       0
-timestamp        2024-08-16 13:00:54.524460
-cpu_pct                                 5.9
-disk_free_gb                         203.83
+timestamp        2024-06-19 08:09:19.993624
+cpu_pct                                21.7
+disk_free_gb                          16.95
 disk_total_gb                        494.38
-disk_used_pct                         58.77
-mem_free_gb                           10.41
+disk_used_pct                         96.57
+mem_free_gb                            6.16
 mem_total_gb                          25.77
-mem_used_pct                           59.6
+mem_used_pct                           76.1
 net_recv_kbs                            0.0
 net_sent_kbs                            0.0
 Name: 0, dtype: object
