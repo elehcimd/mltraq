@@ -1,11 +1,11 @@
 
 --
-DEBUG     2024-06-20 00:15:11  Logging level set to DEBUG
-DEBUG     2024-06-20 00:15:11  Created DB link: 'sqlite:///:memory:'
-DEBUG     2024-06-20 00:15:11  Using backend: loky
-DEBUG     2024-06-20 00:15:11  Executing 10 tasks on 2 workers (backend:loky)
-DEBUG     2024-06-20 00:15:12  Encountered exception in task, propagating to main process
-DEBUG     2024-06-20 00:15:12  Executed 4 of 10 tasks (40%) with return_as=generator_unordered
+DEBUG     2024-06-20 00:17:12  Logging level set to DEBUG
+DEBUG     2024-06-20 00:17:12  Created DB link: 'sqlite:///:memory:'
+DEBUG     2024-06-20 00:17:12  Using backend: loky
+DEBUG     2024-06-20 00:17:12  Executing 10 tasks on 2 workers (backend:loky)
+DEBUG     2024-06-20 00:17:13  Encountered exception in task, propagating to main process
+DEBUG     2024-06-20 00:17:13  Executed 4 of 10 tasks (40%) with return_as=generator_unordered
 TestException at failfast.py:20::faulty_step "<unkown>": test error
 --
 
