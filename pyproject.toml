@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mltraq"
 version = "0.1.140"
-description = "Track and Collaborate on ML/AI Experiments."
+description = "Track and Collaborate on ML & AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
 readme = "README.md"
