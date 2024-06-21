@@ -1,11 +1,11 @@
 
 --
-DEBUG     2024-06-21 12:08:18  Logging level set to DEBUG
-DEBUG     2024-06-21 12:08:18  Created DB link: 'sqlite:///:memory:'
-DEBUG     2024-06-21 12:08:18  Using backend: loky
-DEBUG     2024-06-21 12:08:18  Executing 10 tasks on 2 workers (backend:loky)
-DEBUG     2024-06-21 12:08:19  Encountered exception in task, propagating to main process
-DEBUG     2024-06-21 12:08:19  Executed 4 of 10 tasks (40%) with return_as=generator_unordered
+DEBUG     2024-06-21 12:49:26  Logging level set to DEBUG
+DEBUG     2024-06-21 12:49:26  Created DB link: 'sqlite:///:memory:'
+DEBUG     2024-06-21 12:49:26  Using backend: loky
+DEBUG     2024-06-21 12:49:26  Executing 10 tasks on 2 workers (backend:loky)
+DEBUG     2024-06-21 12:49:27  Encountered exception in task, propagating to main process
+DEBUG     2024-06-21 12:49:27  Executed 4 of 10 tasks (40%) with return_as=generator_unordered
 TestException at failfast.py:20::faulty_step "<unkown>": test error
 ERROR     2024-08-09 08:38:57  exception calling callback for <Future at 0x10e1bda30 state=finished returned list>
 Traceback (most recent call last):
