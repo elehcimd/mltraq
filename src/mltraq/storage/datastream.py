@@ -63,7 +63,7 @@ class DataStreamServer:
         Initialize a new server, linking it to the specified `db`. The `db` object is expected to not be actively
         used by other threads.
         """
-        self.db = db if db else Database()
+        self.db = db if db else Database(create_tables=True)
         self.thread = None
 
     def thread_main(self):

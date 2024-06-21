@@ -56,22 +56,20 @@ def local(args: list[str]):
     )  # noqa: S603
 
 
-if sys.argv[-1] != "failfast_experiment":
-    # If executing the script with no parameters, run the same script as a separate process,
-    # returning only the standard output. This avoids unnecessariy debug information from
-    # other threads and processes handled by Joblib, on which we cannot control the output.
-
-    # We pass the full path of the script to make sure the automated generation of the
-    # documentation files doesn't interfere with it.
-    out = local(
-        [
-            "python",
-            "mkdocs/blog/posts/011/failfast.py",
-            "failfast_experiment",
-        ]
-    ).strip()
-    print(f"\n--\n{out}\n--\n")
+if sys.argv[0] == "./failfast.py":
+    # If executed directly ...
+    if sys.argv[-1] != "failfast_experiment":
+        # If executing the script with no parameters, run the same script as a separate process,
+        # returning only the standard output. This avoids unnecessariy debug information from
+        # other threads and processes handled by Joblib, on which we cannot control the output.
+        out = local(
+            ["python", "./failfast.py", "failfast_experiment"]
+        ).strip()
+        print(f"\n--\n{out}\n--\n")
+    else:
+        # Run the experiment if this script is executed by passing "failfast_experiment" as last argument.
+        with logging_ctx(level_name="DEBUG"):
+            experiment()
 else:
-    # Run the experiment if this script is executed by passing "failfast_experiment" as last argument.
-    with logging_ctx(level_name="DEBUG"):
-        experiment()
+    # If executed from mkdocs scripts ...
+    print(local(["python", "./failfast.py"]))

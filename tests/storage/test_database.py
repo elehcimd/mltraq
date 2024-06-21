@@ -9,7 +9,7 @@ def test_create():
     Test: We can create a database in-memory, with an "experiments" table, and query it.
     """
     # Instantiate the database
-    db = Database()
+    db = Database(create_tables=True)
 
     # Ensure that we can query the table, which is empty
     with db.session() as session:
@@ -20,7 +20,7 @@ def test_drop_tables():
     """
     Test: We can drop existing and unexisting tables
     """
-    db = Database()
+    db = Database(create_tables=True)
     assert db.drop_table(options().get("database.experiments_tablename"))
     assert not db.drop_table("table_not_existing")
 

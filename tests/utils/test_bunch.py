@@ -1,7 +1,10 @@
 from unittest import TestCase
 
 import pytest
-from mltraq.utils.bunch import Bunch, BunchEvent
+from mltraq.opts import options
+from mltraq.storage.serialization import deserialize
+from mltraq.utils.bunch import Bunch, BunchEvent, BunchStore
+from mltraq.utils.fs import tmpdir_ctx
 
 
 def test_order():
@@ -152,3 +155,49 @@ def test_bunch_event_getattr():
     bunch["b"]  # not tracked
 
     assert state == [1, 2]
+
+
+def test_bunchstore():
+    """
+    Test: We can store a simple Bunch on filesystem, accessing it
+    with item and attribute setters/getters.
+    """
+
+    # With item setter/getter
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs["a"] = 123
+        assert bs["a"] == 123
+
+        data = deserialize(open(options().get("bunchstore.pathname"), "rb").read())
+        assert data["a"] == 123
+
+    # With attribute setter/getter
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs.a = 123
+        assert bs.a == 123
+
+        # We can count how many items are in the inner Bunch with len()
+        bs.b = 456
+        assert len(bs) == 2
+
+        # We can get the underlying Bunch object with .data()
+        assert bs.data().b == 456
+
+        data = deserialize(open(options().get("bunchstore.pathname"), "rb").read())
+        assert data.a == 123
+
+    # Test persistency
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs.a = 123
+        assert bs.a == 123
+
+        bs = BunchStore()
+        bs.b = 456
+        assert bs.a == 123
+        assert bs.b == 456

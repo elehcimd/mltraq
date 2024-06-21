@@ -1,5 +1,15 @@
 # Recent changes
 
+## 0.1.142
+* Work in progress.
+
+## 0.1.141
+* Default value for `create_tables` of `Database` class constructor changed to False, allowing the usage of this class also for use cases beyond managing MLtraq DBs.
+* Added class `BunchStore` to handle a `Bunch` class transparently on memory and filesystem.
+* Added blog post on how to use `return_as=generator_unordered` and fail fast (blog/posts/011)
+* Added blog post on how to handle secrets with dynamic `Options` (blog/posts/012)
+* Added blog post on `BunchStore` to handle caches and more (blog/posts/013)
+
 ## 0.1.140
 * Fixed some typos in tests and docs
 * Added blog post on `BunchEvent` (blog/posts/010)

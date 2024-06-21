@@ -28,7 +28,7 @@ class Session:
         Alternatively, an already instantiated `db` could be passed.
         """
 
-        self.db = db if db else Database(url, ask_password=ask_password)
+        self.db = db if db else Database(url, ask_password=ask_password, create_tables=True)
 
     @contextmanager
     def datastream_server(self):
