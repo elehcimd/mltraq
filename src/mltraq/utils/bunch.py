@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import itertools
+import os
 from collections import OrderedDict
 from typing import Iterator
+
+from mltraq.opts import options
 
 
 class Bunch(OrderedDict):
@@ -148,3 +151,68 @@ class BunchEvent(Bunch):
 
     def __getattr__(self, key):
         return self[key]
+
+
+class BunchStore:
+    """
+    Basic key-value store on filesystem for a single Bunch object.
+    """
+
+    def __init__(self, pathname: str | None = None):
+        """
+        Initialize and load the key-value store.
+        """
+
+        # Importing here to avoid circular dependency.
+        from mltraq.storage.serialization import deserialize, serialize  # noqa: F401
+
+        # Storing eveyrthing as part of _meta attribute, s.t. we can use
+        # attr and item setters/getters with less overhead.
+        self._meta = Bunch()
+        self._meta.deserialize = deserialize
+        self._meta.serialize = serialize
+        self._meta.pathname = options().default_if_null(pathname, "bunchstore.pathname")
+        self._meta.data = Bunch()
+
+        # Try to read and write the inner Bunch, ensuring that the pathname is readable/writeable.
+        self.read()
+        self.write()
+
+    def read(self):
+        """
+        Load inner Bunch from file (if available).
+        """
+        if os.path.exists(self._meta.pathname):
+            self._meta.data = self._meta.deserialize(open(self._meta.pathname, "rb").read())
+
+    def __setitem__(self, key, value):
+        self._meta.data[key] = value
+        self.write()
+
+    def __getitem__(self, key):
+        self.read()
+        return self._meta.data[key]
+
+    def __getattr__(self, key):
+        return self[key]
+
+    def __setattr__(self, key, value):
+        if key != "_meta":
+            self[key] = value
+        else:
+            super().__setattr__(key, value)
+
+    def __len__(self):
+        return len(self._meta.data)
+
+    def data(self):
+        return self._meta.data
+
+    def write(self):
+        """
+        Overwrite BunchStore file on filesystem, using a temporary file
+        to avoid concurrency issues.
+        """
+        with open(f"{self._meta.pathname}.tmp", "wb") as f:
+            f.write(self._meta.serialize(self._meta.data))
+        os.replace(f"{self._meta.pathname}.tmp", self._meta.pathname)

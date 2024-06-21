@@ -48,7 +48,7 @@ class Database:
         ask_password: bool | None = None,
         echo: bool | None = None,
         pool_pre_ping: bool | None = None,
-        create_tables: bool = True,
+        create_tables: bool = False,
     ):
         """
         Initialize connection to a new database, with connection `url`,

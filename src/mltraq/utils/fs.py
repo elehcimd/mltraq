@@ -7,8 +7,6 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from types import NoneType
 
-from joblib.externals.loky import get_reusable_executor
-
 from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
@@ -39,8 +37,12 @@ def chdir_ctx(dirname):
     as the context returns.
     """
     try:
-        old_dirname = os.getcwd()
+        # Keep track of the absolute path of the current directory,
+        # we'll need to restore it.
+        old_dirname = os.path.abspath(os.getcwd())
         os.chdir(dirname)
+
+        # On Joblib:
 
         # Joblib keeps the pool of workers alive, with their
         # currently defined active directory.
@@ -50,11 +52,18 @@ def chdir_ctx(dirname):
         # sequentially as in the tests, we might have
         # workers with an invalid current directory.
         # This is why, whenever we enter a context
-        # with a new directory, we force the shutdown
-        # of the workers.
+        # with a new directory, we might need to force
+        # the shutdown of the workers:
+        #
+        # get_reusable_executor().shutdown(wait=True) # noqa: ERA001
+        #
+        # More details at:
         # https://github.com/joblib/joblib/issues/945
-
-        get_reusable_executor().shutdown(wait=True)
+        #
+        # At the moment, it seems no test is failing
+        # if we comment the shutdown code.
+        # This issue might have fixed since it first
+        # occurred.
 
         yield dirname
     finally:

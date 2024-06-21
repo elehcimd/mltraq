@@ -66,6 +66,7 @@ class Options(BaseOptions):
             "path": sep,
             "field_name": "sysmon",
         },
+        "bunchstore": {"pathname": "bunchstore.data"},
         "app": {},
     }
 
