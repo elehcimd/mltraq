@@ -27,4 +27,4 @@ FROM experiment_example
 --
 Streamed metrics:
    idx                  timestamp      v
-0    0 2024-06-21 12:57:34.082920  123.0
+0    0 2024-06-21 13:11:07.753767  123.0
