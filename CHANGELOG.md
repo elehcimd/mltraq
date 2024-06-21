@@ -1,7 +1,7 @@
 # Recent changes
 
 ## 0.1.142
-* Work in progress.
+* Improved `BunchStore` class overloading also `__delitem__` and `__iter__`
 
 ## 0.1.141
 * Default value for `create_tables` of `Database` class constructor changed to False, allowing the usage of this class also for use cases beyond managing MLtraq DBs.
