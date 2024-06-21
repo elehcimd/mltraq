@@ -1,8 +1,5 @@
 # Recent changes
 
-## 0.1.142
-* Work in progress.
-
 ## 0.1.141
 * Default value for `create_tables` of `Database` class constructor changed to False, allowing the usage of this class also for use cases beyond managing MLtraq DBs.
 * Added class `BunchStore` to handle a `Bunch` class transparently on memory and filesystem.
