@@ -29,7 +29,7 @@ src/mltraq/storage/serializers/pickle_opcodes_whitelist.py       2      0   100%
 src/mltraq/storage/serializers/serializer.py                    45     11    76%
 src/mltraq/utils/__init__.py                                     0      0   100%
 src/mltraq/utils/base_options.py                                92     22    76%
-src/mltraq/utils/bunch.py                                      109      2    98%
+src/mltraq/utils/bunch.py                                      113      4    96%
 src/mltraq/utils/enums.py                                       10      1    90%
 src/mltraq/utils/exceptions.py                                  56     13    77%
 src/mltraq/utils/frames.py                                       5      0   100%
@@ -43,4 +43,4 @@ src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/utils/web.py                                         27     18    33%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         2140    385    82%
+TOTAL                                                         2144    387    82%

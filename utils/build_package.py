@@ -23,8 +23,8 @@ def main():
     pytest()
     pkg_version = inc_version()
     execute("poetry run python utils/build_badges.py")
+    execute("poetry run python utils/svg_optimizer.py")
     execute("poetry build")
-
     print(f"Package {project_name} v{pkg_version} ready!")
     print('To publish:\n 1. $ poetry "-u$PYPI_USERNAME" "-p$PYPI_PASSWORD" --build publish\n 2. update repository')
 

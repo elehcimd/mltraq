@@ -89,7 +89,6 @@ def main(argv):
             f.write(out)
 
     local("touch mkdocs.yml")
-
     print("Operation completed.")
 
 
