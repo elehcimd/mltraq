@@ -205,6 +205,12 @@ class BunchStore:
     def __len__(self):
         return len(self._meta.data)
 
+    def __delitem__(self, key):
+        del self._meta.data[key]
+
+    def __iter__(self):
+        return iter(self._meta.data)
+
     def data(self):
         return self._meta.data
 

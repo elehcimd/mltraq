@@ -173,6 +173,13 @@ def test_bunchstore():
         data = deserialize(open(options().get("bunchstore.pathname"), "rb").read())
         assert data["a"] == 123
 
+        # Checking if a key is present
+        assert "a" in data
+
+        # Deleting a key-value pair
+        del data["a"]
+        assert "a" not in data
+
     # With attribute setter/getter
     with tmpdir_ctx():
 
