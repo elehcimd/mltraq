@@ -5,7 +5,7 @@ You can follow it sequentially or jump to specific questions as needed.
 
 ## Installation
 
-MLtraq requires **Python 3.10+** and depends on  **SQLAlchemy 2.0+**, **Pandas 1.5.3+**, and **Joblib 1.3.2+**, which are installed as dependencies. To install:
+MLtraq requires **Python 3.9+** and depends on  **SQLAlchemy 2.0+**, **Pandas 1.5.3+**, and **Joblib 1.3.2+**, which are installed as dependencies. To install:
 
 ```
 pip install mltraq --upgrade

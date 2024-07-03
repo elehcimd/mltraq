@@ -65,7 +65,7 @@ Track anything, stream, reproduce, collaborate, and resume the computation state
 
 ## Requirements
 
-* **Python 3.10+**
+* **Python 3.9+**
 * **SQLAlchemy 2.0+**, **Pandas 1.5.3+**, and **Joblib 1.3.2+** (installed as dependencies)
 
 
