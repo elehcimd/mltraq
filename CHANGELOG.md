@@ -1,5 +1,8 @@
 # Recent changes
 
+## 0.1.145
+* Cleanup and update of dependencies
+
 ## 0.1.143
 * Improved `BunchStore` class overloading also `__delitem__` and `__iter__`
 * Added SVG optimizer (smaller SVGs, no timestamps that cause git changes)
