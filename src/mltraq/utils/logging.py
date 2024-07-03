@@ -1,13 +1,14 @@
 import logging
 import sys
 from contextlib import contextmanager
+from typing import Optional
 
 from mltraq.opts import options
 
 log = logging.getLogger(__name__)
 
 
-def init_logging(level_name: str | None = None, log_format: str | None = None):
+def init_logging(level_name: Optional[str] = None, log_format: Optional[str] = None):
     """
     Initialize the logging to stdout, setting it to `level_name` or the level specified in the options.
     """
@@ -22,7 +23,7 @@ def init_logging(level_name: str | None = None, log_format: str | None = None):
 
 
 @contextmanager
-def logging_ctx(level_name: str | None = None, log_format: str | None = None):
+def logging_ctx(level_name: Optional[str] = None, log_format: Optional[str] = None):
     """
     Temporarily configure the logging `level_name` and `log_format`.
     """

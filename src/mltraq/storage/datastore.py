@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from shutil import rmtree
+from typing import Optional
 from urllib.parse import urlparse
 
 from mltraq.opts import options
@@ -71,7 +72,7 @@ class DataStoreIO:
         rmtree(pathdir, ignore_errors=True)
 
     @classmethod
-    def serialize_write(cls, obj: any, relative_path_prefix: str | None = None) -> DataStoreIO:
+    def serialize_write(cls, obj: any, relative_path_prefix: Optional[str] = None) -> DataStoreIO:
         """
         Serialize object to file.
         """
@@ -85,7 +86,7 @@ class DataStoreIO:
         return pathname
 
     @classmethod
-    def get_next_pathname_url(cls, relative_path_prefix: str | None = None):
+    def get_next_pathname_url(cls, relative_path_prefix: Optional[str] = None):
         """
         Generate the next pathname and url to store a new resource.
         """
@@ -99,7 +100,7 @@ class DataStoreIO:
         return pathname, url
 
     @classmethod
-    def write(cls, data: bytes, relative_path_prefix: str | None = None) -> DataStoreIO:
+    def write(cls, data: bytes, relative_path_prefix: Optional[str] = None) -> DataStoreIO:
         """
         Create a new linked object "/.../optional relative path prefix/..., write to it,
         and return a DataStore instance.
@@ -119,7 +120,7 @@ class DataStoreIO:
         with open(pathname, "rb") as f:
             return f.read()
 
-    def read_deserialize(self, expected_type: T | None = None) -> any:
+    def read_deserialize(self, expected_type: Optional[T] = None) -> any:
         data = DataStoreIO(self.url).read()
         obj = serialization.deserialize(data)
 

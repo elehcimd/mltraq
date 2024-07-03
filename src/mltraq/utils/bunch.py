@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 import os
 from collections import OrderedDict
-from typing import Iterator
+from typing import Iterator, Optional
 
 from mltraq.opts import options
 
@@ -158,7 +158,7 @@ class BunchStore:
     Basic key-value store on filesystem for a single Bunch object.
     """
 
-    def __init__(self, pathname: str | None = None):
+    def __init__(self, pathname: Optional[str] = None):
         """
         Initialize and load the key-value store.
         """

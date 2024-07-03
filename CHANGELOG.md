@@ -1,5 +1,11 @@
 # Recent changes
 
+## 0.1.144
+* Extended support for Python 3.9 (still used in Snowflake notebooks)
+* Added wrapper for `glob.glob` to support `root_dir` parameter in Python 3.9
+* Updated type hints to avoid `|`, which is unavailable in Python 3.9
+
+
 ## 0.1.143
 * Improved `BunchStore` class overloading also `__delitem__` and `__iter__`
 * Added SVG optimizer (smaller SVGs, no timestamps that cause git changes)

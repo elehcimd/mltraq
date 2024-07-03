@@ -6,7 +6,7 @@ import tarfile
 from io import BytesIO
 from os.path import normpath
 from shutil import rmtree
-from typing import BinaryIO
+from typing import BinaryIO, Optional, Union
 
 from mltraq.opts import options
 from mltraq.storage.datastore import DataStoreIO
@@ -41,7 +41,11 @@ class Archive:
 
     @classmethod
     def create(
-        cls, src_dir: str, arc_dir: str = ".", include: str | list[str] = "**", exclude: str | list[str] | None = None
+        cls,
+        src_dir: str,
+        arc_dir: str = ".",
+        include: str | list[str] = "**",
+        exclude: Union[str, list[str], None] = None,
     ) -> Archive:
         """
         Return an in-memory TAR archive.
@@ -53,7 +57,7 @@ class Archive:
 
         return Archive.from_bytes(buffer.getvalue())
 
-    def extract(self, target: str = ".", members: list[str] | None = None):
+    def extract(self, target: str = ".", members: Union[list[str], None] = None):
         """
         Extracts the archive to `target` directory.
         """
@@ -89,8 +93,8 @@ class ArchiveStoreIO:
         fileobj: BinaryIO,
         src_dir: str,
         arc_dir: str = ".",
-        include: str | list[str] = "**",
-        exclude: str | list[str] | None = None,
+        include: Union[str, list[str]] = "**",
+        exclude: Union[str, list[str], None] = None,
     ):
         """
         Add files to an open archive file `fileobj`, from directory `src_dir`, using archive directory `arc_dir`,
@@ -122,7 +126,7 @@ class ArchiveStoreIO:
         src_dir: str,
         arc_dir: str = ".",
         include: str = "**",
-        exclude: str | None = None,
+        exclude: Optional[str] = None,
     ) -> ArchiveStoreIO:
         """
         Creates and stores the archive, returning its ArchiveStoreIO representation.
@@ -139,7 +143,7 @@ class ArchiveStoreIO:
         return ArchiveStoreIO(url)
 
     @classmethod
-    def get_target(cls, target: str | None = None):
+    def get_target(cls, target: Optional[str] = None):
         """
         Get the target directory for the uncompressed TAR. If `target` is passed as
         a parameter, it is returned with no changes. If missing, it defaults to the
@@ -156,7 +160,7 @@ class ArchiveStoreIO:
             )
         return target
 
-    def extract(self, target: str | None = None, members: list[str] | None = None) -> ArchiveStoreIO:
+    def extract(self, target: Optional[str] = None, members: Union[list[str], None] = None) -> ArchiveStoreIO:
         """
         Extracts the archive to `target` directory.
         """
@@ -171,7 +175,7 @@ class ArchiveStoreIO:
 
         return self
 
-    def getnames(self, target: str | None = None) -> list[str]:
+    def getnames(self, target: Optional[str] = None) -> list[str]:
         """
         Load archive and return a list with its archived file names.
         """
@@ -200,7 +204,7 @@ class ArchiveStore:
 
     __slot__ = ("params",)
 
-    def __init__(self, src_dir: str, arc_dir: str = ".", include: str = "**", exclude: str | None = None):
+    def __init__(self, src_dir: str, arc_dir: str = ".", include: str = "**", exclude: Optional[str] = None):
         """
         Lazily define an archive, without creating it.
         """
@@ -234,7 +238,7 @@ class ArchiveStore:
 
         return obj
 
-    def get_target(self) -> str | None:
+    def get_target(self) -> Union[str, None]:
         """
         Return the destination directory of the unarchived files
         """
