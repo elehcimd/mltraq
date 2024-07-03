@@ -1,5 +1,8 @@
 # Recent changes
 
+## 0.1.146
+* Added missing `__init__.py` file
+
 ## 0.1.145
 * Cleanup and update of dependencies
 
