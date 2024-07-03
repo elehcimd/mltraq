@@ -4,6 +4,8 @@ from io import BytesIO
 import numpy as np
 import pandas as pd
 import pyarrow as pa
+from pyarrow.feather import read_feather, read_table, write_feather
+
 from mltraq.storage.archivestore import Archive, ArchiveStore
 from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.pickle import PickleSerializer
@@ -11,7 +13,6 @@ from mltraq.storage.serializers.serializer import Serializer
 from mltraq.utils.bunch import Bunch
 from mltraq.utils.exceptions import ExceptionWithMessage
 from mltraq.utils.sequence import Sequence
-from pyarrow.feather import read_feather, read_table, write_feather
 
 NoneType = type(None)
 

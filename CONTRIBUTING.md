@@ -52,3 +52,8 @@ poetry env use 3.9.18
 
 ```
 
+### Adding a dev package
+
+```
+poetry add pytest@latest --group dev
+```
