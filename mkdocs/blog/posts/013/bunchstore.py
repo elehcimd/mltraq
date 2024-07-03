@@ -11,8 +11,10 @@ with tmpdir_ctx():
 
     # Initialize object, creating file
     bs = BunchStore()
+
+    # Set two keys
     bs["A"] = 123
-    bs["B"] = np.array([4, 5, 6])
+    bs.B = np.array([4, 5, 6])
 
     # Reinitialize object object, reloading file
     bs = BunchStore()

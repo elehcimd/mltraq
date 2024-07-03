@@ -5,7 +5,7 @@ import logging
 import random
 import uuid
 from contextlib import contextmanager
-from typing import Callable
+from typing import Callable, Optional, Union
 
 import pandas as pd
 from sqlalchemy.orm import load_only
@@ -67,11 +67,11 @@ class Experiment:
 
     def __init__(
         self,
-        db: Database | None = None,
-        id_experiment: str | None = None,
-        name: str | None = None,
-        fields: dict | None = None,
-        runs: list[Run] | None = None,
+        db: Optional[Database] = None,
+        id_experiment: Optional[str] = None,
+        name: Optional[str] = None,
+        fields: Optional[dict] = None,
+        runs: Optional[list[Run]] = None,
     ):
         """
         Crete a new experiment linked to database `db`.
@@ -190,7 +190,7 @@ class Experiment:
         # Reconstruct runs with their fields
         self.runs = Runs(df.apply(lambda row: series_to_run(row), axis=1).tolist())
 
-    def copy_to(self, name: str | None = None, db: Database | None = None) -> Experiment:
+    def copy_to(self, name: Optional[str] = None, db: Optional[Database] = None) -> Experiment:
         """
         Return a deep copy of the experiment, setting `name` and `db` if provided.
         A new UUID for the copy of the experiment is always generated.
@@ -256,7 +256,11 @@ class Experiment:
 
     @classmethod
     def load(
-        cls, db: Database, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
+        cls,
+        db: Database,
+        name: Optional[str] = None,
+        id_experiment: Optional[uuid.UUID] = None,
+        unsafe_pickle: bool = False,
     ):
         """
         Load experiment `name` (or `id_experiment`) from `db`. If `pickle` is True, load
@@ -328,11 +332,11 @@ class Experiment:
 
     def execute(
         self,
-        steps: Callable | list[Callable] | None = None,
-        config: dict | None = None,
-        backend: str | None = None,
-        n_jobs: int | None = None,
-        args_field: str | None = None,
+        steps: Union[Callable, list[Callable], None] = None,
+        config: Optional[dict] = None,
+        backend: Optional[str] = None,
+        n_jobs: Optional[int] = None,
+        args_field: Optional[str] = None,
     ):
         """
         Execute the experiment, by executing its runs:
@@ -352,8 +356,8 @@ class Experiment:
 
     def record(
         self,
-        meta: dict | None = None,
-        store_unsafe_pickle: bool | None = None,
+        meta: Optional[dict] = None,
+        store_unsafe_pickle: Optional[bool] = None,
     ) -> models.Experiment:
         """
         Build an SQLAlchemy ORM object from the existing Experiment object.
@@ -384,7 +388,7 @@ class Experiment:
     def persist(
         self,
         if_exists: IfExists = IfExists["fail"],
-        store_unsafe_pickle: bool | None = None,
+        store_unsafe_pickle: Optional[bool] = None,
     ):
         """
         Persist an experiment to the bound database, honoring `if_exists` the `store_unsafe_pickle`.

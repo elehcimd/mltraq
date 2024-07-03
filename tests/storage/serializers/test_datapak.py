@@ -1,6 +1,5 @@
 import os
 import uuid
-from types import NoneType
 
 import numpy as np
 import pandas as pd
@@ -13,6 +12,8 @@ from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
 from mltraq.utils.bunch import Bunch, BunchEvent
 from mltraq.utils.fs import tmpdir_ctx
+
+NoneType = type(None)
 
 
 def test_serialization_dict():

@@ -6,7 +6,7 @@ import sys
 import traceback
 from os.path import basename
 from types import FrameType
-from typing import Any, TypeVar
+from typing import Any, Optional, TypeVar
 
 from mltraq.opts import options
 
@@ -126,7 +126,7 @@ class ServiceExit(Exception):
     pass
 
 
-def service_shutdown(sig: int, frame: FrameType | None = None):
+def service_shutdown(sig: int, frame: Optional[FrameType] = None):
     # Print a new line, to not break the logging line format with a "^C"
     print("")
     log.info(f"Received {signal.Signals(sig).name} signal, shutting down ...")

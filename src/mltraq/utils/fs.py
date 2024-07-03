@@ -1,15 +1,28 @@
 import fnmatch
-import glob
 import logging
 import os
 from contextlib import contextmanager
+from glob import glob as _glob
 from shutil import rmtree
 from tempfile import mkdtemp
-from types import NoneType
 
 from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
+
+NoneType = type(None)
+
+
+def glob(pathname, *, root_dir=None, recursive=False):
+    """
+    Wrapper for glob.glob that implements the root_dir parameter for Python 3.9 that lacked it.
+    """
+
+    if root_dir is not None:
+        with chdir_ctx(root_dir):
+            return _glob(pathname, recursive=recursive)
+    else:
+        return _glob(pathname, recursive=recursive)
 
 
 @contextmanager
@@ -90,7 +103,7 @@ def globs(src_dir, include="**/*", exclude=None, recursive=True):
     candidates = []
 
     for pattern in include:
-        candidates += glob.glob(pattern, root_dir=src_dir, recursive=recursive)
+        candidates += glob(pattern, root_dir=src_dir, recursive=recursive)
 
     # Drop duplicates
     candidates = set(candidates)

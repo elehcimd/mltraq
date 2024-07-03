@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import random
 from types import GeneratorType
-from typing import Any, Generator, List
+from typing import Any, Generator, List, Optional, Union
 
 import pandas as pd
 from joblib.parallel import DEFAULT_BACKEND
@@ -19,7 +19,7 @@ from mltraq.utils.text import stringify
 log = logging.getLogger(__name__)
 
 # `Runs` cannot be added as not yet defined
-RunsListType = Run | List[Run] | tuple[Run] | None
+RunsListType = Union[Run, List[Run], tuple[Run], None]
 
 
 class RunsException(ExceptionWithMessage):
@@ -105,10 +105,10 @@ class Runs(dict):
     def execute(  # noqa: C901
         self,
         steps: StepsType,
-        config: dict | None = None,
-        backend: str | None = None,
-        n_jobs: int | None = None,
-        args_field: str | None = None,
+        config: Optional[dict] = None,
+        backend: Optional[str] = None,
+        n_jobs: Optional[int] = None,
+        args_field: Optional[str] = None,
     ):
         """
         Given an existing collection of runs, execute `steps` on them, considering `config`, `backend`, and `n_jobs`.

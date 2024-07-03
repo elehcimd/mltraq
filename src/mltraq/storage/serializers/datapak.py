@@ -1,6 +1,5 @@
 import uuid
 from io import BytesIO
-from types import NoneType
 
 import numpy as np
 import pandas as pd
@@ -13,6 +12,8 @@ from mltraq.utils.bunch import Bunch
 from mltraq.utils.exceptions import ExceptionWithMessage
 from mltraq.utils.sequence import Sequence
 from pyarrow.feather import read_feather, read_table, write_feather
+
+NoneType = type(None)
 
 # Why datapak?
 # - Need for a versatile, simple serialization format

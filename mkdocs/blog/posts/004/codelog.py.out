@@ -1,7 +1,7 @@
-Step 0: ../../../../src/mltraq/steps/chdir.py:7 @ step_chdir(*[], **{'path': '/Users/michele/dev/mltraq/mkdocs/blog/posts/004'})
+Step 0: ../../../../src/mltraq/steps/chdir.py:8 @ step_chdir(*[], **{'path': '/Users/michele/dev/mltraq/mkdocs/blog/posts/004'})
 
 --
-def step_chdir(run: Run, path: str | None = None):
+def step_chdir(run: Run, path: Optional[str] = None):
     """
     Change current directory to `path`.
     """

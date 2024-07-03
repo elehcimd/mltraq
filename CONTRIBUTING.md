@@ -43,4 +43,12 @@ We use `main` branch for hot fixes (including documentation) that needs to be re
 
 On the release day, `devel` branch is merged into `main`. All releases of `mltraq` happen only from the `main`.
 
+## Creating an environment on MacOS with a specific version of Python
+
+```
+pyenv versions # List Python versions and available environments
+pyenv install 3.9:latest # Install Python version
+poetry env use 3.9.18
+
+```
 

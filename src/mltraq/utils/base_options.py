@@ -5,6 +5,7 @@ import json
 import logging
 from argparse import ArgumentParser
 from contextlib import contextmanager
+from typing import Optional
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class BaseOptions:
     E.g., "group1.value".
     """
 
-    _instance: BaseOptions | None = None
+    _instance: Optional[BaseOptions] = None
     default_values: dict = {}
 
     def __init__(self):
@@ -87,7 +88,7 @@ class BaseOptions:
         """
         return copy.deepcopy(self.values)
 
-    def reset(self, path: str | None = None):
+    def reset(self, path: Optional[str] = None):
         """
         Rset the `path` value to its default.
         If `path` is None, it resets all options.
@@ -112,7 +113,7 @@ class BaseOptions:
         else:
             return self.get(path)
 
-    def set_argument_options(self, options: list[ArgumentOption] | None = None):
+    def set_argument_options(self, options: Optional[list[ArgumentOption]] = None):
         """
         Given a list of Option objects, set them.
         """

@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Union
 
 from mltraq.utils.exceptions import InvalidInput
 
@@ -9,7 +10,7 @@ IfExists = Enum("IfExists", ["replace", "delete", "fail"])
 IfMissing = Enum("IfMissing", ["ignore", "fail"])
 
 
-def enforce_enum(x: str | Enum, enum_type: Enum) -> Enum:
+def enforce_enum(x: Union[str, Enum], enum_type: Enum) -> Enum:
     """
     Convert string `x` to an enum value for type `enum_type`, or do nothing in case of enums.
     An invalid value results in a raised exception.

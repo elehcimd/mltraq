@@ -2,6 +2,7 @@ import logging
 import math
 import os
 import tempfile
+from typing import Optional
 
 import requests
 from tqdm.auto import tqdm
@@ -11,7 +12,7 @@ from mltraq.utils.bunch import Bunch
 log = logging.getLogger(__name__)
 
 
-def fetch(url: str, pathname: str | None = None) -> Bunch:
+def fetch(url: str, pathname: Optional[str] = None) -> Bunch:
     """
     Fetch URL with requests, saving it to `pathname` or a random one if not provided.
     The function returns a Bunch with attributes `url` with the input URL,

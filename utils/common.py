@@ -1,12 +1,12 @@
 import os
 import subprocess
-from typing import List
+from typing import List, Union
 
 project_dir = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir)
 project_name = os.path.basename(project_dir)
 
 
-def local(args: List[str] | str) -> str:
+def local(args: Union[List[str], str]) -> str:
     cmd = " ".join(args) if isinstance(args, list) else args
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa: S602
 

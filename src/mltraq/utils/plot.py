@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
@@ -22,21 +22,21 @@ def bar_plot(  # noqa: C901
     df: pd.DataFrame,
     x: str,
     y: str,
-    group: list[str] | None = None,
-    x_label: str | None = None,
-    y_label: str | None = None,
-    legend: dict | None = None,
-    title: str | None = None,
+    group: Optional[list[str]] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    legend: Optional[dict] = None,
+    title: Optional[str] = None,
     yerr: bool = False,
-    x_lim: float | None = None,
-    y_lim: float | None = None,
-    x_minor_locator: float | None = None,
-    x_major_locator: float | None = None,
-    y_minor_locator: float | None = None,
-    y_major_locator: float | None = None,
+    x_lim: Optional[float] = None,
+    y_lim: Optional[float] = None,
+    x_minor_locator: Optional[float] = None,
+    x_major_locator: Optional[float] = None,
+    y_minor_locator: Optional[float] = None,
+    y_major_locator: Optional[float] = None,
     y_logscale: bool = False,
     y_grid: bool = False,
-    ax: Any | None = None,
+    ax: Optional[Any] = None,
     hatches: bool = False,
 ):
     """
