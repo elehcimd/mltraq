@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.1.143"
+version = "0.1.145"
 description = "Track and Collaborate on ML & AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -20,49 +20,39 @@ include = [
 mltraq = "mltraq.cli:main"
 
 [tool.poetry.dependencies]
-python = ">=3.9.0,<3.13.0"
+python = ">=3.9.0"
 pandas = ">=1.5.3"
 pyarrow = ">=10.0.0"
 joblib = ">=1.4.2"
 sqlalchemy = ">=2.0.0" 
 cloudpickle = ">=2.2.0"
 tqdm = ">=4.64.1"
-tabulate = "^0.9.0"
+tabulate = ">=0.9.0"
 
 [tool.poetry.group.dev.dependencies]
-jupyterlab = "^4.0.10"
-ipywidgets = "^8.0.2"
+jupyterlab = ">=4.0.10"
+ipywidgets = ">=8.0.2"
 pytest = ">=7.2.0"
 black = {extras = ["jupyter"], version = ">=22.10.0"}
 ruff = ">=0.0.128"
 pytest-cov = ">=4.0.0"
 pylint = ">=2.15.9"
-pytest-xdist = "^3.6.1"
+pytest-xdist = ">=3.6.1"
 mkdocs-material = ">=8.5.11"
 mkdocs-macros-plugin = ">=0.7.0"
 mkdocstrings = {extras = ["python"], version = ">=0.19.1"}
-mkdocs-charts-plugin = "^0.0.10"
+mkdocs-charts-plugin = ">=0.0.10"
 mdx-include = ">=1.4.2"
 anybadge = ">=1.14.0"
 matplotlib = ">=3.6.2"
 certifi = ">=2022.12.7"
-pyspellchecker = "^0.8.1"
-mypy = "^1.8.0"
-pandas-stubs = "^2.1.4.231227"
-pyinstrument = "^4.6.2"
-scikit-learn = "^1.4.0"
-psycopg2-binary = "^2.9.9"
-ray = {extras = ["default"], version = "^2.9.3"}
-# asciinema = "^2.4.0"
-# mlflow = "^2.10.2"
-# aim = "^3.18.1"
-# neptune = "^1.9.1"
-# comet-ml = "^3.38.0"
-# wandb = "^0.16.3"
-# fasttrackml = "0.5.0b2"
-
-# pip install wandb==0.16.3 mlflow==2.11.0 fasttrackml==0.5.0b2 neptune==1.9.1 aim==3.18.1 comet-ml==3.38.1
-
+pyspellchecker = ">=0.8.1"
+mypy = ">=1.8.0"
+pandas-stubs = ">=2.1.4.231227"
+pyinstrument = ">=4.6.2"
+scikit-learn = ">=1.4.0"
+psycopg2-binary = ">=2.9.9"
+ray = {extras = ["default"], version = ">=2.9.3"}
 
 [build-system]
 requires = ["poetry-core"]
