@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import os
+import random
 from collections import OrderedDict
 from typing import Iterator, Optional
 
@@ -219,6 +220,13 @@ class BunchStore:
         Overwrite BunchStore file on filesystem, using a temporary file
         to avoid concurrency issues.
         """
-        with open(f"{self._meta.pathname}.tmp", "wb") as f:
+
+        # We add some randomness to the temporary path to avoid race conditions
+        # in case of threaded applications. In case of a race condition, only
+        # one version will be persisted.
+
+        randomness = random.randrange(10**5)
+
+        with open(f"{self._meta.pathname}.tmp.{randomness}", "wb") as f:
             f.write(self._meta.serialize(self._meta.data))
-        os.replace(f"{self._meta.pathname}.tmp", self._meta.pathname)
+        os.replace(f"{self._meta.pathname}.tmp.{randomness}", self._meta.pathname)

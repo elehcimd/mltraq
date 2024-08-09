@@ -5,15 +5,15 @@ src/mltraq/cli.py                                               88     88     0%
 src/mltraq/experiment.py                                       190      8    96%
 src/mltraq/job.py                                               60     12    80%
 src/mltraq/opts.py                                               8      0   100%
-src/mltraq/run.py                                              108     16    85%
+src/mltraq/run.py                                              108     13    88%
 src/mltraq/runs.py                                             108     15    86%
 src/mltraq/session.py                                           40      0   100%
 src/mltraq/steps/__init__.py                                     0      0   100%
 src/mltraq/steps/chdir.py                                       11      0   100%
-src/mltraq/steps/codelog.py                                     32      2    94%
-src/mltraq/steps/drop_fields.py                                  9      0   100%
+src/mltraq/steps/codelog.py                                     32     18    44%
+src/mltraq/steps/drop_fields.py                                  9      4    56%
 src/mltraq/steps/init_fields.py                                  9      1    89%
-src/mltraq/steps/init_sequences.py                              12      0   100%
+src/mltraq/steps/init_sequences.py                              12      1    92%
 src/mltraq/steps/nothing.py                                      3      3     0%
 src/mltraq/steps/sleep.py                                        7      1    86%
 src/mltraq/storage/__init__.py                                   0      0   100%
@@ -30,9 +30,9 @@ src/mltraq/storage/serializers/pickle_opcodes_whitelist.py       2      0   100%
 src/mltraq/storage/serializers/serializer.py                    45     11    76%
 src/mltraq/utils/__init__.py                                     0      0   100%
 src/mltraq/utils/base_options.py                                93     22    76%
-src/mltraq/utils/bunch.py                                      113      4    96%
+src/mltraq/utils/bunch.py                                      115      4    97%
 src/mltraq/utils/enums.py                                       11      1    91%
-src/mltraq/utils/exceptions.py                                  56     16    71%
+src/mltraq/utils/exceptions.py                                  56     13    77%
 src/mltraq/utils/frames.py                                       5      0   100%
 src/mltraq/utils/fs.py                                          54      2    96%
 src/mltraq/utils/json.py                                        11     11     0%
@@ -44,4 +44,4 @@ src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/utils/web.py                                         28     18    36%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         2155    371    83%
+TOTAL                                                         2157    386    82%

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mltraq"
-version = "0.1.146"
+version = "0.1.148"
 description = "Track and Collaborate on ML & AI Experiments."
 authors = ["Michele Dallachiesa <michele.dallachiesa@sigforge.com>"]
 license = "BSD-3"
@@ -23,7 +23,7 @@ mltraq = "mltraq.cli:main"
 python = ">=3.9.0"
 pandas = ">=1.5.3"
 pyarrow = ">=10.0.0"
-joblib = ">=1.4.2"
+joblib = ">=1.4.0"
 sqlalchemy = ">=2.0.0" 
 cloudpickle = ">=2.2.0"
 tqdm = ">=4.64.1"

@@ -116,7 +116,7 @@ def validate_type(value: object, expected_type: T) -> Any:
     TODO: avoid use of Any.
     """
 
-    if type(value) == expected_type:
+    if type(value) == expected_type:  # noqa: E721
         return value
     else:
         raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")
