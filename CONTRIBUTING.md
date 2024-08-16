@@ -32,7 +32,7 @@ When you're ready to contribute, follow these steps:
 1. Create an issue describing the feature, bug fix, or improvement you'd like to make.
 2. Create a new branch in your forked repository for your changes.
 3. Write your code and tests.
-4. Test, format and lint your code by running `pytest`.
+4. Test, format, and lint your code by running `pytest`.
 6. Create a pull request targeting the `devel` branch of the main repository.
 
 ## Active branches

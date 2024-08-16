@@ -1,11 +1,12 @@
 import json
 import os
+from typing import Tuple
 
 import anybadge
 from common import local, pkg_version, project_dir, project_name
 
 
-def tests_coverage() -> tuple[int, int]:
+def tests_coverage() -> Tuple[int, int]:
     pytest_output = local("pytest --cov=src/mltraq tests/")
 
     pos_end = pytest_output.find(" passed")

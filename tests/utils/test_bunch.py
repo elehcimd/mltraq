@@ -3,7 +3,7 @@ from unittest import TestCase
 import pytest
 from mltraq.opts import options
 from mltraq.storage.serialization import deserialize
-from mltraq.utils.bunch import Bunch, BunchEvent, BunchStore
+from mltraq.utils.bunch import Bunch, BunchEvent, BunchStore, ReadOnlyError
 from mltraq.utils.fs import tmpdir_ctx
 
 
@@ -208,3 +208,26 @@ def test_bunchstore():
         bs.b = 456
         assert bs.a == 123
         assert bs.b == 456
+
+
+def test_bunchstore_readonly():
+    """
+    Test: We can have read-only BunchStore objects.
+    """
+
+    # With item setter/getter
+    with tmpdir_ctx():
+
+        # Writing a new bunchstore
+        bs = BunchStore()
+        bs.a = 123
+
+        # Instantiating a new bunchstore in read-only mode
+        bs_ro = BunchStore(read_only=True)
+
+        # Verifying we can read it
+        assert bs_ro.a == 123
+
+        # Verify we cannot write it
+        with pytest.raises(ReadOnlyError):
+            bs_ro.b = 123

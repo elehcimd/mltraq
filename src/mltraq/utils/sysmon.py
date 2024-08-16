@@ -15,7 +15,6 @@ class SystemMonitor:
     def __init__(self, sequence: Sequence):
         self.thread = None
         self.sequence = sequence
-        pass
 
     def start(self):
         self.terminate = Event()

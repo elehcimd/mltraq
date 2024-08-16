@@ -44,7 +44,7 @@ class Archive:
         cls,
         src_dir: str,
         arc_dir: str = ".",
-        include: str | list[str] = "**",
+        include: Union[str, list[str]] = "**",
         exclude: Union[str, list[str], None] = None,
     ) -> Archive:
         """
