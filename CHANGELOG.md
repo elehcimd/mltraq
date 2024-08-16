@@ -1,5 +1,15 @@
 # Recent changes
 
+## 0.1.149
+* Using `Union[x,y]` instead of `x|y` for type definitions for increased Python 3.9 compatibility
+* Added a read-only mode for `BunchStore`, preventing an unnecessary write check
+* Added support for local files in `fetch` module
+
+## 0.1.148
+* Fixed a race condition in `BunchStore`
+* Added support for Python 3.9
+* Verified tests on latest versions of dependencies
+
 ## 0.1.146
 * Added missing `__init__.py` file
 
