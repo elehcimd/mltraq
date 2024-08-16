@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import List
+from typing import List, Tuple
 
 import pandas as pd
 from numpy import float32, float64, int32, int64
@@ -107,7 +107,7 @@ def meta_runs(runs: Runs, table_name: str) -> dict:
     return meta
 
 
-def runs_to_sql(id_experiment: uuid.UUID, meta: dict, runs: Runs) -> tuple[pd.DataFrame, List]:
+def runs_to_sql(id_experiment: uuid.UUID, meta: dict, runs: Runs) -> Tuple[pd.DataFrame, List]:
     """
     Prepare a Runs object for experiment `id_experiment`,
     with metadata `meta`, to be stored in SQL.

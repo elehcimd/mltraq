@@ -7,6 +7,11 @@ from collections import OrderedDict
 from typing import Iterator, Optional
 
 from mltraq.opts import options
+from mltraq.utils.exceptions import ExceptionWithMessage
+
+
+class ReadOnlyError(ExceptionWithMessage):
+    pass
 
 
 class Bunch(OrderedDict):
@@ -159,7 +164,7 @@ class BunchStore:
     Basic key-value store on filesystem for a single Bunch object.
     """
 
-    def __init__(self, pathname: Optional[str] = None):
+    def __init__(self, pathname: Optional[str] = None, read_only: bool = False):
         """
         Initialize and load the key-value store.
         """
@@ -173,11 +178,14 @@ class BunchStore:
         self._meta.deserialize = deserialize
         self._meta.serialize = serialize
         self._meta.pathname = options().default_if_null(pathname, "bunchstore.pathname")
+        self._meta.read_only = read_only
         self._meta.data = Bunch()
 
         # Try to read and write the inner Bunch, ensuring that the pathname is readable/writeable.
+        # (if read-only, skip write test.)
         self.read()
-        self.write()
+        if not self._meta.read_only:
+            self.write()
 
     def read(self):
         """
@@ -220,6 +228,11 @@ class BunchStore:
         Overwrite BunchStore file on filesystem, using a temporary file
         to avoid concurrency issues.
         """
+
+        if self._meta.read_only:
+            # If the BunchStore is instantiated as read-only, raise an
+            # exception if there are attempts to write it to filesystem.
+            raise ReadOnlyError("Attempting to write but read-only")
 
         # We add some randomness to the temporary path to avoid race conditions
         # in case of threaded applications. In case of a race condition, only

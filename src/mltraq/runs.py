@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import random
 from types import GeneratorType
-from typing import Any, Generator, List, Optional, Union
+from typing import Any, Generator, List, Optional, Tuple, Union
 
 import pandas as pd
 from joblib.parallel import DEFAULT_BACKEND
@@ -19,7 +19,7 @@ from mltraq.utils.text import stringify
 log = logging.getLogger(__name__)
 
 # `Runs` cannot be added as not yet defined
-RunsListType = Union[Run, List[Run], tuple[Run], None]
+RunsListType = Union[Run, List[Run], Tuple[Run], None]
 
 
 class RunsException(ExceptionWithMessage):
@@ -35,7 +35,7 @@ class Runs(dict):
     Dict handling of a collection of Run objects.
     """
 
-    def __init__(self, runs: RunsListType | Runs):
+    def __init__(self, runs: Union[RunsListType, Runs]):
         """
         Initialise the runs.
         """
@@ -43,17 +43,17 @@ class Runs(dict):
         runs = normalize_runs(runs)
         super().__init__({run.id_run: run for run in runs})
 
-    def add(self, *runs: RunsListType | Runs):
+    def add(self, *runs: Union[RunsListType, Runs]):
         """
         Add run(s).
         """
         runs = normalize_runs(runs)
         self.update({run.id_run: run for run in runs})
 
-    def __or__(self, runs: RunsListType | Runs) -> Runs:
+    def __or__(self, runs: Union[RunsListType, Runs]) -> Runs:
         return Runs(dict(self) | dict(runs))
 
-    def __ior__(self, runs: RunsListType | Runs) -> Runs:
+    def __ior__(self, runs: Union[RunsListType, Runs]) -> Runs:
         return self.__or__(runs)
 
     def first(self) -> Run:
@@ -152,7 +152,7 @@ class Runs(dict):
         random.Random(options().get("reproducibility.random_seed")).shuffle(task_funcs)
 
         # Execute runs.
-        executed_runs: Generator[Run, None, None] | list[Run] = Job(
+        executed_runs: Union[Generator[Run, None, None], list[Run]] = Job(
             task_funcs, n_jobs=n_jobs, backend=backend
         ).execute()
 
@@ -196,7 +196,7 @@ class Runs(dict):
         return self.__str__()
 
 
-def normalize_runs(runs: RunsListType | Runs) -> list[Run]:
+def normalize_runs(runs: Union[RunsListType, Runs]) -> list[Run]:
     """
     Normalise `runs` to always return a list of Run objects (which might be empty).
     """
