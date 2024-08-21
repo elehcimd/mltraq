@@ -1,4 +1,4 @@
-Step 0: ../../../src/mltraq/steps/chdir.py:8 @ step_chdir(*[], **{'path': '/Users/michele/dev/mltraq/mkdocs/blog/posts/004'})
+Step 0: ../../../../src/mltraq/steps/chdir.py:8 @ step_chdir(*[], **{'path': '/Users/michele/dev/mltraq/mkdocs/blog/posts/004'})
 
 --
 def step_chdir(run: Run, path: Optional[str] = None):
@@ -11,7 +11,7 @@ def step_chdir(run: Run, path: Optional[str] = None):
 
 --
 
-Step 1: ../../../src/mltraq/steps/init_fields.py:6 @ step_init_fields(*[], **{'a': 1})
+Step 1: ../../../../src/mltraq/steps/init_fields.py:6 @ step_init_fields(*[], **{'a': 1})
 
 --
 def step_init_fields(run: Run, **fields):

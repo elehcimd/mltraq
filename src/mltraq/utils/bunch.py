@@ -166,7 +166,9 @@ class BunchStore:
 
     def __init__(self, pathname: Optional[str] = None, read_only: bool = False):
         """
-        Initialize and load the key-value store.
+        Initialize and load the key-value store. The bunch is serialized/deserialized to `pathname` (or its
+        default value "bunchstore.pathname"), appending `suffix` if provided.
+        In case of read-only use cases, specify `read_only=True` to avoid unnecessary writes.
         """
 
         # Importing here to avoid circular dependency.
