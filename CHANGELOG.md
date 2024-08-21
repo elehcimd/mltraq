@@ -1,5 +1,8 @@
 # Recent changes
 
+## 0.1.152
+* Increased tests to `87%` coverage
+
 ## 0.1.149
 * Using `Union[x,y]` instead of `x|y` for type definitions for increased Python 3.9 compatibility
 * Added a read-only mode for `BunchStore`, preventing an unnecessary write check
