@@ -28,22 +28,21 @@ def test_flatten():
     assert d["a.c"] is False
 
 
-def test_default_if_null():
+def test_prefer():
     """
     Test: If value is None, return option value.
     """
-    assert Options.instance().default_if_null(123, "a.c") == 123
-    assert Options.instance().default_if_null(None, "a.c") is False
+    assert Options.instance().get("a.c", prefer=123) == 123
+    assert Options.instance().get("a.b", prefer=None) == 123
 
 
-def test_null_if_missing():
+def test_otherwise():
     """
-    Test: If value is None, return option value.
+    Test: If a key is missing, we can change the default returned value.
     """
 
-    # If key is missing, an exception is raised.
+    assert Options.instance().get("doesntexist", otherwise=None) is None
+    assert Options.instance().get("doesntexist", otherwise=123) == 123
+
     with pytest.raises(KeyError):
-        Options.instance().get("x")
-
-    # We can request to return None if key is missing.
-    assert Options.instance().get("x", null_if_missing=True) is None
+        Options.instance().get("doesntexist")

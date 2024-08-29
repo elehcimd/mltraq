@@ -124,7 +124,7 @@ class Runs(dict):
         if len(steps) == 0:
             raise RunsException("No step functions to execute.")
 
-        args_field = options().default_if_null(args_field, "execution.args_field")
+        args_field = options().get("execution.args_field", prefer=args_field)
         if args_field:
             config = self.handle_args_field(args_field, config)
 

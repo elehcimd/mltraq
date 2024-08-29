@@ -61,8 +61,8 @@ class Database:
         """
 
         # Save original parameters, including the used options
-        echo = options().default_if_null(echo, "database.echo")
-        pool_pre_ping = options().default_if_null(pool_pre_ping, "database.pool_pre_ping")
+        echo = options().get("database.echo", prefer=echo)
+        pool_pre_ping = options().get("database.pool_pre_ping", prefer=pool_pre_ping)
         self.params = Bunch(url=url, ask_password=ask_password, echo=echo, pool_pre_ping=pool_pre_ping)
 
         self.init_url(url, ask_password)
@@ -95,8 +95,8 @@ class Database:
         Initialize the URL to the database, handling defaults,
         special cases and interactive passwords.
         """
-        url = options().default_if_null(url, "database.url")
-        ask_password = options().default_if_null(ask_password, "database.ask_password")
+        url = options().get("database.url", prefer=url)
+        ask_password = options().get("database.ask_password", prefer=ask_password)
 
         if url.startswith("postgres://"):
             # Re-introduce support for the deprecated and then dropped "postgres://" prefix
