@@ -179,7 +179,7 @@ class BunchStore:
         self._meta = Bunch()
         self._meta.deserialize = deserialize
         self._meta.serialize = serialize
-        self._meta.pathname = options().default_if_null(pathname, "bunchstore.pathname")
+        self._meta.pathname = options().get("bunchstore.pathname", prefer=pathname)
         self._meta.read_only = read_only
         self._meta.data = Bunch()
 

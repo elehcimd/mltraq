@@ -1,4 +1,5 @@
 from pickletools import genops
+from typing import Any
 
 import cloudpickle
 
@@ -54,7 +55,7 @@ class PickleSerializer(Serializer):
         return cls.compress(pickle)
 
     @classmethod
-    def deserialize(cls, data: bytes, assert_safe: bool = True) -> object:
+    def deserialize(cls, data: bytes, assert_safe: bool = True) -> Any:
         """
         Deserialize bytes:
         1. Attempt decompress

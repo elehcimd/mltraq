@@ -12,8 +12,8 @@ def init_logging(level_name: Optional[str] = None, log_format: Optional[str] = N
     """
     Initialize the logging to stdout, setting it to `level_name` or the level specified in the options.
     """
-    level_name = options().default_if_null(level_name, "cli.logging.level")
-    log_format = options().default_if_null(log_format, "cli.logging.format")
+    level_name = options().get("cli.logging.level", prefer=level_name)
+    log_format = options().get("cli.logging.format", prefer=log_format)
     basic_config_params = {"stream": sys.stdout, "datefmt": "%Y-%m-%d %H:%M:%S"}
     if log_format:
         basic_config_params["format"] = log_format

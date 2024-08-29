@@ -9,6 +9,7 @@ from mltraq.run import RunException
 from mltraq.runs import RunsException
 from mltraq.steps.init_fields import init_fields
 from mltraq.utils.exceptions import InvalidInput
+from mltraq.version import __version__ as mltraq_version
 
 
 def test_unpickle():
@@ -565,3 +566,16 @@ def _test_experiment_fast_fail():
 
     # Experiment failed, state remains consistent as before fauly step.
     assert "executed" not in e.runs.first().fields
+
+
+def test_get_metadata():
+    """
+    Test: We are tracking correctly the MLtraq version creating an experiment,
+    altogether with other metadata.
+    """
+
+    e = create_experiment("test")
+    meta = e.get_metadata()
+    assert meta.version.mltraq == mltraq_version
+    assert meta.runs.count == 0
+    assert meta.runs.table_name == "experiment_test"

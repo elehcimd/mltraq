@@ -1,6 +1,7 @@
 import abc
 import zlib
 from enum import Enum
+from typing import Any
 
 from mltraq.opts import options
 from mltraq.utils.bunch import Bunch
@@ -46,7 +47,7 @@ class Serializer(abc.ABC):
         return
 
     @abc.abstractclassmethod
-    def deserialize(cls, data: bytes) -> object:
+    def deserialize(cls, data: bytes) -> Any:
         pass
 
     @classmethod
@@ -60,7 +61,7 @@ class Serializer(abc.ABC):
         )
 
     @classmethod
-    def compress(cls, data: bytes) -> object:
+    def compress(cls, data: bytes) -> Any:
         """
         Compress `data`.
         """

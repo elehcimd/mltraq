@@ -5,7 +5,7 @@ import json
 import logging
 from argparse import ArgumentParser
 from contextlib import contextmanager
-from typing import Optional
+from typing import Any, Optional
 
 log = logging.getLogger(__name__)
 
@@ -50,18 +50,22 @@ class BaseOptions:
         """
         print(json.dumps(self.values, sort_keys=True, indent=4))
 
-    def get(self, path: str, null_if_missing: bool = False) -> object:
+    def get(self, path: str, prefer: Optional[Any] = None, otherwise: Any = "__raise_KeyError") -> Any:
         """
-        Returns option or dictionary representing the subtree at `path`.
-        If `null_if_missing` is True, return NULL if the key is missing,
-        otherwise fail.
+        If `prefer` is provided (not None), return it right away without lookup.
+        Elif return option or dictionary representing the subtree at `path`, is set
+        Elif `otherwise` is provided, return it.
+        Else raise a KeyError.
         """
+
+        if prefer is not None:
+            return prefer
 
         steps = path.split(".")
         d = self.values
         for step in steps:
-            if step not in d and null_if_missing:
-                return None
+            if step not in d and otherwise != "__raise_KeyError":
+                return otherwise
             d = d[step]
 
         return d
@@ -102,16 +106,6 @@ class BaseOptions:
         for step in steps:
             d = d[step]
         self.set(path, d)
-
-    def default_if_null(self, value: object, path: str) -> object:
-        """
-        Returns the option value if `value` is NULL, `value` otherwise.
-        """
-
-        if value is not None:
-            return value
-        else:
-            return self.get(path)
 
     def set_argument_options(self, options: Optional[list[ArgumentOption]] = None):
         """

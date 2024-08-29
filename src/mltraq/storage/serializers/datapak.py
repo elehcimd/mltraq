@@ -1,5 +1,6 @@
 import uuid
 from io import BytesIO
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -121,7 +122,7 @@ class DataPakSerializer(Serializer):
         return PickleSerializer.serialize(cls.encode(obj))
 
     @classmethod
-    def deserialize(cls, data: bytes) -> object:
+    def deserialize(cls, data: bytes) -> Any:
         """
         Deserialize a bytes object:
         1. Decompress it, if compressed
@@ -131,7 +132,7 @@ class DataPakSerializer(Serializer):
         return cls.decode(PickleSerializer.deserialize(data))
 
     @classmethod
-    def encode(cls, obj: object) -> object:
+    def encode(cls, obj: object) -> Any:
         for obj_type in BASIC_TYPES:
             if isinstance(obj, obj_type):
                 return obj
@@ -147,7 +148,7 @@ class DataPakSerializer(Serializer):
             return encode_magic_key(cls, obj)
 
     @classmethod
-    def decode(cls, obj: object) -> object:
+    def decode(cls, obj: object) -> Any:
         for obj_type in BASIC_TYPES:
             if isinstance(obj, obj_type):
                 return obj
@@ -207,7 +208,7 @@ def encode_magic_key(cls, obj: object) -> dict:  # noqa: C901
         raise UnsupportedObjectType(f"{cls.__name__} does not support type {obj.__class__}")
 
 
-def decode_magic_key(cls, obj: dict) -> object:  # noqa: C901
+def decode_magic_key(cls, obj: dict) -> Any:  # noqa: C901
     """
     Decode a complex object, encoded as a dictionary {k:v}
     where `k` is a predefined list of string values, and

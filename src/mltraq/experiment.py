@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import logging
 import random
+import sys
 import uuid
 from contextlib import contextmanager
 from typing import Callable, Optional, Union
@@ -21,7 +22,7 @@ from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists, enforce_enum
 from mltraq.utils.exceptions import ExceptionWithMessage, InvalidInput
 from mltraq.utils.frames import reorder_columns
-from mltraq.version import __version__
+from mltraq.version import __version__ as mltraq_version
 
 log = logging.getLogger(__name__)
 
@@ -363,7 +364,7 @@ class Experiment:
         Build an SQLAlchemy ORM object from the existing Experiment object.
         """
 
-        store_unsafe_pickle = options().default_if_null(store_unsafe_pickle, "serialization.store_unsafe_pickle")
+        store_unsafe_pickle = options().get("serialization.store_unsafe_pickle", prefer=store_unsafe_pickle)
 
         return self.model_cls(
             id_experiment=self.id_experiment,
@@ -381,8 +382,9 @@ class Experiment:
         meta = Bunch()
         meta.runs = serialization.meta_runs(self.runs, table_name=self.get_tablename())
         meta.serialization = serialization.meta()
-        meta.mltraq = Bunch()
-        meta.mltraq.version = __version__
+        meta.version = Bunch()
+        meta.version.python = sys.version
+        meta.version.mltraq = mltraq_version
         return meta
 
     def persist(

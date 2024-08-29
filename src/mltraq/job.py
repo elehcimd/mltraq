@@ -80,8 +80,8 @@ class Job:
         """
 
         self.tasks: list = validate_type(tasks, list)
-        self.backend = options().default_if_null(backend, "execution.backend")
-        self.n_jobs: int = validate_type(options().default_if_null(n_jobs, "execution.n_jobs"), int)
+        self.backend = options().get("execution.backend", prefer=backend)
+        self.n_jobs: int = validate_type(options().get("execution.n_jobs", prefer=n_jobs), int)
 
     def execute(self) -> List[object]:
         """

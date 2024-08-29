@@ -91,7 +91,7 @@ class DataStoreIO:
         Generate the next pathname and url to store a new resource.
         """
 
-        relative_path_prefix = options().default_if_null(relative_path_prefix, "datastore.relative_path_prefix")
+        relative_path_prefix = options().get("datastore.relative_path_prefix", prefer=relative_path_prefix)
         pathdir = DataStoreIO.get_filepath(options().get("datastore.url")) + os.sep + relative_path_prefix
         os.makedirs(pathdir, exist_ok=True)
         basename = next_uuid().hex
