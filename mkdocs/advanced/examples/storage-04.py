@@ -4,6 +4,7 @@ from io import BytesIO
 from pprint import pprint
 
 import numpy as np
+
 from mltraq import create_experiment, options
 
 experiment = create_experiment("example")

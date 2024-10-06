@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 import pytest
+
 from mltraq.opts import options
 from mltraq.storage.serialization import deserialize
 from mltraq.utils.bunch import Bunch, BunchEvent, BunchStore, ReadOnlyError

@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq import Bunch
 from mltraq.storage.serialization import deserialize, serialize
 

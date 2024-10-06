@@ -1,6 +1,9 @@
 # Recent changes
 
 ## 0.1.153
+* Updated dependencies
+
+## 0.1.153
 * Added Python and MLtraq version to experiment's metadata
 * Added `utils/sysenv.py` to track environment stats (system, architecture, locale, time, ...)
 * Added `utils/reproducibility.py`, providing a temporary seed context

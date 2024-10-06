@@ -1,8 +1,9 @@
 from random import uniform
 
-import mltraq
 import numpy as np
 import pytest
+
+import mltraq
 from mltraq import Run, create_experiment, options
 from mltraq.experiment import ExperimentAlreadyExists, PickleNotFoundException
 from mltraq.run import RunException

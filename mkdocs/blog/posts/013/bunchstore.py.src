@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq.opts import options
 from mltraq.storage.serialization import deserialize
 from mltraq.utils.bunch import BunchStore
