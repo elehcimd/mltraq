@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq import Run, Sequence, create_session
 
 # Create a new session, bound to an in-memory SQLite database by default.

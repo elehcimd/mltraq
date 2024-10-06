@@ -142,7 +142,7 @@ class Run:
         """
         Executes the `steps` callables on `self`, after:
         1. Setting the `config`
-        2. Updating theglobal options to reflect `options`
+        2. Updating thevglobal options to reflect `options`
         3. Initializing the numpy/random seeds to a seed that is unique to the run ID, honoring
         the option "reproducibility.random_seed".
         """

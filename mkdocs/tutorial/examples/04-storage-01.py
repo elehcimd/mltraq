@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq import create_session
 
 session = create_session()

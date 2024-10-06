@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq.utils.bunch import BunchEvent
 
 # Instantiate a Bunch dictionary with event handlers

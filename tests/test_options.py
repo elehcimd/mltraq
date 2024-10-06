@@ -58,4 +58,4 @@ def test_option_context_parallel():
         s = create_session()
         e = s.create_experiment("test")
         e.add_runs(x=range(20))
-        e.execute(steps=f1)
+        e.execute(steps=f1, n_jobs=-1)
