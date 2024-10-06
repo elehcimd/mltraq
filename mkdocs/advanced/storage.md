@@ -30,9 +30,9 @@ drop_comments=False)}}
 
 ## Persisting complex objects
 
-In the next example, we persist and reload an experiment with a Numpy array:
+In the next example, we persist and reload an experiment with a NumPy array:
 
-{{include_code("mkdocs/advanced/examples/storage-02.py", title="Persistence for Numpy arrays", drop_comments=False)}}
+{{include_code("mkdocs/advanced/examples/storage-02.py", title="Persistence for NumPy arrays", drop_comments=False)}}
 
 ## The DATAPAK format
 
@@ -51,7 +51,7 @@ The procedure to serialize and deserialize the types `BASIC_TYPES`, `CONTAINER_T
     The encoding of complex objects relies on open formats:
 
     * [Arrow IPC format](https://arrow.apache.org/docs/python/ipc.html) for Pandas and Arrow tables
-    * [Numpy NEP format](https://github.com/numpy/numpy/blob/main/doc/neps/nep-0001-npy-format.rst) for Numpy arrays
+    * [NumPy NEP format](https://github.com/numpy/numpy/blob/main/doc/neps/nep-0001-npy-format.rst) for NumPy arrays
 
 If requested, the resulting binary blob is compressed (see separate section on this).
 
@@ -80,7 +80,7 @@ If any matching magic prefix is found, the decompression is attempted, returning
 
 ### Example
 
-In this example, we demonstrate how to manually deserialize an experiment field queried from database and containing a Numpy array.
+In this example, we demonstrate how to manually deserialize an experiment field queried from database and containing a NumPy array.
 
 1. Decompression: The first two bytes contain `b'C1'` (zlib compression)
 2. Depickling: Complex objects are represented as dictionaries with one key/value pair that describe their encoded contents.

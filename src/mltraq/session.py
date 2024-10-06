@@ -1,6 +1,7 @@
 import logging
 import uuid
 from contextlib import contextmanager
+from typing import Optional
 
 import pandas as pd
 
@@ -19,7 +20,7 @@ class Session:
 
     __slots__ = ("db",)
 
-    def __init__(self, url: str | None = None, ask_password: bool | None = None, db: Database | None = None):
+    def __init__(self, url: Optional[str] = None, ask_password: Optional[bool] = None, db: Optional[Database] = None):
         """
         Create a new session handler, with `url` as database URL and `ask_password`
         triggering the interactive input of the password if True.
@@ -28,7 +29,7 @@ class Session:
         Alternatively, an already instantiated `db` could be passed.
         """
 
-        self.db = db if db else Database(url, ask_password=ask_password)
+        self.db = db if db else Database(url, ask_password=ask_password, create_tables=True)
 
     @contextmanager
     def datastream_server(self):
@@ -56,7 +57,7 @@ class Session:
     def _repr_html_(self) -> str:
         return self.__str__()
 
-    def create_experiment(self, name: str | None = None, **fields) -> Experiment:
+    def create_experiment(self, name: Optional[str] = None, **fields) -> Experiment:
         """
         Create a new experiment, binded to the database of this session:
         - `name` is optional, a 6 alphanum hash of ID experiment is used if missing.
@@ -76,7 +77,7 @@ class Session:
         return Experiment.ls(self.db)
 
     def load_experiment(
-        self, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
+        self, name: Optional[str] = None, id_experiment: Optional[uuid.UUID] = None, unsafe_pickle: bool = False
     ) -> Experiment:
         """
         Loads a persisted experiment by `name` or `id_experiment`. If `pickle` is True, it will
@@ -88,7 +89,7 @@ class Session:
         return Experiment.load(self.db, name=name, id_experiment=id_experiment, unsafe_pickle=unsafe_pickle)
 
     def persist_experiment(
-        self, experiment: Experiment, name: str | None = None, if_exists: IfExists = "fail"
+        self, experiment: Experiment, name: Optional[str] = None, if_exists: IfExists = "fail"
     ) -> Experiment:
         """
         Persist the experiment on the database linked by the session (as a copy), and return it.
@@ -115,7 +116,7 @@ class Session:
 
 
 def create_experiment(
-    name: str | None = None, url: str | None = None, ask_password: bool | None = None, **fields
+    name: Optional[str] = None, url: Optional[str] = None, ask_password: Optional[bool] = None, **fields
 ) -> Experiment:
     """
     Create a new experiment bound to a new session. Shortcut to create a single experiment.

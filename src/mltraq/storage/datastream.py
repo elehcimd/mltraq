@@ -9,7 +9,7 @@ from multiprocessing import Event
 from queue import Empty, Queue
 from threading import Thread
 from time import sleep, time_ns
-from typing import Any
+from typing import Any, Optional
 
 import mltraq
 from mltraq.experiment import ExperimentNotFoundException
@@ -58,12 +58,12 @@ class DataStreamServer:
 
     __slots__ = ("db", "stats", "ready", "kind", "bufsize", "address", "terminate", "received", "thread", "sock", "dbw")
 
-    def __init__(self, db: Database | None = None):
+    def __init__(self, db: Optional[Database] = None):
         """
         Initialize a new server, linking it to the specified `db`. The `db` object is expected to not be actively
         used by other threads.
         """
-        self.db = db if db else Database()
+        self.db = db if db else Database(create_tables=True)
         self.thread = None
 
     def thread_main(self):
@@ -214,7 +214,7 @@ class DataStreamClient:
 
     def __init__(
         self,
-        run: Run | None = None,
+        run: Optional[Run] = None,
     ):
         """
         Link the client to a `run`.

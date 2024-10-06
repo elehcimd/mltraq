@@ -2,6 +2,7 @@ import logging
 from multiprocessing import Event
 from os import sep
 from threading import Thread
+from typing import Dict
 
 import psutil
 
@@ -12,12 +13,18 @@ log = logging.getLogger(__name__)
 
 
 class SystemMonitor:
+    """
+    Class managing the thread that captures the system stats.
+    """
+
     def __init__(self, sequence: Sequence):
         self.thread = None
         self.sequence = sequence
-        pass
 
     def start(self):
+        """
+        Start monitoring thread.
+        """
         self.terminate = Event()
         self.produced = Event()
         self.thread = Thread(target=self.thread_main, name="SystemMonitor")
@@ -25,6 +32,9 @@ class SystemMonitor:
         return self
 
     def thread_main(self):
+        """
+        Thread entry point.
+        """
         interval = options().get("sysmon.interval")
         percpu = options().get("sysmon.percpu")
         path = options().get("sysmon.path")
@@ -45,10 +55,17 @@ class SystemMonitor:
         log.debug(f"{self.__class__.__name__}: Terminated")
 
     def cleanup(self):
+        """
+        Called for clean up. Currently, nothing to do.
+        """
         pass
 
 
-def get_stats(path: str = sep, interval: float = 1, percpu: bool = False):
+def get_stats(path: str = sep, interval: float = 1, percpu: bool = False) -> Dict:
+    """
+    Return a dictionary representing the system usage.
+    """
+
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage(path)
     net_begin = psutil.net_io_counters()
@@ -57,7 +74,7 @@ def get_stats(path: str = sep, interval: float = 1, percpu: bool = False):
     cpu = psutil.cpu_percent(interval=interval, percpu=True)
 
     net_end = psutil.net_io_counters()
-    stats_cpu = {"cpu_pct": int(sum(cpu) / len(cpu) * 10) / 10}
+    stats_cpu = {"cpu_cnt": psutil.cpu_count(), "cpu_pct": int(sum(cpu) / len(cpu) * 10) / 10}
     if percpu:
         stats_cpu |= {f"cpu{idx}_pct": pct for idx, pct in enumerate(cpu)}
     stats_mem = {

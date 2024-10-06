@@ -3,6 +3,7 @@
                   'mode': 'x',
                   'relative_path_prefix': 'undefined',
                   'url': 'file:///mltraq.archivestore'},
+ 'bunchstore': {'pathname': 'bunchstore.data'},
  'cli': {'logging': {'format': '%(levelname)-9s '
                                '%(asctime)s  %(message)s',
                      'level': 'INFO'},
@@ -28,7 +29,8 @@
  'execution': {'args_field': False,
                'backend': 'loky',
                'backend_params': {},
-               'exceptions': {'compact_message': False},
+               'exceptions': {'compact_message': False,
+                              'report_basenames': False},
                'loky_chdir': True,
                'n_jobs': -1,
                'return_as': 'list'},

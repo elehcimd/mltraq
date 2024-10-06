@@ -3,7 +3,7 @@ import logging
 import re
 import uuid
 from functools import partial
-from typing import Callable, Iterator, List
+from typing import Callable, Iterator, List, Optional, Union
 
 import pandas as pd
 from sqlalchemy import MetaData, Table, create_engine, inspect, sql
@@ -23,7 +23,7 @@ from mltraq.utils.enums import IfExists
 from mltraq.utils.exceptions import InvalidInput
 from mltraq.utils.web import fetch
 
-QueryType = Query | str | Select | TextClause
+QueryType = Union[Query, str, Select, TextClause]
 
 log = logging.getLogger(__name__)
 
@@ -44,11 +44,11 @@ class Database:
 
     def __init__(
         self,
-        url: str | None = None,
-        ask_password: bool | None = None,
-        echo: bool | None = None,
-        pool_pre_ping: bool | None = None,
-        create_tables: bool = True,
+        url: Optional[str] = None,
+        ask_password: Optional[bool] = None,
+        echo: Optional[bool] = None,
+        pool_pre_ping: Optional[bool] = None,
+        create_tables: bool = False,
     ):
         """
         Initialize connection to a new database, with connection `url`,
@@ -61,8 +61,8 @@ class Database:
         """
 
         # Save original parameters, including the used options
-        echo = options().default_if_null(echo, "database.echo")
-        pool_pre_ping = options().default_if_null(pool_pre_ping, "database.pool_pre_ping")
+        echo = options().get("database.echo", prefer=echo)
+        pool_pre_ping = options().get("database.pool_pre_ping", prefer=pool_pre_ping)
         self.params = Bunch(url=url, ask_password=ask_password, echo=echo, pool_pre_ping=pool_pre_ping)
 
         self.init_url(url, ask_password)
@@ -95,8 +95,8 @@ class Database:
         Initialize the URL to the database, handling defaults,
         special cases and interactive passwords.
         """
-        url = options().default_if_null(url, "database.url")
-        ask_password = options().default_if_null(ask_password, "database.ask_password")
+        url = options().get("database.url", prefer=url)
+        ask_password = options().get("database.ask_password", prefer=ask_password)
 
         if url.startswith("postgres://"):
             # Re-introduce support for the deprecated and then dropped "postgres://" prefix
@@ -139,7 +139,7 @@ class Database:
     def _repr_html_(self) -> str:
         return self.__str__()
 
-    def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: dict | None = None):
+    def pandas_to_sql(self, df: pd.DataFrame, name: str, if_exists: IfExists, dtype: Optional[dict] = None):
         """
         Insert a Pandas dataframe `df` as a new database table `name`.
         If `if_exists` == "replace", it overwrite existing tables.
@@ -314,7 +314,7 @@ def pandas_query(
     return pd.concat(dfs, ignore_index=True)
 
 
-def next_uuid(seed: int | None = None, inc: int = 1) -> uuid.UUID:
+def next_uuid(seed: Optional[int] = None, inc: int = 1) -> uuid.UUID:
     """
     Return the next UUID to use.
 
@@ -371,7 +371,7 @@ def tqdm_chunks(
     return rets
 
 
-def hash_uuid(value: uuid.UUID | str) -> str:
+def hash_uuid(value: Union[uuid.UUID, str]) -> str:
     """
     Create a 6-alphanum hash of `value`, which can be
     either a string representing an UUID or an UUID object.

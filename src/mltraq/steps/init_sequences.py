@@ -1,9 +1,10 @@
 from functools import partial
+from typing import Optional
 
 from mltraq import Run, Sequence
 
 
-def step_init_sequences(run: Run, names: list[str] | None = None):
+def step_init_sequences(run: Run, names: Optional[list[str]] = None):
     """
     Initialize empty sequences to the run.
     """
@@ -17,7 +18,7 @@ def step_init_sequences(run: Run, names: list[str] | None = None):
         run.fields[name] = Sequence()
 
 
-def init_sequences(names: list[str] | None = None) -> callable:
+def init_sequences(names: Optional[list[str]] = None) -> callable:
     """
     It returns a step function that initializes one or more empty sequences to the run.
     """

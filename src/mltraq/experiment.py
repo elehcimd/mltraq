@@ -3,9 +3,10 @@ from __future__ import annotations
 import copy
 import logging
 import random
+import sys
 import uuid
 from contextlib import contextmanager
-from typing import Callable
+from typing import Callable, Optional, Union
 
 import pandas as pd
 from sqlalchemy.orm import load_only
@@ -21,7 +22,7 @@ from mltraq.utils.bunch import Bunch
 from mltraq.utils.enums import IfExists, enforce_enum
 from mltraq.utils.exceptions import ExceptionWithMessage, InvalidInput
 from mltraq.utils.frames import reorder_columns
-from mltraq.version import __version__
+from mltraq.version import __version__ as mltraq_version
 
 log = logging.getLogger(__name__)
 
@@ -67,11 +68,11 @@ class Experiment:
 
     def __init__(
         self,
-        db: Database | None = None,
-        id_experiment: str | None = None,
-        name: str | None = None,
-        fields: dict | None = None,
-        runs: list[Run] | None = None,
+        db: Optional[Database] = None,
+        id_experiment: Optional[str] = None,
+        name: Optional[str] = None,
+        fields: Optional[dict] = None,
+        runs: Optional[list[Run]] = None,
     ):
         """
         Crete a new experiment linked to database `db`.
@@ -190,7 +191,7 @@ class Experiment:
         # Reconstruct runs with their fields
         self.runs = Runs(df.apply(lambda row: series_to_run(row), axis=1).tolist())
 
-    def copy_to(self, name: str | None = None, db: Database | None = None) -> Experiment:
+    def copy_to(self, name: Optional[str] = None, db: Optional[Database] = None) -> Experiment:
         """
         Return a deep copy of the experiment, setting `name` and `db` if provided.
         A new UUID for the copy of the experiment is always generated.
@@ -256,7 +257,11 @@ class Experiment:
 
     @classmethod
     def load(
-        cls, db: Database, name: str | None = None, id_experiment: uuid.UUID | None = None, unsafe_pickle: bool = False
+        cls,
+        db: Database,
+        name: Optional[str] = None,
+        id_experiment: Optional[uuid.UUID] = None,
+        unsafe_pickle: bool = False,
     ):
         """
         Load experiment `name` (or `id_experiment`) from `db`. If `pickle` is True, load
@@ -328,11 +333,11 @@ class Experiment:
 
     def execute(
         self,
-        steps: Callable | list[Callable] | None = None,
-        config: dict | None = None,
-        backend: str | None = None,
-        n_jobs: int | None = None,
-        args_field: str | None = None,
+        steps: Union[Callable, list[Callable], None] = None,
+        config: Optional[dict] = None,
+        backend: Optional[str] = None,
+        n_jobs: Optional[int] = None,
+        args_field: Optional[str] = None,
     ):
         """
         Execute the experiment, by executing its runs:
@@ -352,14 +357,14 @@ class Experiment:
 
     def record(
         self,
-        meta: dict | None = None,
-        store_unsafe_pickle: bool | None = None,
+        meta: Optional[dict] = None,
+        store_unsafe_pickle: Optional[bool] = None,
     ) -> models.Experiment:
         """
         Build an SQLAlchemy ORM object from the existing Experiment object.
         """
 
-        store_unsafe_pickle = options().default_if_null(store_unsafe_pickle, "serialization.store_unsafe_pickle")
+        store_unsafe_pickle = options().get("serialization.store_unsafe_pickle", prefer=store_unsafe_pickle)
 
         return self.model_cls(
             id_experiment=self.id_experiment,
@@ -377,14 +382,15 @@ class Experiment:
         meta = Bunch()
         meta.runs = serialization.meta_runs(self.runs, table_name=self.get_tablename())
         meta.serialization = serialization.meta()
-        meta.mltraq = Bunch()
-        meta.mltraq.version = __version__
+        meta.version = Bunch()
+        meta.version.python = sys.version
+        meta.version.mltraq = mltraq_version
         return meta
 
     def persist(
         self,
         if_exists: IfExists = IfExists["fail"],
-        store_unsafe_pickle: bool | None = None,
+        store_unsafe_pickle: Optional[bool] = None,
     ):
         """
         Persist an experiment to the bound database, honoring `if_exists` the `store_unsafe_pickle`.

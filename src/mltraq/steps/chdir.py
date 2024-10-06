@@ -1,10 +1,11 @@
 import os
 from functools import partial
+from typing import Optional
 
 from mltraq import Run
 
 
-def step_chdir(run: Run, path: str | None = None):
+def step_chdir(run: Run, path: Optional[str] = None):
     """
     Change current directory to `path`.
     """
@@ -13,7 +14,7 @@ def step_chdir(run: Run, path: str | None = None):
         os.chdir(path)
 
 
-def chdir(path: str | None = None) -> callable:
+def chdir(path: Optional[str] = None) -> callable:
     """
     Change the current directory. If `path` is None,
     it changes the current directory on the worker process

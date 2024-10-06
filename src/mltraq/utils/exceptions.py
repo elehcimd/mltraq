@@ -1,11 +1,12 @@
 import inspect
 import logging
+import os
 import signal
 import sys
 import traceback
 from os.path import basename
 from types import FrameType
-from typing import Any, TypeVar
+from typing import Any, Optional, TypeVar
 
 from mltraq.opts import options
 
@@ -60,6 +61,19 @@ def complete_exception_message() -> str:
     return traceback.format_exc()
 
 
+def report_filename(pathname: str) -> str:
+    """
+    Return the filename, limiting it to the basename if requested.
+    Used to anonymize experiment outputs, minimizing disclosures.
+    Impacting only compact exception messages.
+    """
+
+    if options().get("execution.exceptions.report_basenames"):
+        return os.path.basename(pathname)
+    else:
+        return pathname
+
+
 def codepos(self=None):
     frame = inspect.getframeinfo(inspect.currentframe().f_back)
     if self:
@@ -85,11 +99,11 @@ def compact_exception_message() -> str:
     )
 
     details = {
-        "file": "<unknown>" if not exc_traceback else exc_traceback.tb_frame.f_code.co_filename,
+        "file": "<unknown>" if not exc_traceback else report_filename(exc_traceback.tb_frame.f_code.co_filename),
         "lineno": "<unknown>" if not exc_traceback else exc_traceback.tb_lineno,
         "type": "<unkown>" if not exc_type else exc_type.__name__,
         "message": str(exc_value),
-        "trace": f'{frame.filename}:{frame.lineno}::{frame.function} "{code}"',
+        "trace": f'{report_filename(frame.filename)}:{frame.lineno}::{frame.function} "{code}"',
     }
 
     return f'{details["type"]} at {details["trace"]}: {details["message"]}'
@@ -102,7 +116,7 @@ def validate_type(value: object, expected_type: T) -> Any:
     TODO: avoid use of Any.
     """
 
-    if type(value) == expected_type:
+    if type(value) == expected_type:  # noqa: E721
         return value
     else:
         raise TypeValidationError(f"Expected type '{expected_type}' but found '{type(value)}'")
@@ -112,7 +126,7 @@ class ServiceExit(Exception):
     pass
 
 
-def service_shutdown(sig: int, frame: FrameType | None = None):
+def service_shutdown(sig: int, frame: Optional[FrameType] = None):
     # Print a new line, to not break the logging line format with a "^C"
     print("")
     log.info(f"Received {signal.Signals(sig).name} signal, shutting down ...")

@@ -9,7 +9,7 @@ SQL query:
 1  d65df69e-1175-44a5-be2f-2232765703ba  30
 
 --
-Numpy array in first run:
+NumPy array in first run:
 [1 2 3]
 
 --

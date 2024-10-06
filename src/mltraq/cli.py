@@ -1,5 +1,6 @@
 import argparse
 import logging
+from typing import List, Optional
 
 import pandas as pd
 from tabulate import tabulate
@@ -12,6 +13,7 @@ from mltraq.utils.base_options import add_option_argument
 from mltraq.utils.exceptions import InvalidInput
 from mltraq.utils.logging import init_logging
 from mltraq.utils.sequence import Sequence
+from mltraq.version import __version__ as mltraq_version
 
 log = logging.getLogger(__name__)
 
@@ -29,9 +31,9 @@ def print_df(df: pd.DataFrame, showindex=False):
     print(tabulate(df, maxcolwidths=maxcolwidths, headers="keys", tablefmt="rounded_grid", showindex=showindex))
 
 
-def main():
+def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     """
-    Entry point for the CLI tool.
+    Parse arguments, and return them.
     """
 
     main_parser = argparse.ArgumentParser(description="MLtraq CLI tool.", add_help=False)
@@ -39,6 +41,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(title="Commands", dest="cmd", required=True)
+    subparsers.add_parser("version", help="Show version of MLtraq", parents=[main_parser])
     subparsers.add_parser("dss", help="Start the DataStream server", parents=[main_parser])
     subparsers.add_parser("ls", help="List experiments", parents=[main_parser])
 
@@ -66,14 +69,31 @@ def main():
     parser_cmd.add_argument("--option-name", dest="option_name")
 
     # Parse parameters and set options
-    args = parser.parse_args()
+    args = parser.parse_args(args)
+    return args
+
+
+def main(argv1: Optional[List[str]] = None):  # noqa: C901
+    """
+    Entry point for the CLI tool.
+    """
+
+    # Parse arguments
+    if argv1 is not None:
+        args = parse_args(argv1)
+    else:
+        args = parse_args()
+
+    # Set options passed by arguments
     options().set_argument_options(args.option)
 
     # Init logging
     init_logging()
 
     # Handle commands
-    if args.cmd == "dss":
+    if args.cmd == "version":
+        print(f"MLtraq v{mltraq_version}")
+    elif args.cmd == "dss":
         datastream_server()
     elif args.cmd == "ls":
         session = mltraq.create_session()

@@ -5,6 +5,7 @@ import json
 import logging
 from argparse import ArgumentParser
 from contextlib import contextmanager
+from typing import Any, Optional
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class BaseOptions:
     E.g., "group1.value".
     """
 
-    _instance: BaseOptions | None = None
+    _instance: Optional[BaseOptions] = None
     default_values: dict = {}
 
     def __init__(self):
@@ -49,18 +50,22 @@ class BaseOptions:
         """
         print(json.dumps(self.values, sort_keys=True, indent=4))
 
-    def get(self, path: str, null_if_missing: bool = False) -> object:
+    def get(self, path: str, prefer: Optional[Any] = None, otherwise: Any = "__raise_KeyError") -> Any:
         """
-        Returns option or dictionary representing the subtree at `path`.
-        If `null_if_missing` is True, return NULL if the key is missing,
-        otherwise fail.
+        If `prefer` is provided (not None), return it right away without lookup.
+        Elif return option or dictionary representing the subtree at `path`, is set
+        Elif `otherwise` is provided, return it.
+        Else raise a KeyError.
         """
+
+        if prefer is not None:
+            return prefer
 
         steps = path.split(".")
         d = self.values
         for step in steps:
-            if step not in d and null_if_missing:
-                return None
+            if step not in d and otherwise != "__raise_KeyError":
+                return otherwise
             d = d[step]
 
         return d
@@ -87,7 +92,7 @@ class BaseOptions:
         """
         return copy.deepcopy(self.values)
 
-    def reset(self, path: str | None = None):
+    def reset(self, path: Optional[str] = None):
         """
         Rset the `path` value to its default.
         If `path` is None, it resets all options.
@@ -102,17 +107,7 @@ class BaseOptions:
             d = d[step]
         self.set(path, d)
 
-    def default_if_null(self, value: object, path: str) -> object:
-        """
-        Returns the option value if `value` is NULL, `value` otherwise.
-        """
-
-        if value is not None:
-            return value
-        else:
-            return self.get(path)
-
-    def set_argument_options(self, options: list[ArgumentOption] | None = None):
+    def set_argument_options(self, options: Optional[list[ArgumentOption]] = None):
         """
         Given a list of Option objects, set them.
         """

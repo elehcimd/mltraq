@@ -4,6 +4,7 @@ from io import BytesIO
 from pprint import pprint
 
 import numpy as np
+
 from mltraq import create_experiment, options
 
 experiment = create_experiment("example")
@@ -32,7 +33,7 @@ print("Decompressed:")
 pprint(decompressed, width=70)
 print("\n--")
 
-depickled = pickle.loads(decompressed)  # noqa
+depickled = pickle.loads(decompressed)  # noqa: S301
 
 print("Depickled:")
 pprint(depickled, width=70)
@@ -43,6 +44,6 @@ memfile.write(depickled["value"])
 memfile.seek(0)
 array = np.load(memfile, allow_pickle=False)
 
-print("Numpy array:")
+print("NumPy array:")
 pprint(array, width=70)
 print("\n--")

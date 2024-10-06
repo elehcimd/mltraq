@@ -40,7 +40,7 @@ class Options(BaseOptions):
             "format": tarfile.GNU_FORMAT,
         },
         "execution": {
-            "exceptions": {"compact_message": False},
+            "exceptions": {"compact_message": False, "report_basenames": False},
             "backend": DEFAULT_BACKEND,
             "n_jobs": -1,
             "return_as": "list",
@@ -66,6 +66,7 @@ class Options(BaseOptions):
             "path": sep,
             "field_name": "sysmon",
         },
+        "bunchstore": {"pathname": "bunchstore.data"},
         "app": {},
     }
 

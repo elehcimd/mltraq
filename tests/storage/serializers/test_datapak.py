@@ -1,11 +1,11 @@
 import os
 import uuid
-from types import NoneType
 
 import numpy as np
 import pandas as pd
 import pyarrow
 import pytest
+
 from mltraq import Sequence, options
 from mltraq.storage.archivestore import Archive
 from mltraq.storage.database import next_uuid
@@ -13,6 +13,8 @@ from mltraq.storage.datastore import DataStore
 from mltraq.storage.serializers.datapak import DataPakSerializer, UnsupportedObjectType
 from mltraq.utils.bunch import Bunch, BunchEvent
 from mltraq.utils.fs import tmpdir_ctx
+
+NoneType = type(None)
 
 
 def test_serialization_dict():

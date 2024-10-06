@@ -1,17 +1,28 @@
 import fnmatch
-import glob
 import logging
 import os
 from contextlib import contextmanager
+from glob import glob as _glob
 from shutil import rmtree
 from tempfile import mkdtemp
-from types import NoneType
-
-from joblib.externals.loky import get_reusable_executor
 
 from mltraq.utils.exceptions import InvalidInput
 
 log = logging.getLogger(__name__)
+
+NoneType = type(None)
+
+
+def glob(pathname, *, root_dir=None, recursive=False):
+    """
+    Wrapper for glob.glob that implements the root_dir parameter for Python 3.9 that lacked it.
+    """
+
+    if root_dir is not None:
+        with chdir_ctx(root_dir):
+            return _glob(pathname, recursive=recursive)
+    else:
+        return _glob(pathname, recursive=recursive)
 
 
 @contextmanager
@@ -39,8 +50,12 @@ def chdir_ctx(dirname):
     as the context returns.
     """
     try:
-        old_dirname = os.getcwd()
+        # Keep track of the absolute path of the current directory,
+        # we'll need to restore it.
+        old_dirname = os.path.abspath(os.getcwd())
         os.chdir(dirname)
+
+        # On Joblib:
 
         # Joblib keeps the pool of workers alive, with their
         # currently defined active directory.
@@ -50,11 +65,18 @@ def chdir_ctx(dirname):
         # sequentially as in the tests, we might have
         # workers with an invalid current directory.
         # This is why, whenever we enter a context
-        # with a new directory, we force the shutdown
-        # of the workers.
+        # with a new directory, we might need to force
+        # the shutdown of the workers:
+        #
+        # get_reusable_executor().shutdown(wait=True) # noqa: ERA001
+        #
+        # More details at:
         # https://github.com/joblib/joblib/issues/945
-
-        get_reusable_executor().shutdown(wait=True)
+        #
+        # At the moment, it seems no test is failing
+        # if we comment the shutdown code.
+        # This issue might have fixed since it first
+        # occurred.
 
         yield dirname
     finally:
@@ -81,7 +103,7 @@ def globs(src_dir, include="**/*", exclude=None, recursive=True):
     candidates = []
 
     for pattern in include:
-        candidates += glob.glob(pattern, root_dir=src_dir, recursive=recursive)
+        candidates += glob(pattern, root_dir=src_dir, recursive=recursive)
 
     # Drop duplicates
     candidates = set(candidates)

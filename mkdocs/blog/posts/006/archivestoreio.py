@@ -1,10 +1,10 @@
-import glob
 from os import mkdir
 
 import pandas as pd
+
 from mltraq.opts import options
 from mltraq.storage.archivestore import ArchiveStoreIO
-from mltraq.utils.fs import tmpdir_ctx
+from mltraq.utils.fs import glob, tmpdir_ctx
 
 with tmpdir_ctx():
     # Work in a temporary directory
@@ -22,5 +22,5 @@ with tmpdir_ctx():
 
     # Print contents of current directory
     print("Contents of current directory:")
-    for idx, name in enumerate(glob.glob("**", root_dir=".", recursive=True)):
+    for idx, name in enumerate(glob("**", root_dir=".", recursive=True)):
         print(f"[{idx:2d}] {name}")

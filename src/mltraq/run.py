@@ -2,7 +2,7 @@ import logging
 import random
 from contextlib import contextmanager, nullcontext
 from functools import partial
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -17,7 +17,7 @@ from mltraq.utils.sequence import Sequence
 
 log = logging.getLogger(__name__)
 
-StepsType = Callable | List[Callable] | None
+StepsType = Union[Callable, List[Callable], None]
 
 
 class RunException(ExceptionWithMessage):
@@ -49,12 +49,12 @@ class Run:
 
     def __init__(
         self,
-        id_experiment: str | None = None,
-        id_run: str | None = None,
+        id_experiment: Optional[str] = None,
+        id_run: Optional[str] = None,
         steps: StepsType = None,
-        config: dict | None = None,
-        params: dict | None = None,
-        fields: dict | None = None,
+        config: Optional[dict] = None,
+        params: Optional[dict] = None,
+        fields: Optional[dict] = None,
     ):
         """
         Create a new run, with:
@@ -130,17 +130,19 @@ class Run:
                 if isinstance(value, Sequence):
                     value.set_stream(None, None)
 
-    def execute_func(self, steps: StepsType = None, config: dict | None = None, options: Options | None = None):
+    def execute_func(self, steps: StepsType = None, config: Optional[dict] = None, options: Optional[Options] = None):
         """
         Return callable that executes self.run(steps=steps, config=config, options=options).
         """
         return partial(lambda run: run.execute(steps=steps, config=config, options=options), self)
 
-    def execute(self, steps: StepsType | None = None, config: dict | None = None, options: Options | None = None):
+    def execute(
+        self, steps: Optional[StepsType] = None, config: Optional[dict] = None, options: Optional[Options] = None
+    ):
         """
         Executes the `steps` callables on `self`, after:
         1. Setting the `config`
-        2. Updating theglobal options to reflect `options`
+        2. Updating thevglobal options to reflect `options`
         3. Initializing the numpy/random seeds to a seed that is unique to the run ID, honoring
         the option "reproducibility.random_seed".
         """
@@ -151,7 +153,7 @@ class Run:
         global_options().copy_from(options.values)
 
         # Determine random seed for this run, combining the UUID of the run and the
-        # value of "reproducibility.random_seed". We initialise both Numpy and Random seeds.
+        # value of "reproducibility.random_seed". We initialise both NumPy and Random seeds.
         # This needs to be _after_ we update `global_options`, to reflect its correct values.
         random_seed = (hash(self.id_run) + global_options().get("reproducibility.random_seed")) % 2**32 - 1
         np.random.seed(random_seed)

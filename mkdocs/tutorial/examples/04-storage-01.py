@@ -1,4 +1,5 @@
 import numpy as np
+
 from mltraq import create_session
 
 session = create_session()
@@ -31,6 +32,6 @@ print(session.db.query("SELECT id_run, b FROM experiment_example"))
 print("\n--")
 
 
-print("Numpy array in first run:")
+print("NumPy array in first run:")
 print(experiment.runs.first().fields.c)
 print("\n--")

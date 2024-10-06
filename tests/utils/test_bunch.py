@@ -1,7 +1,11 @@
 from unittest import TestCase
 
 import pytest
-from mltraq.utils.bunch import Bunch, BunchEvent
+
+from mltraq.opts import options
+from mltraq.storage.serialization import deserialize
+from mltraq.utils.bunch import Bunch, BunchEvent, BunchStore, ReadOnlyError
+from mltraq.utils.fs import tmpdir_ctx
 
 
 def test_order():
@@ -102,6 +106,10 @@ def test_empty():
 
 
 def test_bunch_event_setattr():
+    """
+    Test: an event handler can be linket to __setitem__.
+    """
+
     bunch = BunchEvent()
 
     state = []
@@ -122,6 +130,10 @@ def test_bunch_event_setattr():
 
 
 def test_bunch_event_getattr():
+    """
+    Test: an event handler can be linket to __getitem__.
+    """
+
     bunch = BunchEvent()
 
     state = []
@@ -144,3 +156,79 @@ def test_bunch_event_getattr():
     bunch["b"]  # not tracked
 
     assert state == [1, 2]
+
+
+def test_bunchstore():
+    """
+    Test: We can store a simple Bunch on filesystem, accessing it
+    with item and attribute setters/getters.
+    """
+
+    # With item setter/getter
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs["a"] = 123
+        assert bs["a"] == 123
+
+        data = deserialize(open(options().get("bunchstore.pathname"), "rb").read())
+        assert data["a"] == 123
+
+        # Checking if a key is present
+        assert "a" in data
+
+        # Deleting a key-value pair
+        del data["a"]
+        assert "a" not in data
+
+    # With attribute setter/getter
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs.a = 123
+        assert bs.a == 123
+
+        # We can count how many items are in the inner Bunch with len()
+        bs.b = 456
+        assert len(bs) == 2
+
+        # We can get the underlying Bunch object with .data()
+        assert bs.data().b == 456
+
+        data = deserialize(open(options().get("bunchstore.pathname"), "rb").read())
+        assert data.a == 123
+
+    # Test persistency
+    with tmpdir_ctx():
+
+        bs = BunchStore()
+        bs.a = 123
+        assert bs.a == 123
+
+        bs = BunchStore()
+        bs.b = 456
+        assert bs.a == 123
+        assert bs.b == 456
+
+
+def test_bunchstore_readonly():
+    """
+    Test: We can have read-only BunchStore objects.
+    """
+
+    # With item setter/getter
+    with tmpdir_ctx():
+
+        # Writing a new bunchstore
+        bs = BunchStore()
+        bs.a = 123
+
+        # Instantiating a new bunchstore in read-only mode
+        bs_ro = BunchStore(read_only=True)
+
+        # Verifying we can read it
+        assert bs_ro.a == 123
+
+        # Verify we cannot write it
+        with pytest.raises(ReadOnlyError):
+            bs_ro.b = 123

@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -28,7 +28,7 @@ class Sequence:
     __slots__ = ("data", "frame", "next_idx", "stream_send")
     __state__ = ("data", "frame", "next_idx")
 
-    def __init__(self, frame: pd.DataFrame | None = None):
+    def __init__(self, frame: Optional[pd.DataFrame] = None):
         """
         Initialize the sequence to the empty sequence, or with `data` if not None.
         """

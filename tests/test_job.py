@@ -2,6 +2,7 @@ from functools import partial
 
 import joblib
 import pytest
+
 from mltraq.job import Job, ProgressParallel
 
 

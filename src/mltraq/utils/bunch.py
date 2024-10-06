@@ -1,8 +1,17 @@
 from __future__ import annotations
 
 import itertools
+import os
+import random
 from collections import OrderedDict
-from typing import Iterator
+from typing import Iterator, Optional
+
+from mltraq.opts import options
+from mltraq.utils.exceptions import ExceptionWithMessage
+
+
+class ReadOnlyError(ExceptionWithMessage):
+    pass
 
 
 class Bunch(OrderedDict):
@@ -148,3 +157,91 @@ class BunchEvent(Bunch):
 
     def __getattr__(self, key):
         return self[key]
+
+
+class BunchStore:
+    """
+    Basic key-value store on filesystem for a single Bunch object.
+    """
+
+    def __init__(self, pathname: Optional[str] = None, read_only: bool = False):
+        """
+        Initialize and load the key-value store. The bunch is serialized/deserialized to `pathname` (or its
+        default value "bunchstore.pathname"), appending `suffix` if provided.
+        In case of read-only use cases, specify `read_only=True` to avoid unnecessary writes.
+        """
+
+        # Importing here to avoid circular dependency.
+        from mltraq.storage.serialization import deserialize, serialize  # noqa: F401
+
+        # Storing eveyrthing as part of _meta attribute, s.t. we can use
+        # attr and item setters/getters with less overhead.
+        self._meta = Bunch()
+        self._meta.deserialize = deserialize
+        self._meta.serialize = serialize
+        self._meta.pathname = options().get("bunchstore.pathname", prefer=pathname)
+        self._meta.read_only = read_only
+        self._meta.data = Bunch()
+
+        # Try to read and write the inner Bunch, ensuring that the pathname is readable/writeable.
+        # (if read-only, skip write test.)
+        self.read()
+        if not self._meta.read_only:
+            self.write()
+
+    def read(self):
+        """
+        Load inner Bunch from file (if available).
+        """
+        if os.path.exists(self._meta.pathname):
+            self._meta.data = self._meta.deserialize(open(self._meta.pathname, "rb").read())
+
+    def __setitem__(self, key, value):
+        self._meta.data[key] = value
+        self.write()
+
+    def __getitem__(self, key):
+        self.read()
+        return self._meta.data[key]
+
+    def __getattr__(self, key):
+        return self[key]
+
+    def __setattr__(self, key, value):
+        if key != "_meta":
+            self[key] = value
+        else:
+            super().__setattr__(key, value)
+
+    def __len__(self):
+        return len(self._meta.data)
+
+    def __delitem__(self, key):
+        del self._meta.data[key]
+
+    def __iter__(self):
+        return iter(self._meta.data)
+
+    def data(self):
+        return self._meta.data
+
+    def write(self):
+        """
+        Overwrite BunchStore file on filesystem, using a temporary file
+        to avoid concurrency issues.
+        """
+
+        if self._meta.read_only:
+            # If the BunchStore is instantiated as read-only, raise an
+            # exception if there are attempts to write it to filesystem.
+            raise ReadOnlyError("Attempting to write but read-only")
+
+        # We add some randomness to the temporary path to avoid race conditions
+        # in case of threaded applications. In case of a race condition, only
+        # one version will be persisted.
+
+        randomness = random.randrange(10**5)
+
+        with open(f"{self._meta.pathname}.tmp.{randomness}", "wb") as f:
+            f.write(self._meta.serialize(self._meta.data))
+        os.replace(f"{self._meta.pathname}.tmp.{randomness}", self._meta.pathname)

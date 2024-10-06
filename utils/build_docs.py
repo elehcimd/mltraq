@@ -9,6 +9,7 @@ from typing import List
 
 from mltraq import options
 from mltraq.storage.database import next_uuid
+from mltraq.utils.fs import chdir_ctx
 
 project_dir = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir)
 project_name = os.path.basename(project_dir)
@@ -16,7 +17,7 @@ project_name = os.path.basename(project_dir)
 
 def local(args) -> str:
     cmd = " ".join(args) if isinstance(args, list) else args
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa
+    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode("utf-8")  # noqa: S602
 
 
 def local_python(pathname: str) -> str:
@@ -31,6 +32,7 @@ def local_python(pathname: str) -> str:
         # if a new script is added.
 
         # The seed is a fixed random UUID, nothing special about it.
+        # It ensures that UUIDs in examples and documentation don't change at every evaluation.
         next_uuid(seed=284942676702030925001753272733325001654)
 
         with open(pathname) as f:
@@ -39,8 +41,9 @@ def local_python(pathname: str) -> str:
             data_f = f"def local_python_func():\n{func_code}\nlocal_python_func()"
 
         f = io.StringIO()
-        with redirect_stdout(f):
-            exec(data_f)  # noqa
+        # Execute code redirecting stdout, after entering the directory of the example.
+        with chdir_ctx(os.path.dirname(pathname)), redirect_stdout(f):
+            exec(data_f)  # noqa: S102
         return f.getvalue()
 
 
@@ -86,7 +89,6 @@ def main(argv):
             f.write(out)
 
     local("touch mkdocs.yml")
-
     print("Operation completed.")
 
 

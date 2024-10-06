@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+
 from mltraq.storage.serializers.pickle import PickleSerializer, UnsafePickle
 
 

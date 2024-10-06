@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import random
 from types import GeneratorType
-from typing import Any, Generator, List
+from typing import Any, Generator, List, Optional, Tuple, Union
 
 import pandas as pd
 from joblib.parallel import DEFAULT_BACKEND
@@ -19,7 +19,7 @@ from mltraq.utils.text import stringify
 log = logging.getLogger(__name__)
 
 # `Runs` cannot be added as not yet defined
-RunsListType = Run | List[Run] | tuple[Run] | None
+RunsListType = Union[Run, List[Run], Tuple[Run], None]
 
 
 class RunsException(ExceptionWithMessage):
@@ -35,7 +35,7 @@ class Runs(dict):
     Dict handling of a collection of Run objects.
     """
 
-    def __init__(self, runs: RunsListType | Runs):
+    def __init__(self, runs: Union[RunsListType, Runs]):
         """
         Initialise the runs.
         """
@@ -43,17 +43,17 @@ class Runs(dict):
         runs = normalize_runs(runs)
         super().__init__({run.id_run: run for run in runs})
 
-    def add(self, *runs: RunsListType | Runs):
+    def add(self, *runs: Union[RunsListType, Runs]):
         """
         Add run(s).
         """
         runs = normalize_runs(runs)
         self.update({run.id_run: run for run in runs})
 
-    def __or__(self, runs: RunsListType | Runs) -> Runs:
+    def __or__(self, runs: Union[RunsListType, Runs]) -> Runs:
         return Runs(dict(self) | dict(runs))
 
-    def __ior__(self, runs: RunsListType | Runs) -> Runs:
+    def __ior__(self, runs: Union[RunsListType, Runs]) -> Runs:
         return self.__or__(runs)
 
     def first(self) -> Run:
@@ -105,10 +105,10 @@ class Runs(dict):
     def execute(  # noqa: C901
         self,
         steps: StepsType,
-        config: dict | None = None,
-        backend: str | None = None,
-        n_jobs: int | None = None,
-        args_field: str | None = None,
+        config: Optional[dict] = None,
+        backend: Optional[str] = None,
+        n_jobs: Optional[int] = None,
+        args_field: Optional[str] = None,
     ):
         """
         Given an existing collection of runs, execute `steps` on them, considering `config`, `backend`, and `n_jobs`.
@@ -124,7 +124,7 @@ class Runs(dict):
         if len(steps) == 0:
             raise RunsException("No step functions to execute.")
 
-        args_field = options().default_if_null(args_field, "execution.args_field")
+        args_field = options().get("execution.args_field", prefer=args_field)
         if args_field:
             config = self.handle_args_field(args_field, config)
 
@@ -152,7 +152,7 @@ class Runs(dict):
         random.Random(options().get("reproducibility.random_seed")).shuffle(task_funcs)
 
         # Execute runs.
-        executed_runs: Generator[Run, None, None] | list[Run] = Job(
+        executed_runs: Union[Generator[Run, None, None], list[Run]] = Job(
             task_funcs, n_jobs=n_jobs, backend=backend
         ).execute()
 
@@ -175,6 +175,14 @@ class Runs(dict):
         # Check for exceptions, and raise first one encountered.
         for run in executed_runs:
             if run.exception is not None:
+                n_tasks = len(task_funcs)
+                n_executed = len(executed_runs)
+                ratio_executed = n_executed / n_tasks
+                log.debug("Encountered exception in task, propagating to main process")
+                log.debug(
+                    f"Executed {n_executed} of {n_tasks} tasks ({int(ratio_executed*100)}%) "
+                    f"with return_as={options().get('execution.return_as')}"
+                )
                 raise run.exception
 
         # Point the runs to new instances that contain the result of the execution.
@@ -188,7 +196,7 @@ class Runs(dict):
         return self.__str__()
 
 
-def normalize_runs(runs: RunsListType | Runs) -> list[Run]:
+def normalize_runs(runs: Union[RunsListType, Runs]) -> list[Run]:
     """
     Normalise `runs` to always return a list of Run objects (which might be empty).
     """

@@ -5,7 +5,7 @@ from mltraq.steps.init_fields import init_fields
 
 def test_init_fields():
     """
-    Test: We can initialize fields with the `init_fields` step.
+    Test: We can drop fields with the `drop_fields` step.
     """
 
     experiment = create_experiment("example")
@@ -36,3 +36,6 @@ def test_init_fields():
 
     # Drop unexistend fields, does nothing
     experiment.execute(drop_fields("b", "c"))
+
+    # Drop no fields.
+    experiment.execute(drop_fields())

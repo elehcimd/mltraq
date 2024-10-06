@@ -1,6 +1,5 @@
 from functools import partial
 
-import mltraq
 from sklearn.cluster import KMeans
 from sklearn.datasets import load_iris
 from sklearn.dummy import DummyClassifier
@@ -9,6 +8,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import shuffle
+
+import mltraq
 
 
 def load(run: mltraq.Run):

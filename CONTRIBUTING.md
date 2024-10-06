@@ -32,7 +32,7 @@ When you're ready to contribute, follow these steps:
 1. Create an issue describing the feature, bug fix, or improvement you'd like to make.
 2. Create a new branch in your forked repository for your changes.
 3. Write your code and tests.
-4. Test, format and lint your code by running `pytest`.
+4. Test, format, and lint your code by running `pytest`.
 6. Create a pull request targeting the `devel` branch of the main repository.
 
 ## Active branches
@@ -43,4 +43,17 @@ We use `main` branch for hot fixes (including documentation) that needs to be re
 
 On the release day, `devel` branch is merged into `main`. All releases of `mltraq` happen only from the `main`.
 
+## Creating an environment on MacOS with a specific version of Python
 
+```
+pyenv versions # List Python versions and available environments
+pyenv install 3.9:latest # Install Python version
+poetry env use 3.9.18
+
+```
+
+### Adding a dev package
+
+```
+poetry add pytest@latest --group dev
+```

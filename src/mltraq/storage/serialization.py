@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import List
+from typing import Any, List, Tuple
 
 import pandas as pd
 from numpy import float32, float64, int32, int64
@@ -45,7 +45,7 @@ def serialize(obj: object) -> bytes:
     return serializer.serialize(obj)
 
 
-def deserialize(data: bytes) -> object:
+def deserialize(data: bytes) -> Any:
     """
     Deserialize object, using the preferred serializer.
     """
@@ -70,7 +70,7 @@ def unsafe_pickle(obj: object) -> bytes:
     return PickleSerializer.serialize(obj, assert_safe=False)
 
 
-def unsafe_unpickle(data: bytes) -> object:
+def unsafe_unpickle(data: bytes) -> Any:
     """
     Unpickle object, without limiting to safe opcodes.
     Used to unpickle complete Experiment objects.
@@ -107,7 +107,7 @@ def meta_runs(runs: Runs, table_name: str) -> dict:
     return meta
 
 
-def runs_to_sql(id_experiment: uuid.UUID, meta: dict, runs: Runs) -> tuple[pd.DataFrame, List]:
+def runs_to_sql(id_experiment: uuid.UUID, meta: dict, runs: Runs) -> Tuple[pd.DataFrame, List]:
     """
     Prepare a Runs object for experiment `id_experiment`,
     with metadata `meta`, to be stored in SQL.
