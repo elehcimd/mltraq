@@ -1,7 +1,7 @@
 # Recent changes
 
-## 0.1.153
-* Updated dependencies
+## 0.1.155
+* Added `utils/plotting.py` module to facilitate the rendering of matplotlib visualizations
 
 ## 0.1.153
 * Added Python and MLtraq version to experiment's metadata
