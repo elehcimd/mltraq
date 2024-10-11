@@ -1,5 +1,8 @@
 # Recent changes
 
+## 0.1.155
+* Added `utils/plotting.py` module to facilitate the rendering of matplotlib visualizations
+
 ## 0.1.153
 * Added Python and MLtraq version to experiment's metadata
 * Added `utils/sysenv.py` to track environment stats (system, architecture, locale, time, ...)
