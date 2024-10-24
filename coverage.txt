@@ -5,7 +5,7 @@ src/mltraq/cli.py                                               98     49    50%
 src/mltraq/experiment.py                                       192      8    96%
 src/mltraq/job.py                                               60     12    80%
 src/mltraq/opts.py                                               8      0   100%
-src/mltraq/run.py                                              108     16    85%
+src/mltraq/run.py                                              108     13    88%
 src/mltraq/runs.py                                             108     15    86%
 src/mltraq/session.py                                           40      0   100%
 src/mltraq/steps/__init__.py                                     0      0   100%
@@ -32,12 +32,11 @@ src/mltraq/utils/__init__.py                                     0      0   100%
 src/mltraq/utils/base_options.py                                91     19    79%
 src/mltraq/utils/bunch.py                                      122      4    97%
 src/mltraq/utils/enums.py                                       11      1    91%
-src/mltraq/utils/exceptions.py                                  56     16    71%
+src/mltraq/utils/exceptions.py                                  56     13    77%
 src/mltraq/utils/frames.py                                       5      0   100%
 src/mltraq/utils/fs.py                                          54      2    96%
 src/mltraq/utils/json.py                                        11      1    91%
 src/mltraq/utils/logging.py                                     26      0   100%
-src/mltraq/utils/plotting.py                                    71     10    86%
 src/mltraq/utils/reproducibility.py                             17      0   100%
 src/mltraq/utils/sequence.py                                    68      4    94%
 src/mltraq/utils/sysenv.py                                      36      2    94%
@@ -46,4 +45,4 @@ src/mltraq/utils/text.py                                        19      1    95%
 src/mltraq/utils/web.py                                         38      3    92%
 src/mltraq/version.py                                            1      0   100%
 --------------------------------------------------------------------------------
-TOTAL                                                         2248    268    88%
+TOTAL                                                         2177    252    88%
