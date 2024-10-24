@@ -1,5 +1,8 @@
 # Recent changes
 
+## 0.1.156
+* Moved plotting utils to the `cumulative` viz project
+
 ## 0.1.155
 * Added `utils/plotting.py` module to facilitate the rendering of matplotlib visualizations
 
