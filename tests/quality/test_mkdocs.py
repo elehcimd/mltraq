@@ -1,8 +1,15 @@
 import os
-
-from test_code_quality import local
+import subprocess
 
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir + os.sep + os.pardir)
+
+
+def local(args):
+    """
+    Execute local command, `args` is either a list to concatenate or a string.
+    """
+    cmd = " ".join(args) if isinstance(args, list) else args
+    return subprocess.check_output(cmd, shell=True).decode("utf-8")  # noqa: S602
 
 
 def test_update_code_blocks():

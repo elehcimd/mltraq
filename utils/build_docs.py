@@ -25,7 +25,6 @@ def local_python(pathname: str) -> str:
     # 1. disabling tqdm
     # 2. making UUIDs reproducible, minimizing the resulting changes in the outputs
     with options().ctx({"tqdm.disable": True, "reproducibility.sequential_uuids": True}):
-
         # Always start from the same initial state of sequential UUIDs.
         # Without resetting the defaults, the UUIDs will increment across different
         # Python scripts, with potential changes to the IDs of existing scripts
@@ -69,7 +68,7 @@ def main(argv):
     )
     print("Removing outputs")
     for idx, rm_file in enumerate(rm_files):
-        print(f"[{idx+1}/{len(rm_files)}] Removing {rm_file}")
+        print(f"[{idx + 1}/{len(rm_files)}] Removing {rm_file}")
         os.remove(rm_file)
 
     py_files = glob.glob(f"mkdocs/**/*{pattern}*.py", recursive=True)
@@ -79,7 +78,7 @@ def main(argv):
 
     print("Executing examples ...")
     for idx, py_file in enumerate(py_files):
-        print(f"[{idx+1}/{len(py_files)}] Executing {py_file}")
+        print(f"[{idx + 1}/{len(py_files)}] Executing {py_file}")
         out = local_python(py_file)
         with open(f"{py_file}.out", "w") as f:
             f.write(out)

@@ -104,7 +104,6 @@ class ArchiveStoreIO:
         with tarfile.open(
             fileobj=fileobj, mode=options().get("archivestore.mode"), format=options().get("archivestore.format")
         ) as archive:
-
             for idx, glob_name in enumerate(globs(src_dir, include=include, exclude=exclude)):
                 name = normpath(src_dir + os.sep + glob_name)
                 arcname = normpath(arc_dir + os.sep + glob_name)
@@ -201,7 +200,6 @@ class ArchiveStoreIO:
 
 
 class ArchiveStore:
-
     __slot__ = ("params",)
 
     def __init__(self, src_dir: str, arc_dir: str = ".", include: str = "**", exclude: Optional[str] = None):

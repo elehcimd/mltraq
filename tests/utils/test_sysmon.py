@@ -32,7 +32,6 @@ def test_sysmon_direct():
     """
 
     with options().ctx({"sysmon.interval": 0.1}), logging_ctx(level_name="DEBUG"):
-
         sequence = Sequence()
         sm = SystemMonitor(sequence)
         sm.start()

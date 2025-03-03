@@ -146,7 +146,6 @@ class BunchEvent(Bunch):
         self[key] = value
 
     def __getitem__(self, key):
-
         value = super().__getitem__(key)
 
         if not key.startswith("_on_") and key in self._on_getattr_triggers:

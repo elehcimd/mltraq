@@ -2,7 +2,6 @@ from mltraq import create_session
 from mltraq.utils.fs import tmpdir_ctx
 
 with tmpdir_ctx():
-
     # Creating a session to a local MLtraq db
     local = create_session("sqlite:///local.db")
 

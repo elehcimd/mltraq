@@ -20,11 +20,9 @@ def print_directory_contents(dirname):
 
 
 def test_datastream_send_receive():
-
     with patch.object(DatabaseWriter, "process_batch"), tmpdir_ctx(), options().ctx(
         {"database.url": "sqlite:///mltraq.db"}
     ):
-
         # process_batch will not consume the contents of .batch
 
         srv = DataStreamServer()
@@ -44,7 +42,6 @@ def test_datastream_sequence():
     """
 
     with tmpdir_ctx(), options().ctx({"database.url": "sqlite:///mltraq.db"}):
-
         # Start data stream server
         srv = DataStreamServer().start()
 

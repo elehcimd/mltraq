@@ -6,7 +6,6 @@ from mltraq.utils.logging import logging_ctx
 with options().ctx({"datastream.disable": False}), logging_ctx(
     level_name="DEBUG", log_format="[%(threadName)s] %(message)s"
 ), tmpdir_ctx():
-
     # Create a new experiment
     session = create_session("sqlite:///mltraq.db")
     experiment = session.create_experiment("example")

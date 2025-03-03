@@ -180,7 +180,7 @@ class Runs(dict):
                 ratio_executed = n_executed / n_tasks
                 log.debug("Encountered exception in task, propagating to main process")
                 log.debug(
-                    f"Executed {n_executed} of {n_tasks} tasks ({int(ratio_executed*100)}%) "
+                    f"Executed {n_executed} of {n_tasks} tasks ({int(ratio_executed * 100)}%) "
                     f"with return_as={options().get('execution.return_as')}"
                 )
                 raise run.exception

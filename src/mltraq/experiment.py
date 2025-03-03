@@ -274,7 +274,6 @@ class Experiment:
             return cls.load_pickle(db, name)
 
         with db.session() as session:
-
             # Load all columns but "pickle", which might be heavy.
             columns = [
                 Experiment.model_cls.id_experiment,

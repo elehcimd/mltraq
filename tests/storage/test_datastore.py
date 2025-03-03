@@ -38,7 +38,6 @@ def test_delete():
     """
 
     with tmpdir_ctx():
-
         session = mltraq.create_session()
         experiment = session.create_experiment()
 
