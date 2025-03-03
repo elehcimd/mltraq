@@ -292,7 +292,7 @@ python-versions = ">=3.7"
 name = "certifi"
 version = "2025.1.31"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -311,7 +311,7 @@ pycparser = "*"
 name = "charset-normalizer"
 version = "3.4.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -724,7 +724,7 @@ zstd = ["zstandard (>=0.18.0)"]
 name = "idna"
 version = "3.10"
 description = "Internationalized Domain Names in Applications (IDNA)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -2229,7 +2229,7 @@ typing-extensions = {version = ">=4.4.0", markers = "python_version < \"3.13\""}
 name = "requests"
 version = "2.32.3"
 description = "Python HTTP for Humans."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 
@@ -2630,7 +2630,7 @@ dev = ["flake8", "flake8-annotations", "flake8-bandit", "flake8-bugbear", "flake
 name = "urllib3"
 version = "2.3.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.9"
 
@@ -2745,7 +2745,7 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9.0"
-content-hash = "4b35ad41fc688a84f77aa18c94d9f0dac68be784d1748d786c30818e0b424c8b"
+content-hash = "eba142155f53954e73a4c4cbd27b5f119bde579a24f2e0d82e084fd1de5daad1"
 
 [metadata.files]
 aiohappyeyeballs = [
