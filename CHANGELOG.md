@@ -1,5 +1,9 @@
 # Recent changes
 
+## 0.1.158
+* Added `requests` dependency and updated the other dependencies
+* Moved `utils/plotting.py` module to Cumulative separate package
+
 ## 0.1.155
 * Added `utils/plotting.py` module to facilitate the rendering of matplotlib visualizations
 
