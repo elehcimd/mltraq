@@ -12,9 +12,7 @@ classifiers = [
     "License :: OSI Approved",
     "Intended Audience :: Science/Research",
 ]
-include = [
-    "LICENSE",
-]
+include = ["LICENSE"]
 
 [tool.poetry.scripts]
 mltraq = "mltraq.cli:main"
@@ -24,7 +22,7 @@ python = ">=3.9.0"
 pandas = ">=1.5.3"
 pyarrow = ">=10.0.0"
 joblib = ">=1.4.0"
-sqlalchemy = ">=2.0.0" 
+sqlalchemy = ">=2.0.0"
 cloudpickle = ">=2.2.0"
 tqdm = ">=4.64.1"
 tabulate = ">=0.9.0"
@@ -33,14 +31,13 @@ tabulate = ">=0.9.0"
 jupyterlab = ">=4.0.10"
 ipywidgets = ">=8.0.2"
 pytest = ">=7.2.0"
-black = {extras = ["jupyter"], version = ">=22.10.0"}
 ruff = ">=0.0.128"
 pytest-cov = ">=4.0.0"
 pylint = ">=2.15.9"
 pytest-xdist = ">=3.6.1"
 mkdocs-material = ">=8.5.11"
 mkdocs-macros-plugin = ">=0.7.0"
-mkdocstrings = {extras = ["python"], version = ">=0.19.1"}
+mkdocstrings = { extras = ["python"], version = ">=0.19.1" }
 mkdocs-charts-plugin = ">=0.0.10"
 mdx-include = ">=1.4.2"
 anybadge = ">=1.14.0"
@@ -52,22 +49,32 @@ pandas-stubs = ">=2.1.4.231227"
 pyinstrument = ">=4.6.2"
 scikit-learn = ">=1.4.0"
 psycopg2-binary = ">=2.9.9"
-ray = {extras = ["default"], version = ">=2.9.3"}
+ray = { extras = ["default"], version = ">=2.9.3" }
+black = "^25.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-length = 120
-target_version = ["py37"]
-preview = true
-
 [tool.ruff]
 line-length = 120
-lint.select = ["E", "F", "I", "U", "S", "C", "B", "A", "T", "Q", "BLE", "C", "ERA"] # ANN FBT
+lint.select = [
+    "E",
+    "F",
+    "I",
+    "U",
+    "S",
+    "C",
+    "B",
+    "A",
+    "T",
+    "Q",
+    "BLE",
+    "C",
+    "ERA",
+] # ANN FBT
 target-version = "py37"
-lint.ignore = ["A003", "S101", "T201", "T203", "S311", "UP007"]
+lint.ignore = ["A003", "S101", "T201", "T203", "S311", "UP007", "A005"]
 extend-include = ["*.ipynb"]
 
 [tool.pytest.ini_options]

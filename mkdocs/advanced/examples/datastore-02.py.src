@@ -6,7 +6,6 @@ from mltraq import DataStoreIO, create_experiment
 from mltraq.utils.fs import tmpdir_ctx
 
 with tmpdir_ctx():
-
     # Create a new experiment and execute a run
     experiment = create_experiment()
     with experiment.run() as run:

@@ -187,7 +187,6 @@ class Database:
         """
 
         with self.session() as session:
-
             meta = MetaData()
             meta.reflect(bind=session.bind)
 

@@ -12,7 +12,6 @@ with options().ctx(
         "datastream.kind": "INET",
     }
 ), logging_ctx(level_name="DEBUG", log_format="[%(threadName)s] %(message)s"), tmpdir_ctx():
-
     # Create a new experiment
     session = create_session("sqlite:///mltraq.db")
     experiment = session.create_experiment("example")

@@ -106,7 +106,7 @@ def compact_exception_message() -> str:
         "trace": f'{report_filename(frame.filename)}:{frame.lineno}::{frame.function} "{code}"',
     }
 
-    return f'{details["type"]} at {details["trace"]}: {details["message"]}'
+    return f"{details['type']} at {details['trace']}: {details['message']}"
 
 
 def validate_type(value: object, expected_type: T) -> Any:

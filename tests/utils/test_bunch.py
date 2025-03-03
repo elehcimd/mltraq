@@ -166,7 +166,6 @@ def test_bunchstore():
 
     # With item setter/getter
     with tmpdir_ctx():
-
         bs = BunchStore()
         bs["a"] = 123
         assert bs["a"] == 123
@@ -183,7 +182,6 @@ def test_bunchstore():
 
     # With attribute setter/getter
     with tmpdir_ctx():
-
         bs = BunchStore()
         bs.a = 123
         assert bs.a == 123
@@ -200,7 +198,6 @@ def test_bunchstore():
 
     # Test persistency
     with tmpdir_ctx():
-
         bs = BunchStore()
         bs.a = 123
         assert bs.a == 123
@@ -218,7 +215,6 @@ def test_bunchstore_readonly():
 
     # With item setter/getter
     with tmpdir_ctx():
-
         # Writing a new bunchstore
         bs = BunchStore()
         bs.a = 123

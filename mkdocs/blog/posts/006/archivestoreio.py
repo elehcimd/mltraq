@@ -15,7 +15,6 @@ with tmpdir_ctx():
     pd.Series([4, 5, 6]).to_csv("datasets/second.csv")
 
     with options().ctx({"datastore.relative_path_prefix": "archives", "archivestore.relative_path_prefix": "all"}):
-
         # Create an archive and extract it
         archive = ArchiveStoreIO.create(src_dir="datasets", arc_dir="assets")
         archive.extract()

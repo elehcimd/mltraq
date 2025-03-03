@@ -6,7 +6,6 @@ from mltraq.utils.bunch import BunchStore
 from mltraq.utils.fs import tmpdir_ctx
 
 with tmpdir_ctx():
-
     # Default location of BunchStore on filesystem
     print("Pathname:", options().get("bunchstore.pathname"))
 

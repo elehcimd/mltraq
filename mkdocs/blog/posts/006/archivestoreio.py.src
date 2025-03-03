@@ -20,7 +20,6 @@ with tmpdir_ctx():
             "archivestore.relative_path_prefix": "all",
         }
     ):
-
         # Create an archive and extract it
         archive = ArchiveStoreIO.create(
             src_dir="datasets", arc_dir="assets"

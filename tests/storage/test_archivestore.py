@@ -106,7 +106,6 @@ def test_archivestore():
     """
 
     with tmpdir_ctx():
-
         # Create experiment
         create_test_dir()
         e = create_experiment()
