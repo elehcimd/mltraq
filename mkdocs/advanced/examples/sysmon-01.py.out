@@ -1,13 +1,13 @@
 idx                                       0
-timestamp        2025-03-03 15:05:23.193171
+timestamp        2025-03-10 15:23:34.901981
 cpu_cnt                                 8.0
-cpu_pct                                36.8
-disk_free_gb                          30.52
+cpu_pct                                25.4
+disk_free_gb                          49.99
 disk_total_gb                        494.38
-disk_used_pct                         93.83
-mem_free_gb                            5.59
+disk_used_pct                         89.89
+mem_free_gb                            5.45
 mem_total_gb                          25.77
-mem_used_pct                           78.3
+mem_used_pct                           78.9
 net_recv_kbs                            0.0
-net_sent_kbs                          20.48
+net_sent_kbs                            0.0
 Name: 0, dtype: object

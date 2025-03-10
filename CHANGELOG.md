@@ -1,8 +1,14 @@
 # Recent changes
 
+## 0.1.160
+* Added `Database.get_schemas()`, which returns a list of existing schemas.
+
+## 0.1.159
+* Added `Database.get_schema_metadata(...)`, which provides the list of existing tables, columns and their types.
+
 ## 0.1.158
 * Added `requests` dependency and updated the other dependencies
-* Moved `utils/plotting.py` module to Cumulative separate package
+* Removed `utils/plotting.py` module
 
 ## 0.1.155
 * Added `utils/plotting.py` module to facilitate the rendering of matplotlib visualizations

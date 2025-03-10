@@ -405,6 +405,27 @@ def query_count(query: QueryType, session: Session):
     return session.execute(text(f"SELECT COUNT(*) FROM ({query})")).first()[0]  # noqa: S608
 
 
+def get_schemas(self) -> list[str]:
+    """
+    Return the list of schema names in the database.
+    """
+    return inspect(self.engine).get_schema_names()
+
+
+def get_schema_metadata(self, schema: str = "public") -> pd.DataFrame:
+    """
+    Return a data frame with table names, column names, and column types for `schema`.
+    """
+
+    metadata = MetaData(schema=schema)
+    metadata.reflect(bind=self.engine)
+    records = []
+    for table_name, table in metadata.tables.items():
+        for column in table.columns:
+            records.append({"table_name": table_name, "column_name": column.name, "column_type": column.type})
+    return pd.DataFrame(records)
+
+
 def normalize_query(query: QueryType):
     """
     Normalize SQL query to an executable statement.
